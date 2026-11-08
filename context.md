@@ -416,14 +416,16 @@ Use authenticated ownership checks on every API, job and tool. Keep secrets out 
 
 Last updated: 2026-11-08. Owner: Arjun. Branch: `feat/optimizer-nemotron`, draft pull request #1. This section replaces the earlier `optimizer/STATUS.md`. Ticked boxes in [spec-checklist.md](spec-checklist.md) name the test that is their evidence.
 
-### Working on now
+### Current optimizer status
 
 - Testing through the already signed-in Jupyter terminal on the team's Brev machine `following-copper-silkworm`. The running model is `nemotron-bolt`, Nemotron 3.5 Bolt E4B. Local Brev sign-in remains unavailable. The remote test route works.
 - Verified on Brev at revision `c78491d`: `/v1/models` lists Bolt and a chat request with `enable_thinking=false` returns `READY`.
 - Both live tests failed in 2.40 seconds before extraction. The client requested 10,240 output tokens against the server's 8,192-token context window. A second direct probe confirmed that the prompt's tokens must also fit inside that window.
-- The client now retries with a smaller output allowance taken from these server errors. Scripted tests cover the two limits together with schema fallback, and ensure unrelated errors and exhausted context still fail. Live verification of this fix is next.
+- The client now retries with a smaller output allowance taken from server errors. Scripted tests cover the two limits together with schema fallback, and ensure unrelated errors and exhausted context still fail.
 - Ran on Windows after the fix: `uv run pytest -q tests/test_nemotron.py`, 21 passed in 2.14 seconds.
 - The first live rerun after that fix still failed both tests in 0.81 seconds. vLLM's early validation reports prompt length in characters, before its exact token-count check. The client now handles this format by halving the allowance, within the same bounded retry loop. The scripted test includes this observed response. The 21 client tests passed again in 2.40 seconds.
+- Live verification at `99681c3` reached structured, validated answers. Both live tests failed on answer quality in 96.20 seconds. Profile compilation retained the quoted budget and peanut restriction, but failed the commute assertion (39.43 seconds). The second test's compilation plus suitability call took 56.03 seconds. Its cookie assertion passed, but the wrap verdict was `unverified`, where the test requires `suitable`. Validation and assertions were preserved.
+- The Windows full suite during the fixes reported 72 passed and 2 live tests skipped in 75.42 seconds. Final validation of the latest client also passed: 72 passed, 2 skipped in 64.14 seconds. The separate live run and its failures are recorded above.
 - The full suite on Brev before the fix reported 67 passed, 2 skipped, 1 failed in 40.79 seconds. The random-sample coverage guard saw 15 non-default-card choices against a floor of 20. That test passed alone on rerun in 3.79 seconds. No coverage threshold was changed.
 
 ### Done: the recommendation optimizer (`optimizer/`, Python)
@@ -442,7 +444,7 @@ Last updated: 2026-11-08. Owner: Arjun. Branch: `feat/optimizer-nemotron`, draft
   - judging whether a cheaper item meets the same need
   - writing the notification text
 - Defaults point at the team's model: `nemotron-bolt` at `http://127.0.0.1:8000/v1`, reached through `brev port-forward`.
-- 68 tests pass. Two live-model tests skip until that address answers.
+- 72 tests pass on Windows, including the four added client compatibility cases. Two live-model tests skip unless the endpoint is configured. The separate Brev live run fails the two quality assertions described above.
 
 ### How optimality is tested
 
@@ -460,10 +462,10 @@ Last updated: 2026-11-08. Owner: Arjun. Branch: `feat/optimizer-nemotron`, draft
 - **Coverage guard.** A test fails if the random worlds stop reaching recommendations, skips, applied and stacked offers, card switches, and every kind of rejection. Without it, the tests above could pass while testing nothing. Before this guard was added, 314 of 400 random worlds stopped at an early refusal.
 - **Bug found and fixed.** When instant discounts add up to more than the price, the solver used to forbid the combination instead of charging $0.
 
-### Not verified yet
+### Remaining limitations
 
-- **Extraction quality remains unmeasured.** The live tests reached the real server but were rejected for their token allowance. Dropped facts, downgraded verdicts and individual job timings remain pending until the fixed client runs.
-- **The model is small.** `nemotron-bolt` is Nemotron 3.5 Bolt E4B, a 4-billion-parameter model, and its suitability judgements have not been measured.
+- **Bolt fails the current quality checks.** The measured sample does not establish reliable profile extraction or suitability judgement. It can produce validated answers, but missing routine facts and unverified alternatives limit useful recommendations. Per-job dropped-fact and downgraded-verdict counts were not captured by these tests. The second test's duration includes both compilation and judging. Further measurement is deferred under Arjun's request for the minimum working connection.
+- **Larger model proposed.** Nemotron 3.5 Lightning 30B-A3B is the next candidate from the team handoff. Switching remains subject to Arjun's approval and access. Bolt remains selected.
 - **`optimizer/serve/brev-vllm.sh` is unused.** It was written before the team VM existed, and the team serves the model differently.
 
 ### Open questions for the team
