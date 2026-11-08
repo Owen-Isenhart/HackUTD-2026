@@ -111,17 +111,30 @@ const fields = [
   "screen_flags",
 ];
 async function upsertLedger(tx, ownerId, rows) {
+  // Multi-row upserts: a two-year sandbox history is thousands of rows, and one
+  // round trip per row to hosted Tiger Data outlasts the pipeline job lease.
+  // A later duplicate of an id wins, matching the old row-by-row order.
+  const unique = [...new Map(rows.map((r) => [r.id, r])).values()];
+  const width = fields.length + 3;
   let changed = 0;
-  for (const r of rows) {
-    const values = [
-      ownerId,
-      r.id,
-      ...fields.map((k) => r[k] ?? null),
-      hash(fields.map((k) => r[k] ?? null)),
-    ];
-    const placeholders = values.map((_, i) => "$" + (i + 1));
+  for (let start = 0; start < unique.length; start += 250) {
+    const chunk = unique.slice(start, start + 250);
+    const values = [];
+    for (const r of chunk)
+      values.push(
+        ownerId,
+        r.id,
+        ...fields.map((k) => r[k] ?? null),
+        hash(fields.map((k) => r[k] ?? null)),
+      );
+    const tuples = chunk.map(
+      (_, row) =>
+        "(" +
+        Array.from({ length: width }, (_, col) => "$" + (row * width + col + 1)).join(",") +
+        ")",
+    );
     const result = await tx.query(
-      `INSERT INTO hackutd_finance.ledger_transaction AS t(owner_id,id,${fields.join(",")},content_hash) VALUES(${placeholders.join(",")}) ON CONFLICT(owner_id,id) DO UPDATE SET ${[...fields, "content_hash"].map((k) => k + "=EXCLUDED." + k).join(",")},version=t.version+1,imported_at=now() WHERE t.content_hash IS DISTINCT FROM EXCLUDED.content_hash`,
+      `INSERT INTO hackutd_finance.ledger_transaction AS t(owner_id,id,${fields.join(",")},content_hash) VALUES ${tuples.join(",")} ON CONFLICT(owner_id,id) DO UPDATE SET ${[...fields, "content_hash"].map((k) => k + "=EXCLUDED." + k).join(",")},version=t.version+1,imported_at=now() WHERE t.content_hash IS DISTINCT FROM EXCLUDED.content_hash`,
       values,
     );
     changed += result.rowCount;
@@ -217,11 +230,19 @@ async function importFromNessie(pool, ownerId, nessie, now = new Date()) {
           [normalizeMerchantName(n), key],
         );
     }
-    for (const m of merchants) {
-      const b = matchBrand(m.name);
+    const uniqueMerchants = [...new Map(merchants.map((m) => [m.id, m])).values()];
+    for (let start = 0; start < uniqueMerchants.length; start += 500) {
+      const chunk = uniqueMerchants.slice(start, start + 500);
+      const values = [now];
+      const tuples = chunk.map((m) => {
+        const b = matchBrand(m.name);
+        const base = values.length;
+        values.push(m.id, m.name, category(m.category), m.lat, m.lon, b.key, b.match);
+        return `($${base + 1},$${base + 2},$${base + 3},$${base + 4}::double precision,$${base + 5}::double precision,$${base + 6},$${base + 7},'nessie_sandbox',$1::timestamptz)`;
+      });
       await tx.query(
-        `INSERT INTO hackutd_finance.merchant(id,name,category,lat,lon,brand_key,brand_match,provenance,fetched_at) VALUES($1,$2,$3,$4,$5,$6,$7,'nessie_sandbox',$8) ON CONFLICT(id) DO UPDATE SET name=$2,category=$3,lat=$4,lon=$5,brand_key=$6,brand_match=$7,fetched_at=$8`,
-        [m.id, m.name, category(m.category), m.lat, m.lon, b.key, b.match, now],
+        `INSERT INTO hackutd_finance.merchant(id,name,category,lat,lon,brand_key,brand_match,provenance,fetched_at) VALUES ${tuples.join(",")} ON CONFLICT(id) DO UPDATE SET name=EXCLUDED.name,category=EXCLUDED.category,lat=EXCLUDED.lat,lon=EXCLUDED.lon,brand_key=EXCLUDED.brand_key,brand_match=EXCLUDED.brand_match,fetched_at=EXCLUDED.fetched_at`,
+        values,
       );
     }
     await upsertLedger(tx, ownerId, rows);

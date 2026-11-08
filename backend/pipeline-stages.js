@@ -303,8 +303,10 @@ function createStages({
     },
     store_selection: async (tx, j) => {
       const { owner, ledger } = await context(tx, j);
+      // Without the deals service there is nothing to select or enroll. Skip so
+      // the run finishes instead of dying and failing the stages after it.
       if (!deals)
-        throw Object.assign(new Error(), { code: "deals_not_configured" });
+        return { inputHash: hash("deals_not_configured"), skipped: true, summary: "Deals service not configured" };
       await deals.provision(owner);
       const programs = await deals.catalog(owner.id);
       const routines = (
@@ -369,7 +371,7 @@ function createStages({
     enrollment_sync: async (tx, j) => {
       const { owner, ledger } = await context(tx, j);
       if (!deals)
-        throw Object.assign(new Error(), { code: "deals_not_configured" });
+        return { inputHash: hash("deals_not_configured"), skipped: true, summary: "Deals service not configured" };
       await deals.provision(owner);
       const selected = (
         await tx.query(

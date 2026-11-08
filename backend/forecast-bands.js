@@ -117,9 +117,13 @@ function scheduleCashflow(
         ),
     );
     if (amount === 0 && loan.monthly_payment_cents === 0) continue;
-    // The v2 loan resource supplies a monthly amount without a due date.
-    unresolved.add("loan_schedule_unknown");
-    if (!Number.isSafeInteger(amount) || amount <= 0) continue;
+    // The v2 loan resource supplies a monthly amount without a due date, so a
+    // known amount is reserved on the earliest forecast day of each month (the
+    // most conservative placement). Only an unknown amount leaves a gap.
+    if (!Number.isSafeInteger(amount) || amount <= 0) {
+      unresolved.add("loan_schedule_unknown");
+      continue;
+    }
     for (const month of new Set(days.map((d) => d.slice(0, 7)))) {
       const day = days.find((d) => d.startsWith(month));
       out(day, amount, loan.description || "Loan payment reserve", "loan", true);

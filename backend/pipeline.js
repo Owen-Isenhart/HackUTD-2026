@@ -22,7 +22,7 @@ async function runOne(pool, handlers) {
   const token = randomUUID();
   const job = (
     await pool.query(
-      `WITH ready AS (SELECT j.id FROM hackutd_finance.pipeline_job j WHERE ((j.state IN ('queued','failed') AND j.available_at<=now()) OR (j.state='running' AND j.lease_until<now())) AND NOT EXISTS (SELECT 1 FROM hackutd_finance.pipeline_job p WHERE p.owner_id=j.owner_id AND p.run_id=j.run_id AND array_position($1::text[],p.kind)<array_position($1::text[],j.kind) AND p.state NOT IN ('completed','skipped')) ORDER BY j.created_at,array_position($1::text[],j.kind) FOR UPDATE SKIP LOCKED LIMIT 1) UPDATE hackutd_finance.pipeline_job j SET state='running',attempts=attempts+1,lease_token=$2,lease_until=now()+interval '90 seconds',updated_at=now() FROM ready WHERE j.id=ready.id RETURNING j.*`,
+      `WITH ready AS (SELECT j.id FROM hackutd_finance.pipeline_job j WHERE ((j.state IN ('queued','failed') AND j.available_at<=now()) OR (j.state='running' AND j.lease_until<now())) AND NOT EXISTS (SELECT 1 FROM hackutd_finance.pipeline_job p WHERE p.owner_id=j.owner_id AND p.run_id=j.run_id AND array_position($1::text[],p.kind)<array_position($1::text[],j.kind) AND p.state NOT IN ('completed','skipped')) ORDER BY j.created_at,array_position($1::text[],j.kind) FOR UPDATE SKIP LOCKED LIMIT 1) UPDATE hackutd_finance.pipeline_job j SET state='running',attempts=attempts+1,lease_token=$2,lease_until=now()+interval '10 minutes',updated_at=now() FROM ready WHERE j.id=ready.id RETURNING j.*`,
       [STAGES, token],
     )
   ).rows[0];

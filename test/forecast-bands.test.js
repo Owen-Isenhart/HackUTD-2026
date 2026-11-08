@@ -65,8 +65,14 @@ test("bills lower every path; undated loan reserves and unknown obligations bloc
     { paths: 10 },
   );
   assert.equal(base.daily[0].lowCents - loan.daily[0].lowCents, 22500);
-  assert.equal(loan.safeToSpendCents, null);
-  assert.deepEqual(loan.missingSources, ["loan_schedule_unknown"]);
+  assert.deepEqual(loan.missingSources, []);
+  assert.ok(Number.isSafeInteger(loan.safeToSpendCents));
+  const unknownLoan = forecastBands(
+    { ...input, ledger: [], bank: { ...input.bank, loans: [{ status: "in_repayment" }] } },
+    { paths: 10 },
+  );
+  assert.equal(unknownLoan.safeToSpendCents, null);
+  assert.deepEqual(unknownLoan.missingSources, ["loan_schedule_unknown"]);
   assert.equal(
     forecastBands({ ...input, pendingUnknownAmounts: 1 }).safeToSpendCents,
     null,
