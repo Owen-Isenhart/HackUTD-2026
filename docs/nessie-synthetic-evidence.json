@@ -1,0 +1,346 @@
+{
+  "generatedAt": "2026-11-08T08:56:02.830Z",
+  "customer": {
+    "id": "cust_01m6x5w635z27trg3dfbhjxjvx",
+    "name": "Alex Taylor",
+    "address": {
+      "street_number": "800",
+      "street_name": "W Campbell Rd",
+      "city": "Richardson",
+      "state": "TX",
+      "zip": "75080"
+    }
+  },
+  "accounts": [
+    {
+      "id": "acct_01m6x5w635z27trg3dfew69af9",
+      "type": "Checking",
+      "nickname": "Everyday Checking",
+      "balance_cents": 15071717,
+      "balance_formatted": "$150717.17",
+      "credit_limit_formatted": null,
+      "available_cents": 15071717,
+      "available_formatted": "$150717.17"
+    },
+    {
+      "id": "acct_01m6x5w635z27trg3dfh0d2rk1",
+      "type": "Credit Card",
+      "nickname": "Capital One SavorOne Rewards",
+      "balance_cents": -327877,
+      "balance_formatted": "$-3278.77",
+      "credit_limit_cents": 1000000,
+      "credit_limit_formatted": "$10000.00",
+      "available_cents": 1322952,
+      "available_formatted": "$13229.52"
+    },
+    {
+      "id": "acct_01m6x5y6m078g0k6fme5aamaa1",
+      "type": "Savings",
+      "nickname": "High Yield Savings",
+      "balance_cents": 1250000,
+      "balance_formatted": "$12500.00",
+      "credit_limit_formatted": null,
+      "available_cents": 1250000,
+      "available_formatted": "$12500.00"
+    }
+  ],
+  "bills": [
+    {
+      "id": "bill_01m6x5y9aj5p7k9ex13vfe3g14",
+      "payee": "Cortland Apartments",
+      "nickname": "Apartment Rent - Cortland Campbell",
+      "payment_amount": 1450,
+      "recurring_date": 1,
+      "status": "recurring"
+    },
+    {
+      "id": "bill_01m6x5y9ejzb9fza441nq987yx",
+      "payee": "TXU Energy",
+      "nickname": "Electric Utility - TXU",
+      "payment_amount": 115.5,
+      "recurring_date": 12,
+      "status": "recurring"
+    },
+    {
+      "id": "bill_01m6x5y9jhy176sdgn0098kzqk",
+      "payee": "AT&T",
+      "nickname": "Home Internet - AT&T Fiber 1Gbps",
+      "payment_amount": 70,
+      "recurring_date": 18,
+      "status": "recurring"
+    },
+    {
+      "id": "bill_01m6x5y9ptrpz5jbe4tpwy5a9f",
+      "payee": "Verizon Wireless",
+      "nickname": "Mobile Phone - Unlimited Plus",
+      "payment_amount": 85,
+      "recurring_date": 22,
+      "status": "recurring"
+    },
+    {
+      "id": "bill_01m6x5y9ttqgm8bye3bn0hv7x2",
+      "payee": "Geico Insurance",
+      "nickname": "Auto Insurance - Comprehensive",
+      "payment_amount": 135,
+      "recurring_date": 25,
+      "status": "recurring"
+    },
+    {
+      "id": "bill_01m6x5y9yv7zmwr0endhfkrktd",
+      "payee": "Spotify",
+      "nickname": "Spotify Premium Family",
+      "payment_amount": 11.99,
+      "recurring_date": 15,
+      "status": "recurring"
+    }
+  ],
+  "loans": [
+    {
+      "id": "loan_01m6x5ya2ttpf88zgh14xvj8yp",
+      "type": "Student Loan",
+      "amount_cents": 1850000,
+      "amount_formatted": "$18500.00",
+      "monthly_payment_cents": 22500,
+      "monthly_payment_formatted": "$225.00",
+      "credit_score": 745,
+      "status": "in_repayment"
+    }
+  ],
+  "merchantsCount": 17,
+  "merchantsSample": [
+    {
+      "id": "merch_01m6x5w635z27trg3dfkzxgbqz",
+      "name": "Starbucks Coffee",
+      "category": "coffee",
+      "city": "Richardson",
+      "state": "TX",
+      "geocode": {
+        "lat": 32.98666,
+        "lng": -96.74888
+      }
+    },
+    {
+      "id": "merch_01m6x5w635z27trg3dfpwwa2p0",
+      "name": "Bluebird Coffee Roasters",
+      "category": "coffee",
+      "city": "Richardson",
+      "state": "TX",
+      "geocode": {
+        "lat": 32.975,
+        "lng": -96.73
+      }
+    },
+    {
+      "id": "merch_01m6x5w635z27trg3dfq5mpk6j",
+      "name": "Walmart Supercenter",
+      "category": "groceries",
+      "city": "Dallas",
+      "state": "TX",
+      "geocode": {
+        "lat": 32.963,
+        "lng": -96.77
+      }
+    },
+    {
+      "id": "merch_01m6x5w635z27trg3dftqp54a7",
+      "name": "Target",
+      "category": "groceries",
+      "city": "Dallas",
+      "state": "TX",
+      "geocode": {
+        "lat": 32.974,
+        "lng": -96.771
+      }
+    },
+    {
+      "id": "merch_01m6x5w635z27trg3dfwer19r5",
+      "name": "Shell Fuel",
+      "category": "gas",
+      "city": "Richardson",
+      "state": "TX",
+      "geocode": {
+        "lat": 32.97,
+        "lng": -96.72
+      }
+    },
+    {
+      "id": "merch_01m6x5w635z27trg3dfzaa0xqt",
+      "name": "Chevron Fuel",
+      "category": "gas",
+      "city": "Richardson",
+      "state": "TX",
+      "geocode": {
+        "lat": 32.965,
+        "lng": -96.715
+      }
+    },
+    {
+      "id": "merch_01m6x5w635z27trg3dg113tk7f",
+      "name": "Booking.com Travel",
+      "category": "travel",
+      "city": "New York",
+      "state": "NY",
+      "geocode": {
+        "lat": 40.7081,
+        "lng": -74.008
+      }
+    },
+    {
+      "id": "merch_01m6x5w635z27trg3dg1efpvce",
+      "name": "Best Buy",
+      "category": "electronics",
+      "city": "Plano",
+      "state": "TX",
+      "geocode": {
+        "lat": 33.036,
+        "lng": -96.705
+      }
+    },
+    {
+      "id": "merch_01m6x5w635z27trg3dg29brsyw",
+      "name": "Nike Store",
+      "category": "retail",
+      "city": "Dallas",
+      "state": "TX",
+      "geocode": {
+        "lat": 32.868,
+        "lng": -96.773
+      }
+    },
+    {
+      "id": "merch_01m6x5w635z27trg3dg2pqmftd",
+      "name": "The Home Depot",
+      "category": "retail",
+      "city": "Plano",
+      "state": "TX",
+      "geocode": {
+        "lat": 33.018,
+        "lng": -96.711
+      }
+    },
+    {
+      "id": "merch_01m6x5w635z27trg3dg4qehx1t",
+      "name": "Sephora",
+      "category": "retail",
+      "city": "Plano",
+      "state": "TX",
+      "geocode": {
+        "lat": 33.03,
+        "lng": -96.825
+      }
+    },
+    {
+      "id": "merch_01m6x5y8660pn59kpagnkemsqg",
+      "name": "Chipotle Mexican Grill",
+      "category": "restaurant",
+      "city": "Richardson",
+      "state": "TX",
+      "geocode": {
+        "lat": 32.97504,
+        "lng": -96.72106
+      }
+    },
+    {
+      "id": "merch_01m6x5y8a45vmjqsn5059dyyyr",
+      "name": "Chick-fil-A",
+      "category": "restaurant",
+      "city": "Richardson",
+      "state": "TX",
+      "geocode": {
+        "lat": 32.98666,
+        "lng": -96.74888
+      }
+    },
+    {
+      "id": "merch_01m6x5y8e0yk332s28ndv0y810",
+      "name": "Panera Bread",
+      "category": "restaurant",
+      "city": "Richardson",
+      "state": "TX",
+      "geocode": {
+        "lat": 32.979,
+        "lng": -96.7
+      }
+    },
+    {
+      "id": "merch_01m6x5y8hvypa3x4xm4p6n79zd",
+      "name": "Uber Eats",
+      "category": "restaurant",
+      "city": "San Francisco",
+      "state": "CA",
+      "geocode": {
+        "lat": 37.7749,
+        "lng": -122.4194
+      }
+    },
+    {
+      "id": "merch_01m6x5y8nwxgmnebw8q756ps4b",
+      "name": "Lululemon",
+      "category": "retail",
+      "city": "Dallas",
+      "state": "TX",
+      "geocode": {
+        "lat": 32.868,
+        "lng": -96.773
+      }
+    },
+    {
+      "id": "merch_01m6x5y8stgyvd3t1vm01z8sdr",
+      "name": "Macy's",
+      "category": "retail",
+      "city": "Plano",
+      "state": "TX",
+      "geocode": {
+        "lat": 33.029,
+        "lng": -96.827
+      }
+    }
+  ],
+  "transactions": {
+    "totalSimulated": 2500,
+    "latestDate": "2026-11-08T08:55:55.52690936Z",
+    "oldestInFirst100": "2026-10-11T21:54:58.552256358Z",
+    "sampleLatest": [
+      {
+        "id": "txn_sim_01m6x5w4pajwm81918c472c14f_i0000002499_0",
+        "kind": "purchase",
+        "description": "CARDINAL GAS 52417445348 ALEXANDRIA VA",
+        "amount_cents": 5184,
+        "amount_formatted": "$51.84",
+        "created_at": "2026-11-08T08:55:55.52690936Z"
+      },
+      {
+        "id": "txn_sim_01m6x5w4pajwm81918c472c14f_i0000002498_0",
+        "kind": "purchase",
+        "description": "SQ *BLUEBIRD COFFEE ALEXANDRIA VA",
+        "amount_cents": 1584,
+        "amount_formatted": "$15.84",
+        "created_at": "2026-11-08T01:55:16.62386117Z"
+      },
+      {
+        "id": "txn_sim_01m6x5w4pajwm81918c472c14f_i0000002497_0",
+        "kind": "purchase",
+        "description": "SQ *EMPIRE COFFEE NEW YORK NY",
+        "amount_cents": 1186,
+        "amount_formatted": "$11.86",
+        "created_at": "2026-11-07T18:54:37.721936458Z"
+      },
+      {
+        "id": "txn_sim_01m6x5w4pajwm81918c472c14f_i0000002496_0",
+        "kind": "transfer",
+        "description": "TRANSFER TO EVERYDAY CHECKING",
+        "amount_cents": 15098,
+        "amount_formatted": "$150.98",
+        "created_at": "2026-11-07T11:53:58.814727587Z"
+      },
+      {
+        "id": "txn_sim_01m6x5w4pajwm81918c472c14f_i0000002495_0",
+        "kind": "transfer",
+        "description": "TRANSFER TO EVERYDAY CHECKING",
+        "amount_cents": 13614,
+        "amount_formatted": "$136.14",
+        "created_at": "2026-11-07T04:53:19.907255518Z"
+      }
+    ]
+  }
+}
