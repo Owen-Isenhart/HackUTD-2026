@@ -75,6 +75,7 @@ function serveProfile({ env = process.env, pool, memory, texts, calls, locations
   };
   const port = Number(env.FINANCE_PORT || 8787);
   let pipelineHttp, stopPipeline;
+  const demoLocation = pool && require('../backend/demo-location').createDemoLocation({ pool, env, fetchImpl });
   if(pool){
     const {createNessieV2}=require('../backend/nessie-v2');
     const {createPipelineHttp}=require('../backend/pipeline-http');
@@ -82,7 +83,7 @@ function serveProfile({ env = process.env, pool, memory, texts, calls, locations
     const {startPipeline}=require('../backend/pipeline');
     const {createPipelineScheduler}=require('../backend/pipeline-scheduler');
     const nessie=createNessieV2({baseUrl:env.NESSIE_V2_BASE_URL,apiKey:env.NESSIE_V2_API_KEY,fetchImpl});
-    pipelineHttp=createPipelineHttp({pool,nessie,deals,env,fetchImpl,plansForOwner,onRecommendation:async(ownerId,result)=>{
+    pipelineHttp=createPipelineHttp({pool,nessie,deals,env,fetchImpl,plansForOwner,demoLocation,onRecommendation:async(ownerId,result)=>{
       if(ownerId===env.FINANCE_OPERATOR_OWNER_ID&&destination&&result.recommendation&&result.callCandidates?.length&&(result.recommendation.source==='live'||env.CALL_ALLOW_DEMO_LOCATION==='1')){
         const profile=await loadProfile();
         if(profile?.profileVersion!==result.recommendation.profileVersion||profile?.memoryVersion!==result.recommendation.memoryVersion)return {recommendation:null,reason:'refresh_required'};
@@ -347,6 +348,8 @@ function serveProfile({ env = process.env, pool, memory, texts, calls, locations
           return sendJson(res, 400, { error: 'Supply the call ID and caller text of up to 1000 characters.' });
         }
         const unavailable = { status: 'unavailable', message: 'There is no current offer to share. Refresh the nearby recommendation in the app.' };
+        const demoCall = demoLocation && await demoLocation.loadCall(body.call_id);
+        if (demoCall) return sendJson(res, 200, demoLocation.activeCall(demoCall) ? await demoLocation.answer(demoCall, body.user_text) : unavailable);
         const context = await calls.load(body.call_id);
         if (!activeCall(context) || !await currentContext(context)) return sendJson(res, 200, unavailable);
         const result = await evaluateCallRecommendation({ ...context, userText: body.user_text }, { env, fetchImpl });
@@ -359,6 +362,7 @@ function serveProfile({ env = process.env, pool, memory, texts, calls, locations
           return sendJson(res, 400, { error: 'Invalid call action.' });
         }
         await calls.end(callAction[1], body.decision ?? null);
+        if (demoLocation) await demoLocation.endCall(callAction[1], body.decision ?? null);
         return sendJson(res, 200, { status: 'ended' });
       }
       if (callResource) {

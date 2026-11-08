@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Linking, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { router } from 'expo-router';
 import { Screen } from '../components/Screen';
+import { api } from '../finance/financeApi';
 import { Button, Icon, IconCircle, IconName, Pill, Row, T } from '../components/ui';
 import { c, radius, shadow, space } from '../theme';
 import { PressScale } from '../motion';
@@ -33,6 +35,9 @@ const shortReward = (title: string) => {
 
 export default function DealsScreen() {
   const loc = useUserLocation();
+  // Answers only for Alex Taylor's account; for anyone else it fails and the button stays hidden.
+  const [demoAllowed, setDemoAllowed] = useState(false);
+  useEffect(() => { api('/api/v1/demo-location').then(() => setDemoAllowed(true), () => setDemoAllowed(false)); }, []);
   const summary = useAppSummary();
   const [cat, setCat] = useState('All');
   const [query, setQuery] = useState('');
@@ -125,6 +130,9 @@ export default function DealsScreen() {
         </Row>
       </View>
 
+      {demoAllowed ? (
+        <Button label="Demo location: move around UT Dallas" icon="map-marker-radius" onPress={() => router.push('/demo-location')} />
+      ) : null}
       <LocationLine loc={loc} live={live} nearCampus={nearCampus} />
       {nearby.error ? <T v="bodySm" style={{ color: c.error }}>{nearby.error}</T> : null}
 

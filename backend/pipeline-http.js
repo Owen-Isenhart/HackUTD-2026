@@ -19,6 +19,7 @@ function createPipelineHttp({
   env,
   fetchImpl = fetch,
   plansForOwner = async () => ({}),
+  demoLocation = null,
   onRecommendation = async (_owner, result) => result,
 }) {
   const limit = createIdentifyLimiter();
@@ -67,6 +68,7 @@ function createPipelineHttp({
       path.startsWith("/api/v1/stores") ||
       path === "/api/v1/routines" ||
       path === "/api/v1/session" ||
+      path === "/api/v1/demo-location" ||
       [
         "/api/finance-profile",
         "/api/finance-transactions",
@@ -95,6 +97,20 @@ function createPipelineHttp({
       if (path === "/api/v1/session" && req.method === "DELETE") {
         if (auth.tokenHash) await revokeSession(pool, auth.tokenHash);
         send(res, 200, { status: "revoked" });
+        return true;
+      }
+      if (path === "/api/v1/demo-location") {
+        // Only Alex Taylor's account may move the demo position.
+        if (!demoLocation) throw fail("not_configured", 503);
+        const access = await demoLocation.allowed(ownerId);
+        if (!access) throw fail("demo_location_not_allowed", 403);
+        if (req.method === "GET") {
+          send(res, 200, await demoLocation.map(ownerId, access));
+          return true;
+        }
+        if (req.method !== "POST") throw fail("not_found", 404);
+        const r = await demoLocation.move(ownerId, access, await read(req));
+        send(res, r.status, r.body ?? { error: r.error });
         return true;
       }
       if (path.startsWith("/v1/deals/")) {
