@@ -1,0 +1,11 @@
+node_modules/
+.expo/
+dist/
+/ios/
+/android/
+.env
+.env.*
+!.env.example
+*.mobileprovision
+*.p12
+*.ipa
