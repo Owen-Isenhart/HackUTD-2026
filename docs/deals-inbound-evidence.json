@@ -1,0 +1,34 @@
+{
+  "observedAt": "2026-11-08T05:44:40.841Z",
+  "subject": "DEALS-INBOUND-TEST",
+  "actualUserSentEmail": true,
+  "providerMatches": [
+    {
+      "id": "pho_msg_0e4v6ekb0eg3rvp0r0ep2hg8bj",
+      "status": "received",
+      "receivedByAvailable": true,
+      "format": "markdown",
+      "originalHtmlAvailable": true
+    }
+  ],
+  "stored": [
+    {
+      "messageId": "77ec0108-7cda-474f-9b2b-92e8ab41ea8d",
+      "providerMessageId": "pho_msg_0e4v6ekb0eg3rvp0r0ep2hg8bj",
+      "receivedAt": "2026-11-08T05:25:12.638Z",
+      "storedAt": "2026-11-08T05:25:14.631Z",
+      "receiveToStoreMs": 1993,
+      "classification": "unresolved_or_suppressed_sender",
+      "signedWebhookObserved": true,
+      "reconciliationObserved": true,
+      "extractionJobs": [
+        {
+          "state": "completed",
+          "attempts": 1,
+          "last_error": null
+        }
+      ]
+    }
+  ],
+  "complete": true
+}

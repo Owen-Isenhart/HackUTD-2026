@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "Nessiessential Deals",
+    "slug": "nessiessential-deals",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": { "supportsTablet": true },
+    "android": { "package": "com.nessiessential.deals" },
+    "plugins": ["expo-secure-store"]
+  }
+}

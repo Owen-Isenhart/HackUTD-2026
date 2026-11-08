@@ -116,3 +116,27 @@ Each unchecked item is future work and may be marked complete only with its stat
 - [ ] QA-05 — Measure representative end-to-end latency and extraction errors; document observed results and limitations.
 - [ ] HANDOFF-01 — Provide setup instructions, environment-variable names, migrations and demo runbook without secret values.
 - [ ] HANDOFF-02 — Audit every task against evidence; leave incomplete tasks unchecked. Commit/push only if later explicitly authorized.
+
+### Deals workstream software evidence — November 7, 2026
+
+The original project-wide checkboxes above retain their acceptance scope. The narrower implementation checks below record tested deals code without treating unavailable real-provider demonstrations as completed requirements. Full evidence and D-step mapping: [docs/deals-validation.md](docs/deals-validation.md).
+
+- [x] DEALS-CODE-01 — Apply versioned deals schema and restricted runtime roles to TigerData; verify owner-scoped reads, denied DDL, migration replay/transaction rollback, and verified TLS.
+- [x] DEALS-CODE-02 — Implement signed email ingress, atomic durable jobs, owner routing, replay and paginated reconciliation; validate with isolated signed fixtures, empty pages and interrupted recovery.
+- [x] DEALS-CODE-03 — Implement deterministic proposals, bounded optional Nemotron adapter, exact source evidence checks, manual review, revisions, private eligibility and change events. Unknowns do not become verified savings.
+- [x] DEALS-CODE-04 — Implement supported-program historical/new purchase discovery, owner/program uniqueness, explicit assisted verification/unsupported states and a sandbox barrier against real registration.
+- [x] DEALS-CODE-05 — Validate leap/DST calendar cleanup, historical replay versus verified return, opt-out, cleanup/purchase serialization, retention erasure and consent revocation. Actual merchant unsubscribe remains pending until confirmed.
+- [x] DEALS-CODE-06 — Implement Expo deals consent/source/enrollment/evidence/recovery controls; pass TypeScript and iOS/Android bundle builds. Physical-device acceptance remains open.
+- [x] DEALS-CODE-07 — Supply secret-free setup/operations/API documentation; pass 33 unit/model tests, 28 database/API scenarios, builds and dependency audits. No commit/push.
+- [x] DEALS-CODE-08 — After explicit user approval, configure a free Cloudflare HTTPS tunnel and one signed Photon destination; verify public health/authentication/signature checks and idempotent destination reconciliation without fabricated inbox records.
+- [x] DEALS-CODE-09 — Reuse the existing private Brev Nemotron service and pass four live-model synthetic extraction cases; derive money/formulas/offsets deterministically and preserve unknown terms. Record measured synthetic latency, without claiming real-email accuracy.
+- [ ] DEALS-LIVE-01 — Operator confirmed email availability; one actual signed email with original HTML metadata and recipient fidelity is verified. Still receive separate plain-text mail and real delivery for a second owner alias.
+- [x] DEALS-LIVE-02 — Free tunnel authorization, signed destination and transport checks are complete. Actual user-sent mail passed the Photon-originated signed event, owner-scoped durable storage and worker in 1993 ms; reconciliation did not duplicate the message/job. Evidence: docs/deals-inbound-evidence.json.
+- [ ] DEALS-LIVE-03 — Complete and evidence two actual permitted merchant registrations and unsubscribe/return paths using real history and authorized identity/OTP steps; assisted links alone do not pass REWARD-02.
+- [ ] DEALS-LIVE-04 — Demonstrate a permitted free Capital One acquisition route and actual eligible offers; keep REWARD-05 unmet until then.
+- [ ] DEALS-LIVE-05 — Observe the deals UI and rehearse an actual merchant-promotion flow with extraction/latency evidence. Nemotron synthetic checks already pass. Shared auth/importer/optimizer implementation belongs to the separate teams, outside this deals-only completion request.
+
+- [x] DEALS-CODE-10 — Apply enrollment migration 002; implement explicit signup requests without fake purchases, existing-account checks, version-bound attempts/evidence, uncertain-outcome recovery and separate partial confirmations. Validate eight additional integration scenarios, for 61 automated tests total.
+- [x] DEALS-CODE-11 — Implement app promotional-only intent, existing-account versus new-signup handoffs, submission progress and independent loyalty/marketing review. Mobile typecheck and iOS/Android exports pass; observed UI/merchant outcomes remain pending.
+
+Latest operator choice: Chipotle already exists; Panera does not. Those decisions are saved in the two prepared enrollment flows. They are not evidence of actual external registration or subscribed marketing. No real merchant confirmation/promotion has arrived yet. The current status supersedes earlier billing/zero-message blockers; see [the validation report](docs/deals-validation.md).

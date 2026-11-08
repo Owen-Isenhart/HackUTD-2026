@@ -1,0 +1,27 @@
+{
+  "name": "nessiessential-deals-mobile",
+  "version": "0.1.0",
+  "private": true,
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "typecheck": "tsc --noEmit",
+    "export": "expo export --platform ios --platform android",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "expo": "58.0.23",
+    "expo-secure-store": "58.0.2",
+    "react": "19.3.0",
+    "react-native": "0.88.1",
+    "react-native-safe-area-context": "5.11.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "typescript": "7.0.2"
+  },
+  "overrides": {
+    "glob": "14.0.2",
+    "minimatch": "11.0.1"
+  }
+}
