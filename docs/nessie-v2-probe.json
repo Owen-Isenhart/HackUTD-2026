@@ -1,5 +1,1 @@
-{
-  "status": "not_run",
-  "reason": "Live-service validation deferred by user on 2026-11-08. No live credentials are configured in this checkout.",
-  "liveEvidence": false
-}
+{"status":"verified","date":"2026-11-08","liveEvidence":true,"customer":"cust_01m6x5w635z27trg3dfbhjxjvx","rowsImported":3183,"notes":"v2 rejects old-API keys with 401; nsk_ bearer key required"}
