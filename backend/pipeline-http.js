@@ -241,8 +241,8 @@ function createPipelineHttp({
                           ],
                         },
                       },
-                      start: { type: "string" },
-                      end: { type: "string" },
+                      start: { type: "string", pattern: "^([01][0-9]|2[0-3]):[0-5][0-9]$" },
+                      end: { type: "string", pattern: "^([01][0-9]|2[0-3]):[0-5][0-9]$" },
                       quote: { type: "string" },
                     },
                     required: [
