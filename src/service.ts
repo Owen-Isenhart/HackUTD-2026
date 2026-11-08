@@ -224,59 +224,77 @@ export async function enrollmentHandoff(tx: Tx, owner: string, id: string) {
   )
     return;
 
-  // Automated zero-user-interaction merchant signup & preference sync
-  if (e.existing_membership === "yes") {
-    const row = (
-      await tx.query(
-        `UPDATE deals.enrollment SET state='enrolled',loyalty_status='existing',
-        promotion_status='subscribed',signup_status='confirmed',reason=NULL,
-        evidence=$3,version=version+1,updated_at=now() WHERE owner_id=$1 AND id=$2 RETURNING *`,
-        [
-          owner,
-          id,
-          JSON.stringify({
-            kind: "automated_preference_sync",
-            completedAt: new Date().toISOString(),
-            existingMembership: "yes",
-            autoSubscribed: true,
-          }),
-        ],
-      )
-    ).rows[0];
-    await emit(
-      tx,
-      owner,
-      "enrollment.changed",
-      id,
-      row.version,
-      "automated_preference_sync_confirmed",
-    );
+  if (e.capabilities?.mode === "automatic") {
+    // Automated cardholder registration for card-linked programs (Capital One)
+    if (e.existing_membership === "yes") {
+      const row = (
+        await tx.query(
+          `UPDATE deals.enrollment SET state='enrolled',loyalty_status='existing',
+          promotion_status='subscribed',signup_status='confirmed',reason=NULL,
+          evidence=$3,version=version+1,updated_at=now() WHERE owner_id=$1 AND id=$2 RETURNING *`,
+          [
+            owner,
+            id,
+            JSON.stringify({
+              kind: "automated_cardholder_sync",
+              completedAt: new Date().toISOString(),
+              existingMembership: "yes",
+              autoSubscribed: true,
+            }),
+          ],
+        )
+      ).rows[0];
+      await emit(
+        tx,
+        owner,
+        "enrollment.changed",
+        id,
+        row.version,
+        "automated_preference_sync_confirmed",
+      );
+    } else {
+      const row = (
+        await tx.query(
+          `UPDATE deals.enrollment SET state='enrolled',loyalty_status='enrolled',
+          promotion_status='subscribed',signup_status='confirmed',reason=NULL,
+          existing_membership='yes',evidence=$3,version=version+1,updated_at=now()
+          WHERE owner_id=$1 AND id=$2 RETURNING *`,
+          [
+            owner,
+            id,
+            JSON.stringify({
+              kind: "automated_cardholder_enrollment",
+              completedAt: new Date().toISOString(),
+              autoEnrolled: true,
+              promotionsSubscribed: true,
+            }),
+          ],
+        )
+      ).rows[0];
+      await emit(
+        tx,
+        owner,
+        "enrollment.changed",
+        id,
+        row.version,
+        "automated_merchant_signup_confirmed",
+      );
+    }
   } else {
-    const row = (
-      await tx.query(
-        `UPDATE deals.enrollment SET state='enrolled',loyalty_status='enrolled',
-        promotion_status='subscribed',signup_status='confirmed',reason=NULL,
-        existing_membership='yes',evidence=$3,version=version+1,updated_at=now()
-        WHERE owner_id=$1 AND id=$2 RETURNING *`,
-        [
-          owner,
-          id,
-          JSON.stringify({
-            kind: "automated_merchant_registration",
-            completedAt: new Date().toISOString(),
-            autoEnrolled: true,
-            promotionsSubscribed: true,
-          }),
-        ],
-      )
-    ).rows[0];
+    // Assisted merchant registration for programs requiring real user phone/SMS OTP (Panera, Chipotle)
+    await tx.query(
+      `UPDATE deals.enrollment SET state='needs_user_input',reason='complete_merchant_signup_with_alias',
+      signup_status='awaiting_user',verification_started_at=coalesce(verification_started_at,now()),
+      version=version+1,updated_at=now() WHERE owner_id=$1 AND id=$2`,
+      [owner, id],
+    );
     await emit(
       tx,
       owner,
       "enrollment.changed",
       id,
-      row.version,
-      "automated_merchant_signup_confirmed",
+      e.version + 1,
+      "merchant_verification_required",
     );
   }
 }
@@ -400,6 +418,57 @@ export async function processMessage(
     return;
   }
   const program = matching[0];
+
+  // Auto-confirm pending assisted enrollment when a verified merchant message arrives
+  const pendingEnrollment = (
+    await tx.query(
+      `SELECT id, version, verification_started_at, loyalty_status, promotion_status
+       FROM deals.enrollment
+       WHERE owner_id=$1 AND program_id=$2 AND state='needs_user_input'
+       FOR UPDATE`,
+      [owner, program.id],
+    )
+  ).rows[0];
+
+  if (
+    pendingEnrollment &&
+    (!pendingEnrollment.verification_started_at ||
+      new Date(m.received_at) >=
+        new Date(pendingEnrollment.verification_started_at))
+  ) {
+    const row = (
+      await tx.query(
+        `UPDATE deals.enrollment SET state='enrolled',
+        loyalty_status=CASE WHEN loyalty_status='unknown' THEN 'enrolled' ELSE loyalty_status END,
+        promotion_status='subscribed',
+        signup_status='confirmed',
+        reason=NULL,
+        evidence=$3,
+        existing_membership='yes',
+        version=version+1,
+        updated_at=now()
+        WHERE owner_id=$1 AND id=$2 RETURNING *`,
+        [
+          owner,
+          pendingEnrollment.id,
+          JSON.stringify({
+            kind: "merchant_welcome_email_auto_confirmed",
+            messageId: m.id,
+            confirmedAt: new Date().toISOString(),
+            sender: m.sender,
+          }),
+        ],
+      )
+    ).rows[0];
+    await emit(
+      tx,
+      owner,
+      "enrollment.changed",
+      pendingEnrollment.id,
+      row.version,
+      "merchant_welcome_email_confirmed",
+    );
+  }
   const parsed = extract(m.sanitized_text, m.subject);
   let proposals = parsed.proposals;
   if (
@@ -407,8 +476,12 @@ export async function processMessage(
     (proposals.length === 0 ||
       proposals.some((t) => contentReasons(t).length > 0))
   ) {
-    const model = await proposeWithNemotron(m.sanitized_text, cfg);
-    if (model) proposals = model;
+    try {
+      const model = await proposeWithNemotron(m.sanitized_text, cfg);
+      if (model) proposals = model;
+    } catch {
+      // If Nemotron loopback endpoint is offline, preserve deterministic proposals
+    }
   }
   await tx.query(
     "UPDATE deals.message SET classification=$3 WHERE owner_id=$1 AND id=$2",
@@ -659,28 +732,39 @@ export async function unsubscribeHandoff(
   await tx.query("SELECT id FROM deals.owner WHERE id=$1 FOR UPDATE", [owner]);
   const e = (
     await tx.query(
-      "SELECT * FROM deals.enrollment WHERE owner_id=$1 AND id=$2 FOR UPDATE",
+      `SELECT e.*, p.capabilities FROM deals.enrollment e
+      JOIN deals.program p ON p.id=e.program_id
+      WHERE e.owner_id=$1 AND e.id=$2 FOR UPDATE OF e`,
       [owner, id],
     )
   ).rows[0];
   if (!e || e.version !== version || !e.suppressed_at) return;
-  // Automated external unsubscribe (zero user interaction required)
-  const row = (
+
+  if (e.capabilities?.mode === "automatic") {
+    // Automated external unsubscribe for automatic card-linked programs
+    const row = (
+      await tx.query(
+        `UPDATE deals.enrollment SET promotion_status='unsubscribed',state='unsubscribed',
+        reason='automated_external_unsubscribe_confirmed',version=version+1,updated_at=now()
+        WHERE owner_id=$1 AND id=$2 RETURNING *`,
+        [owner, id],
+      )
+    ).rows[0];
+    await emit(
+      tx,
+      owner,
+      "enrollment.changed",
+      id,
+      row.version,
+      "automated_external_unsubscribe",
+    );
+  } else {
+    // Assisted merchant programs: expose preferences URL and keep pending until confirmed
     await tx.query(
-      `UPDATE deals.enrollment SET promotion_status='unsubscribed',state='unsubscribed',
-      reason='automated_external_unsubscribe_confirmed',version=version+1,updated_at=now()
-      WHERE owner_id=$1 AND id=$2 RETURNING *`,
+      "UPDATE deals.enrollment SET reason='open_official_preferences_and_confirm_unsubscribe',updated_at=now() WHERE owner_id=$1 AND id=$2",
       [owner, id],
-    )
-  ).rows[0];
-  await emit(
-    tx,
-    owner,
-    "enrollment.changed",
-    id,
-    row.version,
-    "automated_external_unsubscribe",
-  );
+    );
+  }
 }
 export async function confirmUnsubscribe(
   tx: Tx,

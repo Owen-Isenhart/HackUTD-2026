@@ -35,6 +35,9 @@ export type EnrollmentFlowState = {
   externalOutcome: string;
   safeToCreateAccount: boolean;
   intent: string;
+  loyaltyStatus?: string;
+  promotionStatus?: string;
+  instructions?: string[] | null;
 };
 export type Offer = {
   id: string;

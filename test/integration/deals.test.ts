@@ -35,7 +35,14 @@ import {
   reconcileOwner,
 } from "../../src/photon.js";
 import { runOne } from "../../src/worker.js";
-import { cfg, event, message, terms, webhookSecret } from "../fixtures.js";
+import {
+  cfg,
+  event,
+  message,
+  terms,
+  text,
+  webhookSecret,
+} from "../fixtures.js";
 
 const url = process.env.TEST_DATABASE_URL;
 if (!url)
@@ -143,7 +150,7 @@ test("migrations replay without changes; failed schema transaction rolls back", 
   const count = await admin.query(
     "SELECT count(*)::int AS n FROM deals.schema_migration",
   );
-  assert.equal(count.rows[0].n, 3);
+  assert.equal(count.rows[0].n, 4);
   const tx = await admin.connect();
   try {
     await tx.query("BEGIN");
@@ -1222,6 +1229,74 @@ test("automated zero-interaction merchant signup registers program without user 
   assert.equal(flow.promotionStatus, "subscribed");
   assert.equal(flow.safeToCreateAccount, false);
   assert.equal(flow.nextAction, "manage_membership");
+});
+
+test("assisted merchant signup requires real identity/SMS and auto-confirms when welcome email arrives", async () => {
+  // 1. User starts Panera enrollment with no existing membership
+  let flow = await tenant(api, enrollmentOwner, async (tx) => {
+    const e = (
+      await tx.query(
+        "SELECT id FROM deals.enrollment WHERE program_id='mypanera'",
+      )
+    ).rows[0];
+    return enrollmentFlow(tx, enrollmentOwner, e.id);
+  });
+
+  // Reset to clean pending state for test
+  await tenant(api, enrollmentOwner, async (tx) => {
+    await tx.query(
+      `UPDATE deals.enrollment SET suppressed_at=NULL, opted_out_at=NULL,
+      state='needs_user_input', signup_status='awaiting_user',
+      existing_membership='no', loyalty_status='unknown', promotion_status='unknown',
+      verification_started_at=now(), reason='complete_merchant_signup_with_alias'
+      WHERE id=$1`,
+      [flow.enrollmentId],
+    );
+  });
+
+  flow = await tenant(api, enrollmentOwner, (tx) =>
+    enrollmentFlow(tx, enrollmentOwner, flow.enrollmentId),
+  );
+  assert.equal(flow.state, "needs_user_input");
+  assert.equal(flow.signupStatus, "awaiting_user");
+  assert.equal(flow.nextAction, "complete_signup");
+  assert.equal(flow.safeToCreateAccount, true);
+  assert.ok(flow.promotionalAddress.includes("@"));
+  assert.ok(flow.instructions && flow.instructions.length > 0);
+
+  // 2. Real welcome email arrives from panerabread.com
+  const welcomeMsg = message(enrollmentAddress, "99");
+  welcomeMsg.sentBy.handle = "welcome@panerabread.com";
+  welcomeMsg.content.text = text;
+  welcomeMsg.content.metadata.email.subject = "Welcome to MyPanera!";
+  welcomeMsg.timestamps.receivedAt = new Date().toISOString();
+
+  const parsed = parseEmailMessage(welcomeMsg, cfg.PHOTON_PROJECT_ID);
+  await tenant(api, enrollmentOwner, (tx) =>
+    ingestEmail(tx, enrollmentOwner, parsed, "panera-welcome-event"),
+  );
+
+  const storedMsg = (
+    await tenant(api, enrollmentOwner, (tx) =>
+      tx.query("SELECT id FROM deals.message WHERE provider_id=$1", [
+        welcomeMsg.id,
+      ]),
+    )
+  ).rows[0];
+
+  // 3. Worker processes message - auto-confirms enrollment without extra manual user confirmation
+  await tenant(api, enrollmentOwner, (tx) =>
+    processMessage(tx, enrollmentOwner, storedMsg.id, cfg),
+  );
+
+  const updatedFlow = await tenant(api, enrollmentOwner, (tx) =>
+    enrollmentFlow(tx, enrollmentOwner, flow.enrollmentId),
+  );
+  assert.equal(updatedFlow.state, "enrolled");
+  assert.equal(updatedFlow.signupStatus, "confirmed");
+  assert.equal(updatedFlow.loyaltyStatus, "enrolled");
+  assert.equal(updatedFlow.promotionStatus, "subscribed");
+  assert.equal(updatedFlow.nextAction, "manage_membership");
 });
 
 test("automated external unsubscribe completes without manual user confirmation", async () => {

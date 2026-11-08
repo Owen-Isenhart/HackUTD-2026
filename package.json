@@ -26,6 +26,7 @@
     "photon:check-inbound": "node --import tsx scripts/check-inbound.ts",
     "nemotron:check": "node --import tsx scripts/nemotron-check.ts",
     "capital-one:seed": "tsx scripts/seed-capital-one.ts",
+    "deals:rehearse": "tsx scripts/rehearse-deal-flow.ts",
     "check": "npm run typecheck && npm test && npm run build"
   },
   "dependencies": {

@@ -182,6 +182,15 @@ export function EnrollmentFlow({
               <Text style={s.note}>
                 Required: {flow.requiredInputs.map(human).join(", ")}.
               </Text>
+              {flow.instructions && (
+                <View style={{ marginVertical: 4 }}>
+                  {flow.instructions.map((inst, idx) => (
+                    <Text key={idx} style={s.note}>
+                      {inst}
+                    </Text>
+                  ))}
+                </View>
+              )}
               <Control
                 label={
                   flow.safeToCreateAccount

@@ -121,6 +121,21 @@ export async function enrollmentFlow(tx: Tx, owner: string, id: string) {
       action === "complete_signup" && !suspended && !uncertain,
     loyaltyStatus: e.loyalty_status,
     promotionStatus: e.promotion_status,
+    instructions:
+      action === "complete_signup"
+        ? [
+            `1. Open merchant signup: ${e.signup_url}`,
+            `2. Use your private alias for email: ${e.address}`,
+            "3. Enter your name and mobile number, and enter the SMS verification code sent to your phone.",
+            "4. Once submitted, our background worker will automatically detect your confirmation email and activate your deals.",
+          ]
+        : action === "update_existing_preferences"
+          ? [
+              `1. Open merchant preferences: ${e.preferences_url}`,
+              `2. Update your email to your private alias: ${e.address}`,
+              "3. We will automatically capture merchant promotions and sync them to your account.",
+            ]
+          : null,
   };
 }
 export async function setExistingMembership(
