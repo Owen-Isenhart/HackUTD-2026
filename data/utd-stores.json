@@ -1,0 +1,26 @@
+{
+  "provenance": "OSM node coordinates checked against the UT Dallas dining directory (https://services.utdallas.edu/dining/) on 2026-11-08. Offers marked demo are synthetic placeholders for the hackathon demo, not real merchant promotions.",
+  "center": { "latitude": 32.98666, "longitude": -96.74888 },
+  "stores": [
+    { "id": "osm-4072178272", "name": "Starbucks", "brand": "starbucks", "category": "coffee", "address": "Student Union", "latitude": 32.9871731, "longitude": -96.7487488,
+      "demoOffers": [{ "title": "Free espresso shot on any grande", "detail": "Comet Card or SavorOne, weekdays before 10 AM" }] },
+    { "id": "osm-4072203766", "name": "Panda Express", "brand": null, "category": "dining", "address": "Student Union", "latitude": 32.9866522, "longitude": -96.7493187,
+      "demoOffers": [{ "title": "$2 off any 2-entrée plate", "detail": "Show student ID, Mon–Thu after 2 PM" }] },
+    { "id": "osm-4072203767", "name": "Chick-fil-A", "brand": "chick_fil_a", "category": "dining", "address": "Student Union", "latitude": 32.9866529, "longitude": -96.749265,
+      "demoOffers": [{ "title": "Free 8-ct nuggets with any meal", "detail": "Chick-fil-A One members, this week" }] },
+    { "id": "osm-4072203768", "name": "Crave", "brand": null, "category": "dining", "address": "Student Union", "latitude": 32.9866839, "longitude": -96.7492129, "demoOffers": [] },
+    { "id": "osm-4072188694", "name": "The Market (Student Union)", "brand": null, "category": "groceries", "address": "Student Union", "latitude": 32.9867866, "longitude": -96.7489306,
+      "demoOffers": [{ "title": "10% off snacks over $10", "detail": "Pay with SavorOne" }] },
+    { "id": "osm-6823899928", "name": "Firehouse Subs", "brand": null, "category": "dining", "address": "Student Union", "latitude": 32.9866742, "longitude": -96.7487732,
+      "demoOffers": [{ "title": "Free medium drink with any sub", "detail": "Firehouse Rewards app" }] },
+    { "id": "osm-6831403374", "name": "The Halal Shack", "brand": null, "category": "dining", "address": "Student Union", "latitude": 32.9867329, "longitude": -96.7488345, "demoOffers": [] },
+    { "id": "osm-12555780009", "name": "Buffalo Wild Wings", "brand": null, "category": "dining", "address": "Student Union", "latitude": 32.9871004, "longitude": -96.7492077,
+      "demoOffers": [{ "title": "BOGO boneless wings on Tuesdays", "detail": "Dine-in only" }] },
+    { "id": "osm-4072169664", "name": "Einstein Bros. Bagels", "brand": null, "category": "coffee", "address": "Parking Structure 3", "latitude": 32.9904895, "longitude": -96.7505614,
+      "demoOffers": [{ "title": "Free bagel with any coffee", "detail": "Before 9 AM" }] },
+    { "id": "osm-4072169665", "name": "Taco Bell Cantina", "brand": "taco_bell", "category": "dining", "address": "Parking Structure 3", "latitude": 32.9901923, "longitude": -96.750768,
+      "demoOffers": [{ "title": "$1 off any Cravings Box", "detail": "Taco Bell app order" }] },
+    { "id": "osm-4072169667", "name": "Comet Pi", "brand": null, "category": "dining", "address": "Andromeda Hall", "latitude": 32.9899615, "longitude": -96.7544582, "demoOffers": [] },
+    { "id": "osm-4072114009", "name": "The Market (JSOM)", "brand": null, "category": "groceries", "address": "Jindal School of Management", "latitude": 32.9848836, "longitude": -96.7478665, "demoOffers": [] }
+  ]
+}

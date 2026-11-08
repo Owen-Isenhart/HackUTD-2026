@@ -10,6 +10,7 @@ const { requestInsight } = require("./nemotron");
 const { recommendPipeline } = require("./pipeline-recommendation");
 const { dashboardInsight } = require("./pipeline-dashboard-insights");
 const { appSummary } = require("./app-summary");
+const { nearbyStores } = require("./campus");
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function createPipelineHttp({
   pool,
@@ -61,6 +62,7 @@ function createPipelineHttp({
       path.startsWith("/api/v1/pipeline/") ||
       path.startsWith("/api/v1/finance/") ||
       path === "/api/v1/app/summary" ||
+      path === "/api/v1/app/nearby" ||
       path.startsWith("/api/v1/budgets") ||
       path.startsWith("/api/v1/stores") ||
       path === "/api/v1/routines" ||
@@ -486,6 +488,13 @@ function createPipelineHttp({
       if (path === "/api/finance-profile" && req.method === "GET") {
         if (!data.profile) throw fail("pipeline_not_ready", 409);
         send(res, 200, data.profile);
+        return true;
+      }
+      if (path === "/api/v1/app/nearby" && req.method === "POST") {
+        const { latitude, longitude } = await read(req);
+        const ok = (v, lim) => typeof v === "number" && Number.isFinite(v) && Math.abs(v) <= lim;
+        if (!ok(latitude, 90) || !ok(longitude, 180)) throw fail("invalid_location");
+        send(res, 200, await nearbyStores(pool, data, { latitude, longitude }, { env, fetchImpl }));
         return true;
       }
       if (path === "/api/v1/app/summary" && req.method === "GET") {
