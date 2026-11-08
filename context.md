@@ -456,7 +456,8 @@ Last updated: 2026-11-08. Owner: Arjun. Branch: `arjun` in this repo, draft pull
   - unverified offers change nothing
   - irrelevant items change nothing
   - removing the winner promotes the runner-up
-- **Coverage guard.** A test fails if the random worlds stop reaching recommendations, skips, applied and stacked offers, card switches, and every kind of rejection. Without it, the tests above could pass while testing nothing. Before this guard was added, 314 of 400 random worlds stopped at an early refusal.
+- **Long run.** A run at 3,000 random worlds per test passed every oracle, audit and metamorphic test on 2026-11-08. It took 15 minutes.
+- **Coverage guard.** A deterministic test (it draws the same worlds every run) fails if the random worlds stop reaching recommendations, skips, applied and stacked offers, card switches, and every kind of rejection. Without it, the tests above could pass while testing nothing. Before this guard was added, 314 of 400 random worlds stopped at an early refusal.
 - **Bug found and fixed.** When instant discounts add up to more than the price, the solver used to forbid the combination instead of charging $0.
 
 ### Not verified yet

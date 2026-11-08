@@ -90,7 +90,7 @@ def worlds(draw) -> Inputs:
         )
         for k in range(n_items)
     ]
-    n_methods = draw(st.integers(1, 3))
+    n_methods = draw(st.one_of(st.integers(2, 3), st.integers(1, 3)))  # card choice needs 2+ cards
     default = draw(st.one_of(st.none(), st.integers(0, n_methods - 1)))
     methods = [
         PaymentMethod(id=f"card{k}", name=f"card {k}", kind="credit", base_cashback_bps=draw(st.one_of(st.integers(100, 500), st.integers(0, 500))), is_default=(k == default))
@@ -251,7 +251,7 @@ def test_generator_exercises_the_interesting_cases():
 
     seen: Counter = Counter()
 
-    @settings(max_examples=300, database=None, deadline=None, suppress_health_check=list(HealthCheck))
+    @settings(max_examples=300, database=None, derandomize=True, deadline=None, suppress_health_check=list(HealthCheck))
     @given(worlds())
     def probe(inp):
         rec = optimize(inp, NOW)
