@@ -414,7 +414,7 @@ Use authenticated ownership checks on every API, job and tool. Keep secrets out 
 
 ## 15. Implementation status
 
-Last updated: 2026-11-08. Owner: Arjun. Branch: `feat/optimizer-nemotron`, draft pull request #1. This section replaces the earlier `optimizer/STATUS.md`. Ticked boxes in [spec-checklist.md](spec-checklist.md) name the test that is their evidence.
+Last updated: 2026-11-07 (America/Chicago). Owner: Arjun. Branch: `feat/optimizer-nemotron`, pull request #1 (closed, unmerged). This section replaces the earlier `optimizer/STATUS.md`. Ticked boxes in [spec-checklist.md](spec-checklist.md) name the test that is their evidence.
 
 ### Current optimizer status
 
@@ -426,6 +426,7 @@ Last updated: 2026-11-08. Owner: Arjun. Branch: `feat/optimizer-nemotron`, draft
 - The first live rerun after that fix still failed both tests in 0.81 seconds. vLLM's early validation reports prompt length in characters, before its exact token-count check. The client now handles this format by halving the allowance, within the same bounded retry loop. The scripted test includes this observed response. The 21 client tests passed again in 2.40 seconds.
 - Live verification at `99681c3` reached structured, validated answers. Both live tests failed on answer quality in 96.20 seconds. Profile compilation retained the quoted budget and peanut restriction, but failed the commute assertion (39.43 seconds). The second test's compilation plus suitability call took 56.03 seconds. Its cookie assertion passed, but the wrap verdict was `unverified`, where the test requires `suitable`. Validation and assertions were preserved.
 - The Windows full suite during the fixes reported 72 passed and 2 live tests skipped in 75.42 seconds. Final validation of the latest client also passed: 72 passed, 2 skipped in 64.14 seconds. The separate live run and its failures are recorded above.
+- GitHub reports that pull request #1 was closed, unmerged, on November 7 at 11:27 PM America/Chicago, before these client fixes. Its displayed head remains `c78491d`. The fixes and results are committed and pushed to Arjun's fork branch. Reopening the closed pull request awaits owner direction.
 - The full suite on Brev before the fix reported 67 passed, 2 skipped, 1 failed in 40.79 seconds. The random-sample coverage guard saw 15 non-default-card choices against a floor of 20. That test passed alone on rerun in 3.79 seconds. No coverage threshold was changed.
 
 ### Done: the recommendation optimizer (`optimizer/`, Python)
