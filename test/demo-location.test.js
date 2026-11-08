@@ -115,3 +115,21 @@ test('a lead-in with numbers or money words, an unknown sentence ID, or no model
   assert.match(down.message, /These are demo offers\./);
   assert.equal(down.model, null);
 });
+
+test('a notification banner gives the store and its top two deals in short written form', () => {
+  const { notificationText, dealShort } = require('../backend/demo-location');
+  assert.equal(dealShort(deal({ kind: 'store_email', benefit: { type: 'fixed_discount', amountMinor: 200 }, minSpendCents: 600 })), '$2 off $6+ via store email');
+  assert.equal(dealShort(deal({ channels: ['online'] })), '10% back with your Capital One card (online/pickup)');
+  const n = notificationText([
+    { name: 'Starbucks', deals: [deal(), deal({ kind: 'store_email', benefit: { type: 'fixed_discount', amountMinor: 250 }, minSpendCents: 600 }), deal()] },
+    { name: 'Chick-fil-A', deals: [deal()] },
+  ]);
+  assert.deepEqual(n, { title: 'Deals at Starbucks', body: '10% back with your Capital One card; $2.50 off $6+ via store email. Demo offers. Also here: Chick-fil-A.' });
+});
+
+test('moving into a ring returns a notification even when calls are off; staying put does not', async () => {
+  const first = await createDemoLocation({ pool: fakePool(), env: {} }).move(ALEX, { dealsOwnerId: null }, { lat: 32.98671, lon: -96.74892 });
+  assert.equal(first.body.notice.title, 'Deals at Starbucks');
+  const again = await createDemoLocation({ pool: fakePool({ inside: ['sbux'] }), env: {} }).move(ALEX, { dealsOwnerId: null }, { lat: 32.98671, lon: -96.74892 });
+  assert.equal(again.body.notice, null);
+});

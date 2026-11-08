@@ -53,6 +53,26 @@ function dealWords(deal) {
   if (!deal.channels.includes('in_store')) offer += ', for online or pickup orders only';
   return offer;
 }
+// Written (not spoken) short form: "10% back with your Capital One card", "$2 off $6+ via store email".
+function dealShort(deal) {
+  const b = deal.benefit, usd = (c) => `$${(c / 100).toFixed(c % 100 ? 2 : 0)}`;
+  const offer = b.type === 'cashback' && b.rateBps ? `${b.rateBps / 100}% back`
+    : b.type === 'cashback' && b.amountMinor ? `${usd(b.amountMinor)} back`
+      : b.type === 'percent' ? `${b.rateBps / 100}% off`
+        : b.type === 'fixed_discount' ? `${usd(b.amountMinor)} off` : null;
+  if (!offer) return null;
+  return offer + (deal.minSpendCents ? ` ${usd(deal.minSpendCents)}+` : '')
+    + (deal.kind === 'capital_one' ? ' with your Capital One card' : ' via store email')
+    + (deal.channels.includes('in_store') ? '' : ' (online/pickup)');
+}
+// One banner for the stores just walked into: title is the store, body the top two deals.
+function notificationText(here) {
+  const [first, ...others] = here;
+  const deals = first.deals.map(dealShort).filter(Boolean).slice(0, 2);
+  const also = others.length ? ` Also here: ${others.map((s) => s.name).join(', ')}.` : '';
+  return { title: `Deals at ${first.name}`, body: `${deals.join('; ')}. Demo offers.${also}`.slice(0, 178) };
+}
+
 const dealSentence = (deal) => (deal.kind === 'capital_one'
   ? `Your Capital One card gets ${dealWords(deal)}`
   : `A store email has ${dealWords(deal)}`);
@@ -242,9 +262,11 @@ function createDemoLocation({ pool, env = process.env, fetchImpl = fetch }) {
       ON CONFLICT (owner_id) DO UPDATE SET lat = $2, lon = $3, inside = $4, updated_at = now()`,
     [ownerId, lat, lon, here.map((s) => s.id)]);
     const withDeals = here.filter((s) => s.deals.length);
-    const call = entered.some((s) => s.deals.length) && body?.call !== false
-      ? await placeCall(ownerId, withDeals, all, position) : null;
-    return { status: 200, body: { position: { lat, lon }, inside: here, entered: entered.map((s) => s.id), call } };
+    const isNew = entered.some((s) => s.deals.length);
+    const call = isNew && body?.call !== false ? await placeCall(ownerId, withDeals, all, position) : null;
+    // The short written form of the call's opening, for a notification banner (and later SMS).
+    const notice = isNew ? notificationText(withDeals) : null;
+    return { status: 200, body: { position: { lat, lon }, inside: here, entered: entered.map((s) => s.id), call, notice } };
   }
 
   // The call's follow-up turns. Only the saved context is used; nothing new is looked up.
@@ -309,4 +331,4 @@ function createDemoLocation({ pool, env = process.env, fetchImpl = fetch }) {
   return { allowed, map, move, answer, loadCall, activeCall, endCall };
 }
 
-module.exports = { createDemoLocation, distanceM, dealWords, openingLine, money, words, UTD, AREA_M, RING_M, ALEX_CUSTOMER_ID, loadStores, loadDeals };
+module.exports = { createDemoLocation, distanceM, dealWords, dealShort, notificationText, openingLine, money, words, UTD, AREA_M, RING_M, ALEX_CUSTOMER_ID, loadStores, loadDeals };
