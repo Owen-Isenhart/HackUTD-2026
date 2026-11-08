@@ -174,14 +174,42 @@ class NemotronClient:
             }
         from openai import BadRequestError
 
-        try:
-            return self._client.chat.completions.create(**kwargs)
-        except BadRequestError as e:
-            if self._schema_mode and "response_format" in str(e).lower():
-                self._schema_mode = False
-                kwargs.pop("response_format")
+        # vLLM can reject the output budget first against the context window,
+        # then against the space left after tokenizing this request's prompt.
+        # Its initial check can report characters instead of token counts.
+        # In that case, halve the allowance and let the server check again.
+        for attempt in range(5):
+            try:
                 return self._client.chat.completions.create(**kwargs)
-            raise
+            except BadRequestError as e:
+                if attempt == 4:
+                    raise
+                error = str(e).lower()
+                if self._schema_mode and "response_format" in error:
+                    self._schema_mode = False
+                    kwargs.pop("response_format")
+                    continue
+                window = re.search(r"max_tokens=\d+ cannot be greater than max_model_len=(\d+)", error)
+                prompt = re.search(
+                    r"maximum context length is (\d+) tokens.*?prompt contains (\d+) input tokens",
+                    error,
+                    flags=re.S,
+                )
+                characters = re.search(
+                    r"maximum context length is \d+ tokens.*?prompt contains \d+ characters",
+                    error,
+                    flags=re.S,
+                )
+                limit = None
+                if prompt:
+                    limit = int(prompt[1]) - int(prompt[2])
+                elif window:
+                    limit = int(window[1])
+                elif characters:
+                    limit = kwargs["max_tokens"] // 2
+                if limit is None or not 0 < limit < kwargs["max_tokens"]:
+                    raise
+                kwargs["max_tokens"] = limit
 
     def structured(self, system: str, user: str, schema: type[T], thinking: Thinking, max_answer_tokens: int = 2048) -> Reply:
         schema_text = json.dumps(schema.model_json_schema(), separators=(",", ":"))

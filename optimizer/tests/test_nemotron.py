@@ -273,6 +273,66 @@ def test_strip_to_json():
     assert _strip_to_json('Sure! {"a":1}') == '{"a":1}'
 
 
+def _bad_request(message):
+    import httpx2
+    from openai import BadRequestError
+
+    response = httpx2.Response(400, request=httpx2.Request("POST", "http://unused/v1/chat/completions"))
+    return BadRequestError(message, response=response, body={"message": message})
+
+
+def test_client_reduces_output_to_server_limits_after_schema_fallback(monkeypatch):
+    c = NemotronClient(base_url="http://unused/v1", api_key="x")
+    # The retry path is the fallback for servers that do not report their limit up front
+    # (fit_tokens then cannot trim the request), so start with no known limit and thinking on.
+    c._context_limit = None
+    c.thinking_allowed = True
+    errors = iter([
+        "response_format json_schema is unsupported",
+        "max_tokens=10240 cannot be greater than max_model_len=8192",
+        "This model's maximum context length is 8192 tokens. However, you requested "
+        "8192 output tokens and your prompt contains 7878 characters "
+        "(more than 0 characters, which is the upper bound for 0 input tokens).",
+        "This model's maximum context length is 8192 tokens. However, you requested "
+        "4096 output tokens and your prompt contains 5000 input tokens.",
+        None,
+    ])
+    seen = []
+
+    def create(**kwargs):
+        seen.append((kwargs["max_tokens"], "response_format" in kwargs))
+        error = next(errors)
+        if error:
+            raise _bad_request(error)
+        return _resp('{"headline":"h","body":"b"}')
+
+    monkeypatch.setattr(c._client.chat.completions, "create", create)
+    reply = c.structured("sys", "user", jobs.ExplanationDraft, Thinking.on(6144), max_answer_tokens=4096)
+    assert reply.data.headline == "h"
+    assert seen == [(10240, True), (10240, False), (8192, False), (4096, False), (3192, False)]
+
+
+@pytest.mark.parametrize("error", [
+    "unknown field reasoning_budget",
+    "This model's maximum context length is 8192 tokens and your prompt contains 8192 input tokens.",
+    "max_tokens=2048 cannot be greater than max_model_len=8192",
+])
+def test_client_propagates_errors_without_a_smaller_positive_limit(monkeypatch, error):
+    from openai import BadRequestError
+
+    c = NemotronClient(base_url="http://unused/v1", api_key="x")
+    calls = []
+
+    def create(**kwargs):
+        calls.append(kwargs["max_tokens"])
+        raise _bad_request(error)
+
+    monkeypatch.setattr(c._client.chat.completions, "create", create)
+    with pytest.raises(BadRequestError):
+        c.structured("sys", "user", jobs.ExplanationDraft, Thinking.off())
+    assert calls == [2048]
+
+
 # --------------------------------------------------------------------------- #
 # Whole pipeline with the fake model
 # --------------------------------------------------------------------------- #
