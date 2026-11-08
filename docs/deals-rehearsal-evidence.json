@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-08T07:29:03.005Z",
+  "timestamp": "2026-11-08T10:11:57.790Z",
   "ownerId": "64b0ef0f-cd28-4af3-b192-8243ccc8e1ce",
   "architecture": "assisted_merchant_handoff_with_inbound_auto_confirmation",
   "identity": {
@@ -23,7 +23,7 @@
       "product": "photon_email",
       "status": "ready",
       "reason": null,
-      "last_success_at": "2026-11-08T07:23:36.703Z"
+      "last_success_at": "2026-11-08T10:08:22.695Z"
     }
   ],
   "assistedMerchantPrograms": [
@@ -70,13 +70,12 @@
         "phone",
         "otp"
       ],
-      "nextAction": "complete_signup",
-      "safeToCreateAccount": true,
+      "nextAction": "update_existing_preferences",
+      "safeToCreateAccount": false,
       "instructions": [
-        "1. Open merchant signup: https://www.panerabread.com/en-us/mypanera/meet-mypanera.html",
-        "2. Use your private alias for email: f781fcb59cf2bdddced9b256d796ea8e32bd@deals.getcompfy.com",
-        "3. Enter your name and mobile number, and enter the SMS verification code sent to your phone.",
-        "4. Once submitted, our background worker will automatically detect your confirmation email and activate your deals."
+        "1. Open merchant preferences: https://www.panerabread.com/en-us/mypanera/meet-mypanera.html",
+        "2. Update your email to your private alias: f781fcb59cf2bdddced9b256d796ea8e32bd@deals.getcompfy.com",
+        "3. We will automatically capture merchant promotions and sync them to your account."
       ]
     }
   ],
