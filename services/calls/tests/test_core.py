@@ -120,7 +120,7 @@ def test_api_gets_raw_text_and_json_passes_through():
     r = evaluate_reply("alex", "Chick-fil-A nearby", "I don't like fast food", "http://x", post)
     assert r == {"ok": True, "source": "api",
                  "result": {"suggestions": [{"name": "Salad place", "savings_minor": 250}]}}
-    assert seen == {"user_id": "alex", "scenario": "Chick-fil-A nearby", "user_text": "I don't like fast food"}
+    assert seen == {"user_id": "alex", "scenario": "Chick-fil-A nearby", "user_text": "I don't like fast food", "session_id": None, "profile": "phone_details"}
 
 
 def test_api_failure_and_bad_json_return_error_dict():

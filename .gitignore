@@ -15,6 +15,9 @@ dist/
 *.p12
 *.ipa
 
+# Local onboarding smoke identity; never publish customer details.
+.local/onboarding-smoke-identity.json
+
 # Local pipeline validation outputs
 /app/dist-pipeline-web/
 /optimizer/.pytest-pipeline-tmp/

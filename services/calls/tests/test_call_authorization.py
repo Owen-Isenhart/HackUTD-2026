@@ -18,7 +18,7 @@ class FakeDialer:
     def __init__(self, fail=False):
         self.calls, self.fail = [], fail
 
-    async def dial(self, room_name, to_number, scenario=None, user_id="demo-user"):
+    async def dial(self, room_name, to_number, scenario=None, user_id="demo-user", **metadata):
         if self.fail:
             raise RuntimeError("sip error")
         self.calls.append((room_name, to_number, scenario, user_id))
@@ -86,7 +86,7 @@ def test_dialer_error_sets_failed_and_502():
 @pytest.mark.parametrize(("sip_code", "outcome"), [(486, "busy"), (603, "declined"), (480, "no_answer")])
 def test_provider_outcome_is_reported(sip_code, outcome):
     class RejectDialer:
-        async def dial(self, *_):
+        async def dial(self, *_, **metadata):
             raise SipCallError("unknown", "test error", status=502, metadata={"sip_status_code": str(sip_code)})
 
     c = TestClient(create_app(load_settings(ENV), RejectDialer(), CallStore()))
@@ -121,3 +121,16 @@ def test_user_id_forwarded_and_validated(ctx):
     assert post(c, {"to_number": "+19725550100", "user_id": "alex_1"}).status_code == 200
     assert d.calls[0][3] == "alex_1"
     assert post(c, {"to_number": "+19725550100", "user_id": "a b; drop"}).status_code == 422
+
+
+@pytest.mark.parametrize('profile', ['app_voice', 'unknown'])
+def test_calls_api_rejects_app_voice_and_unknown_profile(ctx, profile):
+    assert post(ctx[0], {'to_number': '+19725550100', 'profile': profile}).status_code == 422
+    assert not ctx[1].calls
+
+
+def test_onboarding_requires_explicit_user_and_unverified_identity(ctx):
+    body = {'to_number': '+19725550100', 'profile': 'onboarding'}
+    assert post(ctx[0], body).status_code == 422
+    assert post(ctx[0], {**body, 'user_id': 'maya', 'identity_verified': True}).status_code == 422
+    assert post(ctx[0], {**body, 'user_id': 'maya'}).status_code == 200

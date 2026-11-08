@@ -74,10 +74,31 @@ Set `RECOMMENDATION_API_URL` in `.env.local` (and `RECOMMENDATION_API_KEY` if th
 ## Open items
 
 - **Real recommendation endpoint:** not connected. Dummy only.
-- **Inbound calls:** not tested. Photon's inbound toggle toward the LiveKit SIP address was never confirmed in the dashboard.
+- **Inbound calls:** inbound onboarding reached the worker and completed on a real call (see `services/calls/docs/onboarding.md`). Returning callers: numbers linked in Tiger (`onboarding_phone_link`) to an onboarded user now get the phone-details sequence instead of onboarding. Unit-tested only; migration 008 and live calls are still to run (`services/calls/docs/smoke-test.md`). Every call now introduces itself as "the Nessential agent".
 - **Call status:** `POST /calls` returns `dial_requested`. A no-answer or declined call is stored as `failed`, not `no_answer`/`busy`; answered/ended are not tracked from LiveKit events.
 - **Intermittent `403 permission_denied`** on a first dial; check Photon call activity.
 - **Credentials:** the LiveKit API secret, the NVIDIA key, the Nessie key and the Photon SIP password were all pasted into the working session. Rotate them after the demo. Nothing secret is in the repo (history scanned); provider resource IDs above are identifiers, not credentials. The repo is public.
 - **Brev route:** to use the Brev model the agent needs a public, key-protected endpoint (or to run on the box). Untested for live calls.
 - **Persistence:** call records and notes are in-memory/SQLite demo state; user memory and budgets belong to the main spec (TigerData, Nessie), not this subsystem.
 - Owner-scoped authentication for end users, consent management and retention are not implemented; the allowlist is a demo guard only.
+
+## In-app voice (`app_voice` profile): push-to-talk over LiveKit, no Photon
+
+Implemented from `services/calls/prompts/implementation/app_voice.md`. The prompt is `services/calls/prompts/app_voice.txt`. Profiles (`src/profiles.py`) choose the prompt, tools and behavior per session from the dispatch metadata, so onboarding, phone details and in-app voice run on the same agent worker at the same time.
+
+**Server side**
+- `POST /voice/session` (same `x-api-key` as `POST /calls` for now) with `{"user_id": "<id>"}` returns `{url, token, room}`. The token lasts 10 minutes, joins room `app-voice-<id>` as identity `app-<user_id>`, and dispatches `nessi-agent` with profile `app_voice`. Limit: 5 sessions per user per 10 minutes. `user_id` must come from the app's authenticated session on the server, never from the client; today the trusted backend supplies it.
+- The agent only listens to that one participant, uses manual turn detection, and keeps the microphone input off between turns.
+- Tools: `respond_to_caller` and `navigate_app` only (no `record_decision`, so nothing ends the session). A bare "no" does not hang up. The session ends after 120 s idle or 30 minutes.
+- Data questions go to `RECOMMENDATION_API_URL_APP_VOICE` if set, else `RECOMMENDATION_API_URL`. The existing backend `/evaluate` route needs a stored `call_id`, so in-app questions need their own route; until then they get the fixed "We can't process that right now."
+- The endpoint payload for unbound sessions also carries `session_id` (the room) and `profile`.
+
+**Client contract (React Native; not built)**
+1. Fetch `/voice/session`, connect with the LiveKit client, publish the mic track muted.
+2. Talk button: on press call RPC `start_turn` on the agent participant (identity starts with `agent-`) and unmute; on release mute and call `end_turn`; on cancel call `cancel_turn`. Payload can be empty; each returns `"ok"` (or `"ignored"` for a stray `end_turn`).
+3. Register RPC method `navigate`; payload is `{"route": "<one of home, forecast, recommendations, clarifications, budgets, preferences, memory, enrollments, notifications, calls, privacy, map>"}`; return `"ok"` or throw.
+4. On every screen change set participant attributes `page` (route slug) and `visible` (JSON string array of item labels, at most 8). The agent shows the model `Page: Budgets. Visible: Food, Transport, Fun.`
+5. Risk: LiveKit's React Native SDK needs native WebRTC, which Expo Go does not provide, so plan on an Expo development build (checklist DISC-06). Test the agent first with LiveKit's web playground.
+
+**Verified live (2026-11-08, `services/calls/scripts/app_voice_smoke.py`, `PYTHONPATH=. uv run python scripts/app_voice_smoke.py`)**: token-based dispatch joined the agent; `start_turn` and `cancel_turn` returned `ok`; a stray `end_turn` returned `ignored`; a typed "Please open the budgets page." made the model call `navigate_app` and the app received `{"route": "budgets"}`. **Not verified:** spoken audio through push-to-talk, that the model uses the screen context in its answers, the React Native client, and the real data endpoint. One warning appeared after the smoke client disconnected (`skipping user input, speech scheduling is paused`); it looked like teardown noise but was not investigated.
+
