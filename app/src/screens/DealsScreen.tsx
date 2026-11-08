@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Animated, Linking, PanResponder, Platform, Pressable, ScrollView, StyleSheet, TextInput, View, useWindowDimensions } from 'react-native';
+import { Animated, Linking, PanResponder, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Svg, { Defs, Ellipse, G, LinearGradient, Path, Polygon, Rect, Stop } from 'react-native-svg';
 import { Screen } from '../components/Screen';
 import { Button, Card, Icon, IconCircle, Pill, Row, T } from '../components/ui';
@@ -47,7 +47,6 @@ function Pin({ d, on, onPress }: { d: (typeof deals)[number]; on: boolean; onPre
 export default function DealsScreen() {
   const [sel, setSel] = useState(1);
   const [cat, setCat] = useState('All');
-  const { width } = useWindowDimensions();
   const loc = useUserLocation();
   const [radiusM, setRadiusM] = useState(500);
   // Every store within radiusM of the user. `nearby.result` is the data to hand to the
@@ -80,7 +79,9 @@ export default function DealsScreen() {
     loc.event?.source === 'live' && loc.event.accuracyM && mapW
       ? Math.min(MAP_H, (loc.event.accuracyM / MAP_WIDTH_M) * mapW * 2)
       : 0;
-  const cardW = Math.min(width * 0.84, 320);
+  // Size cards to the screen's content column (not the window: on web the app is a 430px column).
+  const [width, setWidth] = useState(360);
+  const cardW = Math.min(width * 0.9, 320);
   const scroller = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const shown = deals.filter((d) => cat === 'All' || d.cat === cat);
 
@@ -92,7 +93,7 @@ export default function DealsScreen() {
 
   return (
     <Screen title="Nearby Deals">
-      <View style={{ gap: space.sm }}>
+      <View style={{ gap: space.sm }} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
         <View style={s.searchWrap}>
           <View style={{ position: 'absolute', left: 14, zIndex: 1 }}>
             <Icon name="magnify" size={20} />

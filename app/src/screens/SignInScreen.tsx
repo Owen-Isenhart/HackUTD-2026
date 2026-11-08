@@ -3,12 +3,14 @@ import {
   Animated,
   Easing,
   ImageBackground,
+  KeyboardAvoidingView,
+  LayoutChangeEvent,
   Platform,
+  ScrollView,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
-  useWindowDimensions,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -126,10 +128,19 @@ function Ring({ width, delay, reduce }: { width: number; delay: number; reduce: 
 
 export default function SignInScreen({ onContinue }: { onContinue: () => void }) {
   const insets = useSafeAreaInsets();
-  const { width, height } = useWindowDimensions();
   const reduce = useReducedMotion();
-  const nessieWidth = Math.min(width * 0.62, 300);
-  const waterline = height * 0.5;
+  // Size to the container, not the window: on web App.tsx renders a 430px-wide column.
+  const [box, setBox] = useState({ width: 0, height: 0 });
+  function onLayout(e: LayoutChangeEvent) {
+    const { width, height } = e.nativeEvent.layout;
+    if (width !== box.width || height !== box.height) setBox({ width, height });
+  }
+  const short = box.height > 0 && box.height < 700;
+  const logoSize = short ? 34 : 40;
+  // Vertical budget: logo row + form (3 x 44 controls, demo link, gaps, notice room) + insets.
+  const reserved = insets.top + 12 + logoSize * 1.3 + 16 + FORM_HEIGHT + insets.bottom + 16;
+  const avail = Math.max(box.height - reserved, 0);
+  const nessieWidth = Math.max(Math.min(box.width * 0.55, 260, (avail * NESSIE_ASPECT) / 0.94), 72);
 
   // There is no account server yet. Sign in / Sign up only validate input and say they are not
   // connected (same as the prototype). "Continue in demo mode" is the only way into the app and
@@ -146,90 +157,106 @@ export default function SignInScreen({ onContinue }: { onContinue: () => void })
   }
 
   return (
-    <ImageBackground source={require('../../assets/signin/lake.webp')} resizeMode="cover" style={{ width, height }}>
-      <View style={[styles.logoRow, { paddingTop: insets.top + 14 }]}>
-        <Text accessibilityRole="header" style={styles.logo}>Nessential</Text>
-        <Pressable accessibilityRole="button" onPress={signUp} style={styles.signUpPill}>
-          <Text style={styles.signUpPillText}>Sign up</Text>
-        </Pressable>
-      </View>
+    <View style={styles.root} onLayout={onLayout}>
+      <ImageBackground source={require('../../assets/signin/lake.webp')} resizeMode="cover" style={[styles.bg, { width: box.width, height: box.height }]} />
+      {box.height > 0 && (
+        <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={[styles.column, { minHeight: box.height, paddingTop: insets.top + 12, paddingBottom: insets.bottom + 16 }]}
+          >
+            <View style={styles.logoRow}>
+              <Text accessibilityRole="header" style={[styles.logo, { fontSize: logoSize }]}>Nessential</Text>
+              <Pressable accessibilityRole="button" onPress={signUp} style={styles.signUpPill}>
+                <Text style={styles.signUpPillText}>Sign up</Text>
+              </Pressable>
+            </View>
 
-      <View style={[styles.mascot, { top: waterline + (height - waterline) * 0.3 - nessieBox(nessieWidth).boxHeight }]}>
-        <View pointerEvents="none" style={styles.rippleBox}>
-          <Ring width={nessieWidth * 0.95} delay={0} reduce={reduce} />
-          <Ring width={nessieWidth * 0.95} delay={2000} reduce={reduce} />
-        </View>
-        <JellyNessie width={nessieWidth} reduce={reduce} />
-      </View>
+            <View style={styles.mascot}>
+              <View>
+                <View pointerEvents="none" style={styles.rippleBox}>
+                  <Ring width={nessieWidth * 0.95} delay={0} reduce={reduce} />
+                  <Ring width={nessieWidth * 0.95} delay={2000} reduce={reduce} />
+                </View>
+                <JellyNessie width={nessieWidth} reduce={reduce} />
+              </View>
+            </View>
 
-      <View style={[styles.heroFooter, { paddingBottom: insets.bottom + 20 }]}>
-        <View style={styles.signIn}>
-          <TextInput
-            accessibilityLabel="Username"
-            placeholder="Username"
-            placeholderTextColor="#6B7F86"
-            autoCapitalize="none"
-            autoCorrect={false}
-            autoComplete="username"
-            textContentType="username"
-            value={username}
-            onChangeText={setUsername}
-            style={styles.authInput}
-          />
-          <TextInput
-            accessibilityLabel="Password"
-            placeholder="Password"
-            placeholderTextColor="#6B7F86"
-            autoCapitalize="none"
-            autoCorrect={false}
-            autoComplete="current-password"
-            textContentType="password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-            onSubmitEditing={signIn}
-            style={styles.authInput}
-          />
-          <Pressable accessibilityRole="button" onPress={signIn} style={styles.signInButton}>
-            <Text style={styles.signInButtonText}>Sign in</Text>
-          </Pressable>
-          <Pressable accessibilityRole="button" onPress={onContinue} style={styles.demoButton}>
-            <Text style={styles.demoButtonText}>Continue in demo mode</Text>
-          </Pressable>
-          {notice !== '' && <Text accessibilityLiveRegion="polite" style={styles.authNotice}>{notice}</Text>}
-        </View>
-      </View>
-    </ImageBackground>
+            <View style={styles.signIn}>
+              <TextInput
+                accessibilityLabel="Username"
+                placeholder="Username"
+                placeholderTextColor="#6B7F86"
+                autoCapitalize="none"
+                autoCorrect={false}
+                autoComplete="username"
+                textContentType="username"
+                value={username}
+                onChangeText={setUsername}
+                style={styles.authInput}
+              />
+              <TextInput
+                accessibilityLabel="Password"
+                placeholder="Password"
+                placeholderTextColor="#6B7F86"
+                autoCapitalize="none"
+                autoCorrect={false}
+                autoComplete="current-password"
+                textContentType="password"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+                onSubmitEditing={signIn}
+                style={styles.authInput}
+              />
+              <Pressable accessibilityRole="button" onPress={signIn} style={styles.signInButton}>
+                <Text style={styles.signInButtonText}>Sign in</Text>
+              </Pressable>
+              <Pressable accessibilityRole="button" onPress={onContinue} style={styles.demoButton}>
+                <Text style={styles.demoButtonText}>Continue in demo mode</Text>
+              </Pressable>
+              <Text accessibilityLiveRegion="polite" style={styles.authNotice}>{notice}</Text>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      )}
+    </View>
   );
 }
 
+// 3 x 44 controls + 36 demo link + 4 x 8 gaps + 36 notice (two lines).
+const FORM_HEIGHT = 44 * 3 + 36 + 8 * 4 + 36;
+
 const styles = StyleSheet.create({
-  logoRow: { paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  root: { flex: 1, overflow: 'hidden' },
+  bg: { position: 'absolute', top: 0, left: 0 },
+  column: { flexGrow: 1, alignItems: 'center' },
+  logoRow: { alignSelf: 'stretch', paddingHorizontal: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   signUpPill: {
     borderColor: 'rgba(246, 244, 239, 0.55)',
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 16,
-    paddingVertical: 7,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
     backgroundColor: 'rgba(10, 23, 32, 0.5)',
   },
   signUpPillText: { color: '#F6F4EF', fontSize: 14, fontWeight: '600' },
-  signIn: { width: '90%', maxWidth: 380, gap: 10 },
-  authInput: { minHeight: 46, borderRadius: 10, paddingHorizontal: 14, color: '#12303A', fontSize: 16, backgroundColor: '#FFFFFF' },
-  signInButton: { alignItems: 'center', justifyContent: 'center', minHeight: 46, borderRadius: 10, backgroundColor: '#050505' },
+  signIn: { width: '100%', maxWidth: 380, paddingHorizontal: 20, gap: 8 },
+  authInput: { height: 44, borderRadius: 10, paddingHorizontal: 14, color: '#12303A', fontSize: 16, backgroundColor: '#FFFFFF' },
+  signInButton: { alignItems: 'center', justifyContent: 'center', height: 44, borderRadius: 10, backgroundColor: '#050505' },
   signInButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
-  demoButton: { alignItems: 'center', justifyContent: 'center', minHeight: 40 },
+  demoButton: { alignItems: 'center', justifyContent: 'center', height: 36 },
   demoButtonText: {
     color: '#FFFFFF', fontSize: 14, fontWeight: '600', textDecorationLine: 'underline',
     textShadowColor: 'rgba(8, 24, 36, 0.7)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4,
   },
   authNotice: {
-    color: '#FFFFFF', fontSize: 13, lineHeight: 18, textAlign: 'center',
+    color: '#FFFFFF', minHeight: 36, fontSize: 13, lineHeight: 18, textAlign: 'center',
     textShadowColor: 'rgba(8, 24, 36, 0.7)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4,
   },
-  logo: { color: '#050505', fontFamily: 'Jost_300Light', fontSize: 44, letterSpacing: 1.5 },
-  mascot: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
+  logo: { color: '#050505', fontFamily: 'Jost_300Light', letterSpacing: 1.5 },
+  mascot: { flex: 1, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'flex-end', paddingTop: 8, paddingBottom: 12 },
   rippleBox: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 0, alignItems: 'center' },
   ripple: { position: 'absolute', borderWidth: 2, borderColor: 'rgba(240, 248, 248, 0.85)' },
-  heroFooter: { position: 'absolute', left: 0, right: 0, bottom: 0, alignItems: 'center' },
 });

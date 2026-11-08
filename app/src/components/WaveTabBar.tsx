@@ -1,11 +1,15 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Animated, Easing, Platform, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { c } from '../theme';
 import { useReducedMotion, useTimed } from '../motion';
 import { Icon, IconName, T } from './ui';
+
+const WAVE_H = 40;
+const WAVES_H = 88;
+const FRONT_LINE = WAVES_H - WAVE_H + 14; // y of the front wave's crest, roughly (measured in browser)
 
 const ICONS: Record<string, { icon: IconName; label: string }> = {
   Deals: { icon: 'compass-outline', label: 'Deals' },
@@ -19,10 +23,11 @@ export function WaveTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   return (
     <View style={s.wrap} pointerEvents="box-none">
-      <View style={s.waves} pointerEvents="none">
-        <WaveLayer d="M0,28 C160,8 360,56 580,22 C780,-8 970,44 1200,16 L1200,120 L0,120 Z" fill="#2A6F7C" opacity={0.55} amp={10} ms={9000} />
-        <WaveLayer d="M0,46 C190,20 400,68 620,38 C820,12 1010,58 1200,32 L1200,120 L0,120 Z" fill="#206774" opacity={0.85} amp={8} ms={11000} reverse />
-        <WaveLayer d="M0,64 C220,44 420,80 640,56 C850,34 1040,70 1200,52 L1200,120 L0,120 Z" fill={c.nav} amp={5} ms={13000} />
+      <View style={s.waves} pointerEvents="box-none">
+        <WaveLayer d="M0,28 C160,8 360,56 580,22 C780,-8 970,44 1200,16 L1200,120 L0,120 Z" fill="#2A6F7C" opacity={0.55} amp={10} ms={4500} />
+        <WaveLayer d="M0,46 C190,20 400,68 620,38 C820,12 1010,58 1200,32 L1200,120 L0,120 Z" fill="#206774" opacity={0.85} amp={8} ms={5500} reverse />
+        <SwimmingNessie />
+        <WaveLayer d="M0,64 C220,44 420,80 640,56 C850,34 1040,70 1200,52 L1200,120 L0,120 Z" fill={c.nav} amp={5} ms={6500} />
       </View>
       <View style={[s.bar, { paddingBottom: insets.bottom }]}>
         <View style={s.inner}>
@@ -56,7 +61,8 @@ export function WaveTabBar({ state, navigation }: BottomTabBarProps) {
 }
 
 const s = StyleSheet.create({
-  waves: { height: 40, marginBottom: -1, overflow: 'hidden' },
+  // Tall enough that Nessie can rise above the waves; the wave layers sit in the bottom 40px.
+  waves: { height: WAVES_H, marginBottom: -1 },
   wrap: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   bar: { backgroundColor: c.nav },
   inner: { flexDirection: 'row', justifyContent: 'space-around', height: 64, maxWidth: 512, width: '100%', alignSelf: 'center' },
@@ -93,8 +99,9 @@ function WaveLayer({ d, fill, opacity = 1, amp, ms, reverse = false }: {
   const a = reverse ? amp : -amp;
   return (
     <Animated.View
+      pointerEvents="none"
       style={{
-        position: 'absolute', top: 0, bottom: 0, left: '-6%', width: '112%',
+        position: 'absolute', bottom: 0, height: WAVE_H, left: '-6%', width: '112%',
         transform: [
           { translateX: t.interpolate({ inputRange: [0, 1], outputRange: [a, -a] }) },
           { translateY: t.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, -1.5, 0] }) },
@@ -104,6 +111,93 @@ function WaveLayer({ d, fill, opacity = 1, amp, ms, reverse = false }: {
       <Svg width="100%" height={40} viewBox="0 0 1200 120" preserveAspectRatio="none">
         <Path d={d} fill={fill} opacity={opacity} />
       </Svg>
+    </Animated.View>
+  );
+}
+
+// Nessie swims slowly left to right (then back, flipped), only her head above the water.
+// Tap her head: she rises to show ~80% of her body. Tap again: she dives. Sits between the
+// middle and front wave layers, so the front wave hides the rest of her body.
+const NESSIE_ASPECT = 499 / 622;
+// Tuned by hand: px of Nessie above the water line / px wide, while swimming and after the tap.
+const swimY = 72;
+const swimSize = 121;
+const popY = 202;
+const popSize = 222;
+
+function SwimmingNessie() {
+  const { width } = useWindowDimensions();
+  const reduce = useReducedMotion();
+  const [up, setUp] = React.useState(false);
+  const x = useRef(new Animated.Value(0)).current;
+  const flip = useRef(new Animated.Value(1)).current;
+  const bob = useRef(new Animated.Value(0)).current;
+  const pop = useRef(new Animated.Value(0)).current;
+  const native = Platform.OS !== 'web';
+
+  useEffect(() => {
+    if (reduce) {
+      x.setValue(0.5);
+      return;
+    }
+    const T = 26000;
+    const swim = Animated.loop(
+      Animated.sequence([
+        Animated.timing(flip, { toValue: 1, duration: 0, useNativeDriver: native }),
+        Animated.timing(x, { toValue: 1, duration: T, easing: Easing.inOut(Easing.sin), useNativeDriver: native }),
+        Animated.timing(flip, { toValue: -1, duration: 0, useNativeDriver: native }),
+        Animated.timing(x, { toValue: 0, duration: T, easing: Easing.inOut(Easing.sin), useNativeDriver: native }),
+      ]),
+    );
+    const bobbing = Animated.loop(
+      Animated.sequence([
+        Animated.timing(bob, { toValue: 1, duration: 1800, easing: Easing.inOut(Easing.sin), useNativeDriver: native }),
+        Animated.timing(bob, { toValue: 0, duration: 1800, easing: Easing.inOut(Easing.sin), useNativeDriver: native }),
+      ]),
+    );
+    swim.start();
+    bobbing.start();
+    return () => {
+      swim.stop();
+      bobbing.stop();
+    };
+  }, [reduce, x, flip, bob, native]);
+
+  function toggle() {
+    const next = !up;
+    setUp(next);
+    if (reduce) {
+      pop.setValue(next ? 1 : 0);
+      return;
+    }
+    Animated.spring(pop, { toValue: next ? 1 : 0, friction: 7, tension: 90, useNativeDriver: native }).start();
+  }
+
+  const NESSIE_W = swimSize;
+  const NESSIE_H = NESSIE_W / NESSIE_ASPECT;
+  const PEEK_TOP = FRONT_LINE - swimY;
+  const rise = popY - swimY; // px she moves up when popped
+  const span = Math.max(0, Math.min(width, 430) - NESSIE_W - 24);
+  return (
+    <Animated.View
+      pointerEvents="box-none"
+      style={{
+        position: 'absolute', left: 12, top: PEEK_TOP, width: NESSIE_W, height: NESSIE_H,
+        transform: [
+          { translateX: x.interpolate({ inputRange: [0, 1], outputRange: [0, span] }) },
+          { translateY: Animated.add(bob.interpolate({ inputRange: [0, 1], outputRange: [0, -2] }), pop.interpolate({ inputRange: [0, 1], outputRange: [0, -rise] })) },
+          { scale: pop.interpolate({ inputRange: [0, 1], outputRange: [1, popSize / swimSize] }) },
+        ],
+        transformOrigin: '50% 0%',
+      }}
+    >
+      <Pressable accessibilityRole="button" accessibilityLabel={up ? 'Nessie, tap to dive' : 'Nessie, tap to pop up'} onPress={toggle}>
+        <Animated.Image
+          source={require('../../assets/nessie.png')}
+          resizeMode="contain"
+          style={{ width: NESSIE_W, height: NESSIE_H, transform: [{ scaleX: flip }] }}
+        />
+      </Pressable>
     </Animated.View>
   );
 }
