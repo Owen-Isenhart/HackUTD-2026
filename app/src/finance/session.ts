@@ -10,8 +10,10 @@ let override: Store | undefined;
 const listeners = new Set<() => void>();
 async function storage(): Promise<Store | null> {
   if (override) return override;
-  const { Platform } = await import("react-native");
-  return Platform.OS === "web" ? null : await import("expo-secure-store");
+  // Detect web without `await import("react-native")`: a dynamic import copies
+  // every export, which touches PushNotificationIOS and crashes in Expo Go.
+  const web = typeof document !== "undefined" && typeof navigator !== "undefined" && navigator.product !== "ReactNative";
+  return web ? null : await import("expo-secure-store");
 }
 export function setSessionStore(store: Store) {
   override = store;
