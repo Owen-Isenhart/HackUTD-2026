@@ -1,0 +1,22 @@
+[project]
+name = "nessi-calls"
+version = "0.1.0"
+description = "Nessiessential calling subsystem"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.162.2",
+    "livekit-agents[nvidia,openai]~=1.8",
+    "livekit-api>=1.2.2",
+    "python-dotenv>=1.2.4",
+    "uvicorn>=0.54.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.2.0",
+]

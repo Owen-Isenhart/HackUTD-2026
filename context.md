@@ -35,12 +35,12 @@ The principal outputs are push notifications and optional agent phone calls expl
 
 ## 4. Required providers
 
-| Area | User requirement | Verification still needed |
-| --- | --- | --- |
-| Database | TigerData | Exact product, plan, extensions, hosting, security and operational capabilities |
-| Agentic workflows | Nemotron | Exact models, hosting, APIs, available credits, capabilities and constraints |
-| Texts, calls and email access | Photon | Exact service, documentation, supported channels, account access and consent model |
-| Financial data | Nessie API | Exact endpoints, data fidelity, sandbox versus real accounts and update behavior |
+| Area                          | User requirement | Verification still needed                                                          |
+| ----------------------------- | ---------------- | ---------------------------------------------------------------------------------- |
+| Database                      | TigerData        | Exact product, plan, extensions, hosting, security and operational capabilities    |
+| Agentic workflows             | Nemotron         | Exact models, hosting, APIs, available credits, capabilities and constraints       |
+| Texts, calls and email access | Photon           | Exact service, documentation, supported channels, account access and consent model |
+| Financial data                | Nessie API       | Exact endpoints, data fidelity, sandbox versus real accounts and update behavior   |
 
 The initial spoken brief used “Nimotron,” “NEMOtron,” “Neurotron,” and “Nemotron.” This document provisionally uses **Nemotron** for the intended provider; exact identity must be confirmed from the supplied link. No separate Neurotron product is assumed.
 
@@ -353,16 +353,16 @@ Default forecast horizon: configurable 30 days, shown in the app. Store obligati
 
 Default place scope is a verified merchant branch; chain-wide preferences are separate. Ambiguous transaction-to-place matches cannot reactivate the wrong branch.
 
-| State/event | Required behavior |
-| --- | --- |
-| First verified appropriate proximity encounter | Deliver first notification, subject to global permission |
-| Known inappropriate context, such as the commute example | Suppress; first eligible opportunity remains available |
-| First notification ignored | Default: no repeat until opening or a subsequent purchase |
-| Notification opened | Eligible for future contextually relevant notifications |
-| Never notify again selected | Mute place and record event timestamp |
-| Verified purchase occurred after mute | Re-enable eligibility; retry only in an appropriate context |
-| Old transaction imported after mute | Remain muted |
-| Global notifications disabled | Suppress regardless of place eligibility |
+| State/event                                              | Required behavior                                           |
+| -------------------------------------------------------- | ----------------------------------------------------------- |
+| First verified appropriate proximity encounter           | Deliver first notification, subject to global permission    |
+| Known inappropriate context, such as the commute example | Suppress; first eligible opportunity remains available      |
+| First notification ignored                               | Default: no repeat until opening or a subsequent purchase   |
+| Notification opened                                      | Eligible for future contextually relevant notifications     |
+| Never notify again selected                              | Mute place and record event timestamp                       |
+| Verified purchase occurred after mute                    | Re-enable eligibility; retry only in an appropriate context |
+| Old transaction imported after mute                      | Remain muted                                                |
+| Global notifications disabled                            | Suppress regardless of place eligibility                    |
 
 Default repeat cooldown: one recommendation per place per 24 hours, configurable. GPS jitter within a visit must not create duplicate encounters. Explain alongside the requested “never notify again” control that a later purchase can reactivate suggestions. Reactivation never overrides global settings. Separate provider delivery, opening, mute and purchase events.
 
@@ -384,21 +384,21 @@ Measure one calendar year of inactivity from the later of enrollment activation 
 
 ### Data contracts
 
-| Entity | Minimum fields |
-| --- | --- |
-| User/consent | Owner ID, timezone, consent timestamps, channel settings |
-| Connection | Owner, provider, secret reference, scopes, sync status |
-| Transaction | Provider ID, owner, amount/currency, occurred/posted time, merchant/place |
-| Place | Canonical merchant/branch, aliases, coordinates, provenance |
-| Offer | Source, terms, price basis, eligibility, expiry, stacking, freshness |
-| Enrollment | Owner/program, state, activation, last purchase, cleanup/retry metadata |
-| Budget/goal | Owner, scope, amount/currency, period, effective version |
-| Obligation | Owner, evidence, amount/date bounds, status, reconciliation link |
-| Memory/routine | Typed fact, owner, provenance, confidence, version, validity |
-| Location | Owner, coordinates, accuracy, timestamp, live/demo source |
-| Forecast | Owner, horizon, input versions, dated balances/ranges, uncertainty |
-| Recommendation | Owner, candidate evidence, costs, rejection reasons, input versions, expiry |
-| Delivery/clarification/job | Owner, event/provider IDs, state, timestamps, idempotency key, resolution |
+| Entity                     | Minimum fields                                                              |
+| -------------------------- | --------------------------------------------------------------------------- |
+| User/consent               | Owner ID, timezone, consent timestamps, channel settings                    |
+| Connection                 | Owner, provider, secret reference, scopes, sync status                      |
+| Transaction                | Provider ID, owner, amount/currency, occurred/posted time, merchant/place   |
+| Place                      | Canonical merchant/branch, aliases, coordinates, provenance                 |
+| Offer                      | Source, terms, price basis, eligibility, expiry, stacking, freshness        |
+| Enrollment                 | Owner/program, state, activation, last purchase, cleanup/retry metadata     |
+| Budget/goal                | Owner, scope, amount/currency, period, effective version                    |
+| Obligation                 | Owner, evidence, amount/date bounds, status, reconciliation link            |
+| Memory/routine             | Typed fact, owner, provenance, confidence, version, validity                |
+| Location                   | Owner, coordinates, accuracy, timestamp, live/demo source                   |
+| Forecast                   | Owner, horizon, input versions, dated balances/ranges, uncertainty          |
+| Recommendation             | Owner, candidate evidence, costs, rejection reasons, input versions, expiry |
+| Delivery/clarification/job | Owner, event/provider IDs, state, timestamps, idempotency key, resolution   |
 
 Choose physical schema and indexes after TigerData verification. Minimize raw message/location retention and document justified retention windows.
 
