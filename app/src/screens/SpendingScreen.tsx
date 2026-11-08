@@ -1,6 +1,7 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Animated, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
+import { useReveal } from '../motion';
 import { Screen } from '../components/Screen';
 import { Button, Card, Icon, IconCircle, Pill, Row, SectionTitle, T } from '../components/ui';
 import { c, radius, space, tnum } from '../theme';
@@ -8,10 +9,12 @@ import { money, spendCategories, transactions } from '../mock/sample';
 
 const R = 60;
 const CIRC = 2 * Math.PI * R;
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const total = spendCategories.reduce((a, x) => a + x.amt, 0);
 
 export default function SpendingScreen() {
   let offset = 0;
+  const reveal = useReveal(450);
   return (
     <Screen title="Current Spending">
       <Card>
@@ -50,11 +53,12 @@ export default function SpendingScreen() {
             {spendCategories.map((cat) => {
               const len = (cat.pct / 100) * CIRC;
               const el = (
-                <Circle
+                <AnimatedCircle
                   key={cat.name}
                   cx={80} cy={80} r={R}
                   fill="none" stroke={cat.color} strokeWidth={16}
-                  strokeDasharray={`${len} ${CIRC}`} strokeDashoffset={-offset}
+                  strokeDasharray={[reveal.interpolate({ inputRange: [0, 1], outputRange: [0, len] }), CIRC] as any}
+                  strokeDashoffset={-offset}
                 />
               );
               offset += len;
@@ -98,7 +102,7 @@ export default function SpendingScreen() {
               </View>
             </Row>
             <View style={{ height: 8, backgroundColor: c.surfaceContainer, borderRadius: 4, overflow: 'hidden' }}>
-              <View style={{ width: `${cat.pct}%`, height: '100%', backgroundColor: cat.color, borderRadius: 4 }} />
+              <Animated.View style={{ width: `${cat.pct}%`, height: '100%', backgroundColor: cat.color, borderRadius: 4, transformOrigin: 'left', transform: [{ scaleX: reveal }] }} />
             </View>
           </View>
         ))}

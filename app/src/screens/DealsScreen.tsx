@@ -1,12 +1,33 @@
 import React, { useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, View, useWindowDimensions } from 'react-native';
+import { Animated, Pressable, ScrollView, StyleSheet, TextInput, View, useWindowDimensions } from 'react-native';
 import Svg, { Circle, Defs, Ellipse, G, LinearGradient, Path, Polygon, Rect, Stop } from 'react-native-svg';
 import { Screen } from '../components/Screen';
 import { Button, Card, Icon, IconCircle, Pill, Row, T } from '../components/ui';
 import { c, radius, shadow, space } from '../theme';
+import { PressScale, useTimed } from '../motion';
 import { dealCategories, deals } from '../mock/sample';
 
 const MAP_H = 380;
+
+function Pin({ d, on, onPress }: { d: (typeof deals)[number]; on: boolean; onPress: () => void }) {
+  const scale = useTimed(on ? 1.05 : 1, 200);
+  return (
+    <Pressable
+      onPress={onPress}
+      style={{ position: 'absolute', left: `${(d.pin.x / 400) * 100}%`, top: (d.pin.y / 480) * MAP_H, zIndex: on ? 30 : 20 }}
+    >
+      <Animated.View style={{ alignItems: 'center', transform: [{ translateX: -60 }, { translateY: -30 }, { scale }] }}>
+        <View style={[s.pin, { backgroundColor: on ? c.primary : c.surfaceLowest }]}>
+          <Icon name={d.icon} size={13} color={on ? c.secondaryFixed : c.secondary} />
+          <T v="labelSm" style={{ color: on ? c.onPrimary : c.primary, fontFamily: 'Manrope_600SemiBold' }}>
+            {d.reward} • {d.merchant.split(' ')[0]}
+          </T>
+        </View>
+        <View style={[s.tail, { backgroundColor: on ? c.primary : c.surfaceLowest }]} />
+      </Animated.View>
+    </Pressable>
+  );
+}
 
 export default function DealsScreen() {
   const [sel, setSel] = useState(1);
@@ -84,31 +105,9 @@ export default function DealsScreen() {
           <Circle cx={155} cy={280} r={7} fill="#206774" stroke="#fff" strokeWidth={2} />
         </Svg>
 
-        {shown.map((d) => {
-          const on = sel === d.id;
-          return (
-            <Pressable
-              key={d.id}
-              onPress={() => select(d.id)}
-              style={{
-                position: 'absolute',
-                left: `${(d.pin.x / 400) * 100}%`,
-                top: (d.pin.y / 480) * MAP_H,
-                transform: [{ translateX: -60 }, { translateY: -30 }, { scale: on ? 1.05 : 1 }],
-                zIndex: on ? 30 : 20,
-                alignItems: 'center',
-              }}
-            >
-              <View style={[s.pin, on ? { backgroundColor: c.primary } : { backgroundColor: c.surfaceLowest }]}>
-                <Icon name={d.icon} size={13} color={on ? c.secondaryFixed : c.secondary} />
-                <T v="labelSm" style={{ color: on ? c.onPrimary : c.primary, fontFamily: 'Manrope_600SemiBold' }}>
-                  {d.reward} • {d.merchant.split(' ')[0]}
-                </T>
-              </View>
-              <View style={[s.tail, { backgroundColor: on ? c.primary : c.surfaceLowest }]} />
-            </Pressable>
-          );
-        })}
+        {shown.map((d) => (
+          <Pin key={d.id} d={d} on={sel === d.id} onPress={() => select(d.id)} />
+        ))}
 
         <View style={s.tools}>
           {(['crosshairs-gps', 'format-list-bulleted', 'tune-variant'] as const).map((n) => (
@@ -143,7 +142,7 @@ export default function DealsScreen() {
           contentContainerStyle={{ gap: space.md, paddingVertical: 4 }}
         >
           {shown.map((d) => (
-            <Pressable key={d.id} onPress={() => select(d.id)} style={[s.dealCard, { width: cardW }, sel === d.id && shadow.card]}>
+            <PressScale key={d.id} onPress={() => select(d.id)} scaleTo={0.985} outerStyle={{ width: cardW }} style={[s.dealCard, sel === d.id && shadow.card]}>
               <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: space.sm }}>
                 <Row style={{ gap: 10, flexShrink: 1 }}>
                   <IconCircle name={d.icon} bg={c.surfaceContainer} />
@@ -169,7 +168,7 @@ export default function DealsScreen() {
                 </Row>
                 <Button label={d.cta} small />
               </Row>
-            </Pressable>
+            </PressScale>
           ))}
         </ScrollView>
       </View>

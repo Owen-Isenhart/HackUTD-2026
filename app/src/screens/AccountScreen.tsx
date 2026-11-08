@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Screen } from '../components/Screen';
 import { Card, Icon, IconCircle, IconName, Pill, Row, T, Toggle } from '../components/ui';
 import { c, radius, shadow, space, tnum } from '../theme';
+import { PressScale } from '../motion';
 import { profile } from '../mock/sample';
 
 function Group({ icon, title, right, children }: { icon: IconName; title: string; right?: React.ReactNode; children: React.ReactNode }) {
@@ -128,10 +129,10 @@ export default function AccountScreen() {
             { k: 'view', icon: 'eye-outline' as IconName, label: 'View Details', col: c.secondary },
             { k: 'lim', icon: 'tune-variant' as IconName, label: 'Card Limits', col: c.secondary },
           ].map((a) => (
-            <Pressable key={a.k} onPress={a.press} style={{ flex: 1, alignItems: 'center', gap: 4, paddingVertical: 10, backgroundColor: c.surfaceLowest, borderRadius: radius.md, ...shadow.sm }}>
+            <PressScale key={a.k} onPress={a.press} outerStyle={{ flex: 1 }} style={{ alignItems: 'center', gap: 4, paddingVertical: 10, backgroundColor: c.surfaceLowest, borderRadius: radius.md, ...shadow.sm }}>
               <Icon name={a.icon} size={20} color={a.col} />
               <T v="labelSm">{a.label}</T>
-            </Pressable>
+            </PressScale>
           ))}
         </Row>
       </Group>

@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Animated,
   Pressable,
   StyleProp,
   StyleSheet,
@@ -10,6 +11,7 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { c, radius, shadow, space, type } from '../theme';
+import { PressScale, useTimed } from '../motion';
 
 export type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 
@@ -91,22 +93,22 @@ export function Button({
   textColor?: string;
 }) {
   return (
-    <Pressable
+    <PressScale
       onPress={onPress}
-      style={({ pressed }) => [
+      style={[
         s.btn,
         small && { paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.md },
-        pressed && { backgroundColor: c.secondary },
         style,
       ]}
     >
       {icon ? <Icon name={icon} size={small ? 14 : 20} color={textColor} /> : null}
       <T v={small ? 'labelSm' : 'labelLg'} style={{ color: textColor }}>{label}</T>
-    </Pressable>
+    </PressScale>
   );
 }
 
 export function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
+  const x = useTimed(value ? 22 : 2, 150);
   return (
     <Pressable
       onPress={() => onChange(!value)}
@@ -114,7 +116,7 @@ export function Toggle({ value, onChange }: { value: boolean; onChange: (v: bool
       accessibilityState={{ checked: value }}
       style={{ width: 44, height: 24, borderRadius: 12, backgroundColor: value ? c.secondary : c.surfaceHighest, justifyContent: 'center' }}
     >
-      <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#fff', marginLeft: value ? 22 : 2 }} />
+      <Animated.View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#fff', transform: [{ translateX: x }] }} />
     </Pressable>
   );
 }
