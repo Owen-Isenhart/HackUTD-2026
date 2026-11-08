@@ -10,6 +10,7 @@
     "photon:send": "node --env-file-if-exists=.env scripts/send-photon.js",
     "finance:profile": "node --env-file-if-exists=.env scripts/finance-profile.js",
     "finance:serve": "node --env-file-if-exists=.env scripts/finance-profile.js --serve",
+    "finance:migrate": "node --env-file-if-exists=.env scripts/finance-profile.js --migrate",
     "test": "node --test"
   },
   "dependencies": {
@@ -19,6 +20,7 @@
     "expo-notifications": "~58.1.8",
     "expo-speech": "~58.0.3",
     "expo-status-bar": "~58.0.4",
+    "pg": "^8.23.1",
     "react": "19.3.0",
     "react-native": "0.88.1",
     "react-native-safe-area-context": "~5.11.1"

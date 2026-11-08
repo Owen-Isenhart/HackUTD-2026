@@ -16,7 +16,7 @@ function evaluateRoutineVisit(profile, fix, { now = Date.now(), routineAt = fix.
   const offers = findNearbyOffers(fix.coords);
   const profileAge = now - Date.parse(profile.asOf);
   const profileExpired = !Number.isFinite(profileAge) || Math.abs(profileAge) > MAX_PROFILE_AGE_MS;
-  if (profileExpired || offers.length === 0) return { offers, profileExpired, recommendation: null };
+  if (profileExpired || offers.length === 0) return { offers, profileExpired, candidates: [], recommendation: null };
 
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: profile.timeZone, weekday: 'long', hour: 'numeric', hourCycle: 'h23',
@@ -28,14 +28,16 @@ function evaluateRoutineVisit(profile, fix, { now = Date.now(), routineAt = fix.
   for (const [index, routine] of profile.routines.entries()) {
     if (routine.weekday !== weekday || routine.daypart !== window || routine.observedDays < 2
       || !Number.isSafeInteger(routine.typicalPurchaseCents) || routine.typicalPurchaseCents <= 0) continue;
-    const offer = offers.find(({ nessieMerchantId, distance }) => nessieMerchantId === routine.provenance.merchantSourceId
-      && distance + accuracy <= SEARCH_RADIUS_METERS);
-    if (offer) candidates.push({ offer, routine, highlighted: insight?.status === 'interpreted' && insight.routineIndex === index });
+    for (const offer of offers) {
+      if (offer.nessieMerchantId === routine.provenance.merchantSourceId && offer.distance + accuracy <= SEARCH_RADIUS_METERS) {
+        candidates.push({ offer, routine, highlighted: insight?.status === 'interpreted' && insight.routineIndex === index });
+      }
+    }
   }
-  candidates.sort((a, b) => Number(b.highlighted) - Number(a.highlighted)
-    || b.routine.observedDays - a.routine.observedDays || a.offer.distance - b.offer.distance
+  candidates.sort((a, b) => a.offer.distance - b.offer.distance
+    || b.routine.observedDays - a.routine.observedDays
     || a.offer.id.localeCompare(b.offer.id));
-  return { offers, profileExpired, recommendation: candidates[0] ?? null };
+  return { offers, profileExpired, candidates, recommendation: candidates[0] ?? null };
 }
 
 async function sendRoutineAlertOnce(alerted, key, schedule) {
@@ -51,4 +53,4 @@ async function sendRoutineAlertOnce(alerted, key, schedule) {
   return false;
 }
 
-module.exports = { DEMO_ROUTINE_TIME, evaluateRoutineVisit, sendRoutineAlertOnce };
+module.exports = { DEMO_ROUTINE_TIME, MAX_FIX_AGE_MS, MAX_PROFILE_AGE_MS, evaluateRoutineVisit, sendRoutineAlertOnce };

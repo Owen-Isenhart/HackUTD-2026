@@ -42,8 +42,13 @@ function formatDollars(cents) {
 }
 
 function offerSummary({ cashbackPercent }, purchaseCents = SAMPLE_PURCHASE_CENTS) {
-  const savingsCents = Math.round(purchaseCents * cashbackPercent / 100);
+  const savingsCents = offerCosts({ cashbackPercent }, purchaseCents).cashbackCents;
   return `${cashbackPercent}% demo cashback would earn ${formatDollars(savingsCents)} on a ${formatDollars(purchaseCents)} purchase.`;
 }
 
-module.exports = { DEMO_LOCATION, SEARCH_RADIUS_METERS, findNearbyOffers, offerSummary };
+function offerCosts({ cashbackPercent }, payableCents) {
+  const cashbackCents = Math.round(payableCents * cashbackPercent / 100);
+  return { payableCents, cashbackCents, effectiveCostCents: payableCents - cashbackCents };
+}
+
+module.exports = { DEMO_LOCATION, SEARCH_RADIUS_METERS, findNearbyOffers, offerCosts, offerSummary };
