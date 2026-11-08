@@ -4,6 +4,8 @@ Exact data sources and sandbox usage; movement simulation is confirmed, other si
 
 Status: clarification closed at the user’s request. Implementation has started: the optimizer is built on branch `arjun` (see section 15). Provider feasibility and most research gates remain unverified.
 
+Status: the user authorized deals implementation on November 7, 2026. The deals API, worker, TigerData schema/roles and Expo screens are now implemented and tested locally. Live acceptance remains incomplete; see the latest implementation update in section 17 and [validation evidence](services/deals/docs/deals-validation.md). Earlier preparation-only statements below are historical. No commits or pushes are authorized.
+
 This file is the cumulative specification for the project. User-confirmed requirements, proposed approaches, unresolved questions, and verified research must remain distinguishable. No implementation choice becomes a confirmed requirement merely because it appears here.
 
 ## 1. Working agreement
@@ -210,7 +212,7 @@ Whether hackathon testing uses synthetic data, real personal data, or a mixture 
 
 ## 11. Research backlog
 
-Research has not yet been performed. Provider-specific claims remain unverified until the documentation links arrive.
+At specification finalization, research had not yet been performed. Subsequent deals research is recorded in section 16 and its linked plan; other research remains pending. Documented capabilities do not establish working account access or tested integrations.
 
 1. Required provider identities, documentation, free tiers, credentials and integration capabilities.
 2. Expo Go feasibility for the intended demo and background behavior.
@@ -506,3 +508,123 @@ NEMOTRON_BASE_URL=http://127.0.0.1:8000/v1 uv run pytest tests/test_live_nemotro
   - what the baseline for "savings" is
   - the default search radius
 - **Waiting on the partner's real profile files.** `profile/initial-routine.md` and `profile/financial-profile.md` are placeholders.
+
+## 16. Deals planning and research update — November 7, 2026
+
+The user requested a deals implementation plan covering Photon promotional email and Capital One offers, including scope and research. The plan is [plan/deals.md](services/deals/plan/deals.md); it preserves the checklist as the delivery ledger and distinguishes documented capabilities, proposed design and untested dependencies.
+
+The user supplied [Hackathon Guidelines for Photon 2.0](https://somethingreat.notion.site/Hackathon-Guidelines-for-Photon-2-0-3f8e443f36bb81f9893fed0d08a4c01d), identifying the intended Photon product as Photon 2.0 beta at photon.codes. The guide and linked official beta documentation were read. Domain-based email ingestion and signed webhooks are documented; actual project access, DNS setup, funding and inbound tests remain pending. The guide describes free beta use, while current standard billing documents usage charges; verify the team's event entitlement before enabling usage. Other providers' exact configurations remain unverified.
+
+Capital One Offers and Capital One Shopping must be modeled separately. Research found account-specific eligibility and acquisition restrictions; no permitted free bulk acquisition route was verified. The plan records the source evidence, a gated integration path and an explicitly incomplete unavailable/link-out fallback. This does not cancel the aggregation requirement or authorize fabricated demo offers.
+
+Merchant registration, offer extraction, lifecycle cleanup, ownership isolation and optimizer handoff are included in the deals plan. No application implementation, external registration, provider configuration, commit or push was performed; delivery checkboxes remain unchanged.
+
+### Dependency follow-up — November 7, 2026
+
+The user reports TigerData and Photon are already created and requests using their CLIs. Backend conventions are delegated to the implementation agent. The user authorizes search, scraping or other acquisition work to produce structured Capital One offers; finding that route is implementation work rather than a dependency to hand back to the user. This does not establish account-specific redemption eligibility or guarantee comprehensive accessible coverage.
+
+The user provided a Nessie key (not recorded here) and [Nessie v2 documentation](https://v2.nessieisreal.com/docs#description/nessie-v2.). Its OpenAPI version is 2.1.1 and explicitly describes a mock banking API. A read-only authentication check succeeded but returned no accounts. Dataset creation and the intended demo customer remain unresolved; no mock data was generated during verification.
+
+Tiger CLI can list the READY DEV service `nessessential-db`, but a read-only SQL check failed because the stored database password is missing/invalid. Photon CLI is logged into the stable production backend and lists no projects there; its beta backend is not authenticated. These are access/setup gaps despite the accounts having been created, not reasons to create duplicate resources. Details and recovery steps are in [plan/deals.md, section 10](services/deals/plan/deals.md#10-dependency-update-and-cli-verification--november-7-2026).
+
+Selected backend conventions: Node.js 24+, TypeScript, Fastify, PostgreSQL via `pg`, SQL migrations, and a PostgreSQL-backed jobs/outbox table with an API and worker in one repository. Nemotron access remains outstanding. The user asked whether a Gmail burner can replace a domain: a domain/subdomain with DNS control is required for Photon's documented native email route; Gmail API ingestion is a possible separate integration and has not been selected as a replacement.
+
+### Dependency refinement — November 7, 2026
+
+The user supplied a Photon beta project API key (not recorded in repository files) and offered the Cloudflare-managed domain `getcompfy.com`. Plan to use an unused `deals.getcompfy.com` subdomain for Photon email. The exact DNS records must first be generated through the correct Photon project, then added in Cloudflare; no domain purchase or Gmail account is necessary. The project ID remains missing, and project-scoped API keys cannot perform account-level project discovery under the published API contract.
+
+Nemotron is deferred until unstructured offer interpretation is implemented. Deterministic merchant-template parsing, ingestion, persistence, Capital One normalization and lifecycle work can start without it. The user explicitly permits generating fake Nessie data for testing; an empty tenant is therefore not an implementation blocker. Test records must remain labeled and isolated from external merchant registration. This authorization does not change the requirement to avoid presenting fabricated offers or transactions as real demo data.
+
+A repeated read-only TigerData check against service ID `ylg4ko70w8` still fails SQL password authentication. The service now appears as `nessential-db`. CLI cloud authentication works; it is distinct from the SQL credential. No password reset has been performed, since resetting the master credential changes access for other clients. The exact proposed reset target and alternative local credential repair are documented in plan/deals.md.
+
+### Authorized setup and Brev verification — November 7, 2026
+
+The user subsequently authorized resetting TigerData and requested SSH troubleshooting for `brev shell following-copper-silkworm --org rishi.sandrana-4a543b-ipod`. Tiger CLI successfully generated/saved a replacement master password for service `ylg4ko70w8`; a read-only SQL check then returned `connection_ok = 1`. This resolves the preceding credential blocker. The credential is not recorded in project documents. Existing clients using the old master password must update it; no database data/schema was changed.
+
+Brev reports instance `deokpaysz` healthy and running. Both a non-interactive remote command and the exact interactive shell command succeeded. The remote machine reported NVIDIA L40S with 46068 MiB memory. The original SSH failure could not be reproduced; no instance restart/reset or model deployment was needed or performed. Compute access is verified, but an inference endpoint has not been established.
+
+Photon's project ID is still needed from the existing beta project's Settings. Detailed dashboard and Cloudflare DNS steps are in [plan/deals.md, section 11](services/deals/plan/deals.md#11-setup-results-and-operator-steps--november-7-2026). Exact domain-specific DNS values require first connecting `deals.getcompfy.com` to the correct Photon project. Those DNS changes remain pending. Nemotron and pre-existing Nessie test data are not prerequisites for initial deals implementation.
+
+### Photon project verified and domain setup initiated — November 7, 2026
+
+The user supplied project ID `pho_prj_01m6wh04gseh78gcs73agt2kj6`. Its beta API returned project name `Nessiessential`, and the provided key successfully read platform resources/operations. The agent initiated `deals.getcompfy.com` provisioning with the user's authorization; Photon accepted the request and returned operation `pho_opr_01m6wm910dfvk94fa4jh8gv7b9`. This resolves the project-access dependency. Domain setup is still running and has not yet returned DNS records or proven email reception. The user will apply the generated DNS records in Cloudflare. No Cloudflare change or email send has occurred; recovery details are recorded in [plan/deals.md, section 12](services/deals/plan/deals.md#12-photon-domain-provisioning--november-7-2026).
+
+
+### Deals readiness audit — November 7, 2026, approximately 10:11 PM CST
+
+The user reports adding the Photon DNS records and requests preparation only, with no implementation. All six records for `deals.getcompfy.com` match the values returned by Photon on public resolver 1.1.1.1 and both Cloudflare authoritative nameservers. No additional Cloudflare edits are indicated. Photon still reports the existing provisioning operation as running; its latest recorded check at 04:12:26 UTC confirms DKIM and identity readiness but still reports DNS and MAIL FROM readiness false. Its per-record status still labels five entries missing despite authoritative/public matches. Verification has progressed; public DNS correctness does not yet prove completed Photon provisioning or real email delivery.
+
+Fresh read-only TigerData checks succeed as `tsdbadmin`, confirm schema-creation privilege and find zero public base tables. Local Node.js is v24.12.0. Photon email-list/count and webhook-destination reads succeed; zero messages/destinations were observed. The selectable preview webhook version is `2026-07-01`, with readable `message.received` schema and reported contracts package `0.30.0`. No receiver, webhook secret, migration or real-message test exists yet.
+
+Photon billing reads return HTTP 403 with the supplied key. The remaining immediate user action is to confirm email entitlement and usable credits/hackathon allowance in the selected project's dashboard (including organization billing if applicable). No new secret or payment change is requested. Provider domain verification is still pending. Capital One acquisition and real merchant flows remain early implementation-owned feasibility gates; no structured Capital One dataset has been verified. Real signup may later need an authorized tester's identity/verification, and private account offers may need an eligible authorized session.
+
+The detailed current readiness matrix and actual DNS records are in [plan/deals.md, section 13](services/deals/plan/deals.md#13-current-readiness-audit--november-7-2026-approximately-1011-pm-cst), superseding earlier setup unknowns. Initial development can start with current access once authorized; a complete email/demo integration cannot yet be claimed. Nemotron and pre-existing Nessie data remain unnecessary for the initial slice. This audit changed documentation only; no implementation, provider mutation, seed, email send, merchant registration, commit or push was performed.
+
+### Session handoff and local credential persistence — November 7, 2026
+
+At the user's request, [plan/deals.md, section 14](services/deals/plan/deals.md#14-new-session-handoff-cli-access-secrets-and-ssh) now records CLI versions/commands, resource IDs, API endpoints, Brev organization/instance/SSH access, known provider caveats and a resume checklist. Supplied Photon and Nessie keys are stored locally in `.env.deals.local` with owner-only permissions (`0600`) and an explicit `.gitignore` exclusion. Secret values are absent from project documentation. TigerData and Brev continue using their existing CLI-managed credential stores; no database password or SSH private key was copied into the repo. These local credentials survive a new session on this workspace but do not accompany a fresh clone. This adds configuration/handoff documentation only; application implementation remains unauthorized, and no commit or push was made.
+
+## 17. Deals implementation update — November 7, 2026
+
+The user's `/goal` instruction authorizes implementing and validating `plan/deals.md`, superseding historical preparation-only restrictions. No commit/push was authorized or performed. Existing unrelated document changes were preserved.
+
+Implemented the Node 24/TypeScript/Fastify deals backend, PostgreSQL jobs/outbox worker, exact validated contracts, short-lived owner/scoped JWTs and tenant RLS; applied `001_deals.sql` to the existing TigerData service and created separate restricted API/worker roles. Generated runtime credentials and the signing key are stored only in ignored `.env.deals.runtime.local` with mode 0600, alongside the separate existing provider secret file. Administrative credentials remain CLI-managed.
+
+Implemented signed Photon email ingress pinned to the official `2026-07-01` email schema; actual delivery-recipient routing; atomic replay/job handling; safe HTML/text extraction; paginated reconciliation with overlap/checkpoints; deterministic offer proposals and optional schema-constrained Nemotron interpretation; review/evidence/revision handling; private candidate eligibility and change events; idempotent verified-purchase discovery; candidate assisted merchant handoffs; inactivity suppression/return, explicit opt-out and consent withdrawal; retention and failed-job recovery. Sandbox observations cannot create external registrations. Unknown conditions remain review/unknown; the optimizer still owns pricing, affordability and geographic suitability.
+
+Added a standalone Expo deals shell with SecureStore session handling, explicit consent, source/enrollment status, merchant verification, offer terms/evidence review, retry/resume/opt-out and local-content deletion controls. This is not the whole finance/mobile product. Actual website signup, OTP/CAPTCHA and external unsubscribe outcomes have not been observed; assisted handoffs are not completed registrations.
+
+Validation: 22 domain and 20 PostgreSQL/API integration scenarios pass, along with backend/mobile typechecking, production build, iOS/Android Hermes exports and dependency audits with zero reported vulnerabilities. Live TigerData probes confirmed verified TLS, scoped reads and denied DDL; no synthetic deals or purchases were retained there. The local API `/health` and `/ready` returned successful readiness. Browser UI access was unavailable; no physical Expo Go acceptance or actual-data demo is claimed.
+
+Photon's existing domain provisioning operation has now **succeeded**, with DKIM/DNS/identity/MAIL FROM all true (provider check `2026-11-08T04:39:01.736Z`, November 7 at 10:39 PM CST). One domain resource and zero messages were observed. Billing remains HTTP 403 with this key; email entitlement/credits still need an operator dashboard confirmation. No email was sent and no real merchant was registered.
+
+Automatic approval review rejected starting the proposed temporary Cloudflare HTTPS tunnel: it would forward the local authenticated API and potentially private email/webhook data through an external service without explicit authorization for that payload/destination. No tunnel was started, no webhook destination was created and no signing secret exists. Do not bypass this rejection. Public webhook testing requires explicit approval; polling is implemented independently but live usage remains gated on confirmed entitlement.
+
+Capital One Offers and Shopping remain separate blocked sources with zero acquired offers and zero acquisition spending. Fresh official terms/access research did not produce a permitted free collection/reuse route or eligible authorized session. REWARD-05 remains unmet; link-outs do not replace aggregation. No Nemotron server was deployed or validated; its proposal adapter is optional until real unstructured samples require it.
+
+The concrete setup/API/retention runbook is [docs/deals-runbook.md](services/deals/docs/deals-runbook.md). [docs/deals-validation.md](services/deals/docs/deals-validation.md) maps every D-01–D-12 step to evidence and remaining gates. These supersede older readiness snapshots; the original required real-data acceptance remains open where documented.
+
+### Live transport and Nemotron continuation — November 7, 2026, approximately 11:15 PM CST
+
+The user explicitly approved the Cloudflare tunnel as long as it costs no money and asked how to confirm email funding. Cloudflare Quick Tunnels are free/accountless; no new Cloudflare API key, paid subscription or domain was needed. The initial approval-review rejection is resolved by this explicit payload/destination authorization. The free tunnel is connected, one Photon `message.received` destination was created at API version `2026-07-01`, and its signing secret/ID/current URL are saved atomically in ignored owner-only runtime configuration. The setup script can update that same destination when a free tunnel hostname changes, preserving its secret and avoiding duplicates. Public health/authentication/tamper/valid-signature checks all pass with synthetic unallocated-recipient requests; this does not claim actual Photon email receipt. Photon still lists zero messages.
+
+Funding is Photon-side, not Cloudflare-side. The user does not yet know the project's allowance. They were directed to Photon Beta → Nessiessential → Billing, checking the project plan, remaining included emails, organization credit and any hackathon allowance. Standard Beta Free has no included emails and lists $0.001 per email; a Free label alone does not verify zero out-of-pocket use. No payment method, plan upgrade, funding assumption or billable email action was taken. The existing key still receives 403 for billing, so operator confirmation remains necessary; no replacement API key is requested just to report that status.
+
+A fresh Brev audit using the installed Brev CLI skill discovered an already-running private model container (`nemotron`, vLLM 0.31.0, alias `nemotron-bolt`, root `nvidia/NVIDIA-Nemotron-3.5-Bolt-E4B-BF16`, 8192 context). It was reused without installing/restarting/stopping it or creating instances. A loopback-only SSH forward supplies the backend's configured model URL. This is separate from public webhook exposure and does not expose the model publicly.
+
+Live synthetic tests found and fixed two actual bugs: the model server rejected dynamic evidence-record grammar, and a leading word-boundary prevented standalone dollar-off messages from being classified as offers. The model now selects exact quotes/conditions through a flat schema; deterministic code computes amounts, explicit benefit formulas, dates and unique UTF-16 spans. Substantive unmatched/ambiguous quotes, unsupported currency, truncated/malformed output and unexpected tools fail explicitly. Missing-value markers remain unknown; source date-only expiry is not invented.
+
+All four live-model synthetic cases passed (percent/conditions, receipt rejection, date-only dollar-off and prompt injection), with observed response times 228–3941 ms; `docs/deals-nemotron-evaluation.json` labels them synthetic and not real promotion evidence. Software checks now pass 33 unit/model tests and 20 PostgreSQL/API integration tests. The API and worker are running with the verified private model configuration and signed webhook secret. Real merchant enrollment, actual two-owner email receipt, Capital One acquisition and physical/shared-app acceptance remain open. No real emails, registrations, commits or pushes occurred in this continuation.
+
+### Goal completion audit and blocked handoff
+
+After three consecutive goal turns with the same live-data/entitlement gate, a fresh provider check still returns billing 403 and zero email messages; browser dashboard access is unavailable. The live API/worker, free Cloudflare tunnel and private model endpoint remain healthy. No further independent work can prove the required actual email, merchant enrollment/unsubscribe, eligible Capital One acquisition or physical/shared-app acceptance without operator input or external-state change. The full deals goal is therefore blocked, not complete. The tunnel approval is already resolved; the next needed operator evidence is Photon plan/remaining email allowance/credit, followed by authorized real merchant inputs. Do not repeat broad tests or fabricate live success while waiting.
+
+### Operator email confirmation and diagnosis — November 7, 2026
+
+The user confirms Photon should allow emails and clarifies the intended use: read incoming promotional messages after registering users with merchants. The prior billing 403 was a permission limitation, not proof of a receiving failure. A fresh aggregate database read found zero owners, identities, enrollments, source messages, offers and failed jobs; the local email reader enablement flag was still false. Thus no real enrolled-user mail flow had been initiated. The agent acknowledged that treating billing access as the principal receiving blocker overstated the evidence.
+
+Based on the operator confirmation, enabled `PHOTON_EMAIL_ENTITLEMENT_CONFIRMED=true` in ignored runtime configuration and reloaded the API/worker. Allocated one dedicated pseudonymous operator diagnostic owner/address, explicitly labeled diagnostic in `.local/deals-debug-session.json` (0600); its token is not printed. This does not represent a merchant registration or fabricated deal. Actual Photon inbox reconciliation for this owner succeeded: source status `ready`, no reason/error, zero messages. Domain verification and one signed destination remain healthy. No plan/payment changes, outbound sends, or merchant registrations occurred.
+
+Next diagnostic step is an actual inbound email from the user's own mailbox to the saved diagnostic address, with subject `DEALS-INBOUND-TEST`. After the user reports sending it, inspect Photon receipt, signed delivery/recipient routing, durable message/job storage and classification. Merchant registration remains unfinished: current adapters hand off actual identity/verification steps. The remaining blocker should no longer be described as inability to read Photon's billing endpoint.
+
+
+### Actual inbound receipt and enrollment continuation — November 7, 2026, latest
+
+This update supersedes earlier zero-message/billing-blocked snapshots. The operator confirmed Photon email availability and sent `DEALS-INBOUND-TEST`. The actual message passed the signed webhook, owner routing, durable storage and worker in 1993 ms; reconciliation reused the same message and extraction job. The job completed once without error. The personal test sender correctly produced no merchant offer. Evidence: [redacted inbound trace](services/deals/docs/deals-inbound-evidence.json). Billing endpoint 403 is a permission limitation, not an email-receiving outage.
+
+Migration `002_enrollment_flow.sql` is applied to TigerData. Explicit owner registration needs no fabricated purchase. Versioned existing-account checks, submitted/uncertain outcome preservation, stale-proof rejection and independent loyalty/marketing confirmation are implemented. Partial confirmation preserves previous verified results. The app exposes promotional-only intent and never equates submitting a form with external success. Validation now passes 33 unit/model tests plus 28 PostgreSQL/API scenarios (61 total), backend/mobile typechecks/builds and both mobile exports.
+
+The user chose Chipotle and Panera, then stated an existing Chipotle membership and no Panera membership. Prepared requests are saved with the stable alias: Chipotle → update existing preferences; Panera → complete signup. No external merchant account/form/confirmation has been completed. Browser access currently reports its host unavailable. Panera requires accurate registration/contact information and SMS OTP; Chipotle specifies an SMS-capable number. The alias is appropriate for promotional mail; required verification and existing account access remain user steps.
+
+Still open within deals: actual merchant signup/preference updates, real promotional messages and evidence review/candidate demonstration, a second real owner alias/plain-text sample, actual unsubscribe/return, observed UI and real-template extraction measurements. Capital One acquisition remains absent with zero offers; source-status/link-out is not aggregation. The separate finance, forecast, location, calls and optimizer implementations are excluded from this request's remaining blockers. The full deals flow is not complete. See [current validation](services/deals/docs/deals-validation.md) and [runbook](services/deals/docs/deals-runbook.md). No commit or push.
+
+## 18. Google identity, Calendar and cross-branch integration plan — November 8, 2026
+
+The user requested planning before implementation: review other branches and existing sign-in UI, add Google OAuth and read-only Calendar-derived expense/income forecasting, identify Nessie customers once during first-use onboarding, and persist the association so repeat authentication does not repeat onboarding. The plan is [plan/google-onboarding-calendar.md](plan/google-onboarding-calendar.md).
+
+Remote references were refreshed and source reviewed across deals, frontend, feat-rs, arjun, main and tom. Proposed integration uses frontend's `app/` UI, deals' Fastify/TigerData backend and UUID ownership, adapted feat-rs finance memory, arjun's deterministic optimizer, and main's calling service. Existing frontend sign-in is a visual placeholder; its Upcoming/Account views use samples. The feat-rs adapter still targets old Nessie endpoints and account-ID ownership. These are integration tasks, not completed functionality.
+
+Proposed design: Google issuer/subject maps to a stable app UUID; saved onboarding state and verified sandbox customer/account IDs live in TigerData; app sessions and encrypted Google offline credentials are separate; read-only calendar consent is optional and revocable; evidence-backed calendar facts reconcile against bills/transactions before deterministic forecasting. Preserve conversational budget/goal onboarding and source uncertainty. Name plus card last four selects a sandbox record and must not be presented as real bank authentication.
+
+Dependencies found: Google OAuth client configuration absent from inspected local env files; Google Console configuration and actual account consent needed if no authorized console session exists. Supported native OAuth testing needs an Expo development build rather than Expo Go. Existing Nessie/TigerData/Photon/Nemotron configuration should be reused. No implementation, migration, merge, commit, push or provider setup was performed; only planning documentation changed.
