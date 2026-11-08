@@ -97,7 +97,7 @@ def capped(v: int, o: Offer) -> int:
     return v if o.max_benefit is None else min(v, o.max_benefit.minor)
 
 
-def price_combo(price: int, m: PaymentMethod, combo: tuple[Offer, ...]) -> tuple[int, int]:
+def price_combo(price: int, m: PaymentMethod, combo: tuple[Offer, ...], category: str = "") -> tuple[int, int]:
     off = 0
     for o in combo:
         if o.kind is OfferKind.AMOUNT_OFF:
@@ -105,7 +105,7 @@ def price_combo(price: int, m: PaymentMethod, combo: tuple[Offer, ...]) -> tuple
         elif o.kind is OfferKind.PERCENT_OFF:
             off += capped(price * o.value // 10_000, o)
     payable = max(price - off, 0)
-    back = payable * m.base_cashback_bps // 10_000
+    back = payable * m.category_cashback_bps.get(category, m.base_cashback_bps) // 10_000
     for o in combo:
         if o.kind is OfferKind.CASHBACK_AMOUNT:
             back += capped(o.value, o)
@@ -163,7 +163,12 @@ def recommend(inp, now: datetime, max_fix_age=timedelta(minutes=10), cap: int = 
                     chosen = tuple(offers[k] for k in combo)
                     if not combo_allowed(m, chosen):
                         continue
-                    payable, effective = price_combo(it.price.minor, m, chosen)
+                    # Independently reject a combination that omits compatible,
+                    # automatic membership earnings. Points still have no cash value.
+                    automatic = [o for o in offers if o.kind is OfferKind.POINTS_PER_DOLLAR and o.source.startswith("store_loyalty")]
+                    if any(o not in chosen and combo_allowed(m, chosen + (o,)) for o in automatic):
+                        continue
+                    payable, effective = price_combo(it.price.minor, m, chosen, it.category)
                     if payable > limit:
                         continue
                     key = (effective, payable, mi, sum(1 << k for k in combo))

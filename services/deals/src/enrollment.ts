@@ -18,12 +18,14 @@ async function authorizedOwner(tx: Tx, owner: string) {
 export async function requestEnrollment(
   tx: Tx,
   owner: string,
-  input: z.infer<typeof enrollmentRequestSchema>,
+  input: z.input<typeof enrollmentRequestSchema>,
 ) {
   const user = await authorizedOwner(tx, owner);
   const program = (
     await tx.query("SELECT * FROM deals.program WHERE id=$1", [input.programId])
   ).rows[0];
+  if (program?.kind === "card_linked_offer" || program?.paid_membership)
+    throw new DomainError("not_a_free_loyalty_program", 422);
   if (!program) throw new DomainError("unsupported_merchant_program", 422);
   let enrollment = (
     await tx.query(
@@ -42,7 +44,7 @@ export async function requestEnrollment(
     await tx.query(
       `INSERT INTO deals.enrollment(owner_id,program_id,state,initiation,enrollment_intent,existing_membership,
     activation_at,inactivity_at,signup_status,verification_started_at,reason)
-    VALUES($1,$2,'queued','owner_request',$3,$4,$5,$6,'not_started',$5,$7) RETURNING *`,
+    VALUES($1,$2,'queued',$8,$3,$4,$5,$6,'not_started',$5,$7) RETURNING *`,
       [
         owner,
         program.id,
@@ -53,6 +55,7 @@ export async function requestEnrollment(
         input.existingMembership === "unknown"
           ? "check_existing_membership_before_signup"
           : "merchant_verification_required",
+        input.initiation ?? "owner_request",
       ],
     )
   ).rows[0];
@@ -72,8 +75,8 @@ export async function requestEnrollment(
 export async function enrollmentFlow(tx: Tx, owner: string, id: string) {
   const e = (
     await tx.query(
-      `SELECT e.*,p.name,p.signup_url,p.preferences_url,p.capabilities,p.policy_evidence,i.address
-    FROM deals.enrollment e JOIN deals.program p ON p.id=e.program_id JOIN deals.identity i ON i.owner_id=e.owner_id
+      `SELECT e.*,p.name,p.signup_url,p.preferences_url,p.capabilities,p.policy_evidence,i.address,o.first_name
+    FROM deals.enrollment e JOIN deals.program p ON p.id=e.program_id JOIN deals.identity i ON i.owner_id=e.owner_id JOIN deals.owner o ON o.id=e.owner_id
     WHERE e.owner_id=$1 AND e.id=$2`,
       [owner, id],
     )
@@ -107,14 +110,21 @@ export async function enrollmentFlow(tx: Tx, owner: string, id: string) {
     intent: e.enrollment_intent,
     existingMembership: e.existing_membership,
     promotionalAddress: e.address,
+    firstName: e.first_name,
+    copyFields: [
+      { name: "email", value: e.address },
+      ...(e.first_name ? [{ name: "firstName", value: e.first_name }] : []),
+    ],
     nextAction: action,
     url: action === "complete_signup" ? e.signup_url : e.preferences_url,
     termsUrl: e.policy_evidence.url,
     requiredInputs: e.capabilities.requires ?? [],
     verificationStartedAt: e.verification_started_at ?? e.activation_at,
     submittedAt: e.submitted_at,
-    externalOutcome:
-      e.signup_status === "confirmed"
+    simulated: e.simulated,
+    externalOutcome: e.simulated
+      ? "simulated_demo_signup"
+      : e.signup_status === "confirmed"
         ? "user_verified_merchant_evidence"
         : "unconfirmed",
     safeToCreateAccount:

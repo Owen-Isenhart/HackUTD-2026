@@ -56,10 +56,10 @@ function matchesToken(value, expected) {
   return supplied.length === expected.length && timingSafeEqual(supplied, expected);
 }
 
-function serveProfile({ env = process.env, memory, texts, calls, locations, readiness, buildProfile = buildFinanceProfile, recommend = recommendVisit, fetchImpl = fetch } = {}) {
+function serveProfile({ env = process.env, pool, memory, texts, calls, locations, readiness, buildProfile = buildFinanceProfile, recommend = recommendVisit, fetchImpl = fetch } = {}) {
   const token = env.FINANCE_DEMO_TOKEN;
-  if (!token || token.length < 24) throw new Error('Set FINANCE_DEMO_TOKEN to a random token of at least 24 characters.');
-  const expected = Buffer.from(`Bearer ${token}`);
+  if ((token && token.length < 24) || (!token && !pool)) throw new Error('Set FINANCE_DEMO_TOKEN to a random token of at least 24 characters.');
+  const expected = Buffer.from(`Bearer ${token || require('node:crypto').randomBytes(32).toString('hex')}`);
   const callUser = env.CALL_RECOMMENDATION_USER_ID?.trim();
   const callKey = env.RECOMMENDATION_API_KEY;
   const callEnabled = calls && /^[a-z0-9_.-]{1,64}$/i.test(callUser ?? '') && callKey?.length >= 24
@@ -67,12 +67,40 @@ function serveProfile({ env = process.env, memory, texts, calls, locations, read
   const callToken = callEnabled ? Buffer.from(callKey) : null;
   const destination = callEnabled && env.CALLS_API_KEY !== token && callDestination(env);
   const deals = createDealsGateway(env, fetchImpl);
+  async function operatorAuthenticated(bearer){if(matchesToken(bearer,expected))return true;if(!pool||!env.FINANCE_OPERATOR_OWNER_ID)return false;const auth=await require('../backend/owners').resolveSession(pool,bearer);return auth?.ownerId===env.FINANCE_OPERATOR_OWNER_ID;}
+  const plansForOwner=async ownerId=>{
+    if(!texts||ownerId!==env.FINANCE_OPERATOR_OWNER_ID)return {};
+    const summary=await textSummary();
+    return {summary,obligations:[...(summary?.upcoming||[]),...(summary?.pendingClarifications||[])],pendingUnknownAmounts:summary?.unverifiedPendingCount||0};
+  };
   const port = Number(env.FINANCE_PORT || 8787);
+  let pipelineHttp, stopPipeline;
+  if(pool){
+    const {createNessieV2}=require('../backend/nessie-v2');
+    const {createPipelineHttp}=require('../backend/pipeline-http');
+    const {createStages}=require('../backend/pipeline-stages');
+    const {startPipeline}=require('../backend/pipeline');
+    const {createPipelineScheduler}=require('../backend/pipeline-scheduler');
+    const nessie=createNessieV2({baseUrl:env.NESSIE_V2_BASE_URL,apiKey:env.NESSIE_V2_API_KEY,fetchImpl});
+    pipelineHttp=createPipelineHttp({pool,nessie,deals,env,fetchImpl,plansForOwner,onRecommendation:async(ownerId,result)=>{
+      if(ownerId===env.FINANCE_OPERATOR_OWNER_ID&&destination&&result.recommendation&&result.callCandidates?.length&&(result.recommendation.source==='live'||env.CALL_ALLOW_DEMO_LOCATION==='1')){
+        const profile=await loadProfile();
+        if(profile?.profileVersion!==result.recommendation.profileVersion||profile?.memoryVersion!==result.recommendation.memoryVersion)return {recommendation:null,reason:'refresh_required'};
+        result.recommendation.callId=await calls.save({profile,recommendation:result.recommendation,candidates:result.callCandidates});
+      }
+      return result;
+    }});
+    stopPipeline=startPipeline(pool,createStages({nessie,env,deals,obligations:plansForOwner}),createPipelineScheduler(pool,nessie));
+  }
   let inFlight;
   let lastProfile;
   let refreshFailed = false;
   let textStatus = texts ? { state: 'starting' } : { state: 'disabled' };
-  const loadStoredProfile = () => memory ? memory.loadProfile() : lastProfile;
+  const loadStoredProfile = async () => {
+    if(pool&&env.FINANCE_OPERATOR_OWNER_ID){const d=await require('../backend/pipeline-data').loadOwnerData(pool,env.FINANCE_OPERATOR_OWNER_ID,new Date(),await plansForOwner(env.FINANCE_OPERATOR_OWNER_ID));if(d?.profile)return d.profile;}
+    return memory ? memory.loadProfile() : lastProfile;
+  };
+  if(pool){const oldRecommend=recommend;recommend=(profile,body,options)=>profile?.schemaVersion===2?require('../backend/pipeline-recommendation').recommendPipeline(pool,profile.ownerId,body,{...options,deals,plansForOwner}):oldRecommend(profile,body,options);}
   const textSummary = async (timeZone = env.FINANCE_TIME_ZONE || 'America/Chicago', horizonDays = 30) => texts && summarizeObligations(await texts.store.listObligations(), {
     timeZone, horizonDays,
   });
@@ -101,6 +129,7 @@ function serveProfile({ env = process.env, memory, texts, calls, locations, read
   }
 
   async function refreshProfile() {
+    if(pool&&env.FINANCE_OPERATOR_OWNER_ID){await require('../backend/pipeline').queueRun(pool,env.FINANCE_OPERATOR_OWNER_ID);return loadProfile();}
     let profile;
     try {
       profile = await buildProfile({ env, fetchImpl });
@@ -133,11 +162,12 @@ function serveProfile({ env = process.env, memory, texts, calls, locations, read
       try { ready = Boolean(await readiness?.()); } catch { /* report generic unavailability */ }
       return sendJson(res, ready ? 200 : 503, { status: ready ? 'ready' : 'unavailable' });
     }
+    if(pipelineHttp && await pipelineHttp(req,res))return;
     const [pathname, query] = req.url.split('?', 2);
     const dealsHook = deals && req.method === 'POST' && req.url === '/webhooks/photon';
     const dealsRoute = deals && ['GET', 'POST', 'DELETE'].includes(req.method) && isDealsRoute(pathname);
     if (dealsHook || dealsRoute) {
-      if (!dealsHook && !matchesToken(req.headers.authorization, expected)) return sendJson(res, 401, { error: 'Valid credentials are required.' });
+      if (!dealsHook && !await operatorAuthenticated(req.headers.authorization)) return sendJson(res, 401, { error: 'Valid credentials are required.' });
       try {
         const body = req.method === 'POST' ? await readBody(req, dealsHook ? 262_144 : 65_536, null) : undefined;
         const response = await deals.proxy(req.url, req.method, req.headers, body?.length ? body : undefined, dealsHook);
@@ -169,7 +199,7 @@ function serveProfile({ env = process.env, memory, texts, calls, locations, read
     const obligationsRoute = req.method === 'GET' && req.url === '/api/text-obligations';
     const textSyncRoute = req.method === 'POST' && req.url === '/api/texts/sync';
     if (obligationEdit || obligationsRoute || textSyncRoute) {
-      if (!matchesToken(req.headers.authorization, expected)) return sendJson(res, 401, { error: 'Valid credentials are required.' });
+      if (!await operatorAuthenticated(req.headers.authorization)) return sendJson(res, 401, { error: 'Valid credentials are required.' });
       if (!texts) return sendJson(res, 503, { error: 'Photon text ingestion is not configured.' });
       try {
         if (obligationsRoute) return sendJson(res, 200, { ...await textSummary(), ingestion: textStatus });
@@ -200,7 +230,7 @@ function serveProfile({ env = process.env, memory, texts, calls, locations, read
     const regionsRoute = delivery && req.method === 'GET' && req.url === '/api/v1/location/regions';
     const locationEvent = delivery && req.method === 'POST' && req.url === '/api/v1/location/events';
     if (alertSettings || deviceRegister || deviceRevoke || regionsRoute || locationEvent) {
-      if (!locationEvent && !matchesToken(req.headers.authorization, expected)) return sendJson(res, 401, { error: 'Valid credentials are required.' });
+      if (!locationEvent && !await operatorAuthenticated(req.headers.authorization)) return sendJson(res, 401, { error: 'Valid credentials are required.' });
       let body;
       if (req.method === 'PUT' || locationEvent) {
         try { body = await readJson(req); } catch { return sendJson(res, 400, { error: 'Expected a valid JSON request.' }); }
@@ -243,7 +273,7 @@ function serveProfile({ env = process.env, memory, texts, calls, locations, read
     if (!profileRoute && !financeRead && !recommendationRoute && !memoryRoute && !callRoute && !callAction && !callResource) {
       return sendJson(res, 404, { error: 'Not found.' });
     }
-    if (callRoute || callAction ? !matchesToken(req.headers['x-api-key'], callToken) : !matchesToken(req.headers.authorization, expected)) {
+    if (callRoute || callAction ? !matchesToken(req.headers['x-api-key'], callToken) : !await operatorAuthenticated(req.headers.authorization)) {
       return sendJson(res, 401, { error: 'Valid credentials are required.' });
     }
     let body;
@@ -370,6 +400,7 @@ function serveProfile({ env = process.env, memory, texts, calls, locations, read
       return sendJson(res, 502, { error: 'Finance data is unavailable. Check the backend terminal.' });
     }
   });
+  if(stopPipeline)server.on('close',stopPipeline);
   server.on('error', (error) => {
     console.error(`Finance backend could not listen: ${error.code}.`);
     process.exitCode = 1;
@@ -406,7 +437,7 @@ function createTexts(pool, env = process.env) {
   if (!cfg.enabled) return undefined;
   cfg.pollSeconds = Number(env.PHOTON_TEXT_POLL_SECONDS ?? 60);
   const store = pool
-    ? createTigerTextStore(pool, { ownerId: env.NESSIE_ACCOUNT_ID, projectId: cfg.projectId })
+    ? createTigerTextStore(pool, { ownerId: env.FINANCE_OPERATOR_OWNER_ID || env.NESSIE_ACCOUNT_ID, projectId: cfg.projectId })
     : createMemoryTextStore();
   return { cfg, store };
 }
@@ -433,15 +464,16 @@ async function main() {
   }
   const pool = process.env.TIGER_DATA_URL ? createTigerPool() : undefined;
   if (process.argv[2] === '--serve') {
-    const memory = pool && createTigerMemory(pool, process.env.NESSIE_ACCOUNT_ID);
-    const calls = pool && createCallContexts(pool, process.env.NESSIE_ACCOUNT_ID);
-    const locations = pool && createLocationAlerts(pool, process.env.NESSIE_ACCOUNT_ID);
+    const operator=process.env.FINANCE_OPERATOR_OWNER_ID || process.env.NESSIE_ACCOUNT_ID;
+    const memory = pool && operator && createTigerMemory(pool, operator);
+    const calls = pool && operator && createCallContexts(pool, operator);
+    const locations = pool && operator && createLocationAlerts(pool, operator);
     const readiness = pool && (async () => {
       const { rows: [row] } = await pool.query(`SELECT to_regclass('hackutd_finance.profile') IS NOT NULL
         AND to_regclass('hackutd_finance.location_device') IS NOT NULL AS ready`);
       return row?.ready;
     });
-    serveProfile({ memory, texts: createTexts(pool), calls, locations, readiness });
+    serveProfile({ pool, memory, texts: createTexts(pool), calls, locations, readiness });
     return;
   }
   if (process.argv[2] === '--texts-sync') {

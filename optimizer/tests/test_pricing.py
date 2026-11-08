@@ -167,3 +167,15 @@ def test_discounts_beyond_price_make_item_free():
     it = item("cookie", "cafe", 100)
     s = sel(it, [offer("a", "cafe", OfferKind.AMOUNT_OFF, 80), offer("b", "cafe", OfferKind.AMOUNT_OFF, 50)], [DEBIT])
     assert s.breakdown.payable_now == 0 and sorted(o.id for o in s.offers) == ["a", "b"]
+
+
+def test_category_rate_stacks_with_card_linked_discount_and_unvalued_points():
+    it = item("bowl", "cafe", 1500, category="dining")
+    card = PaymentMethod(id="savor", name="Sandbox Savor", kind="credit", base_cashback_bps=100, category_cashback_bps={"dining":300}, is_default=True)
+    offers = [offer("sample", "cafe", OfferKind.AMOUNT_OFF, 300, stack_group="card_linked", required_payment_method_ids=["savor"]), offer("earn", "cafe", OfferKind.POINTS_PER_DOLLAR, 10, points_program="Chipotle", stack_group="loyalty:chipotle", source="store_loyalty_simulated:chipotle")]
+    result = sel(it, offers, [DEBIT, card])
+    assert result.method.id == "savor"
+    assert result.breakdown.payable_now == 1200
+    assert result.breakdown.card_cashback == 36
+    assert result.breakdown.effective_cost == 1164
+    assert result.breakdown.points == {"Chipotle":120}

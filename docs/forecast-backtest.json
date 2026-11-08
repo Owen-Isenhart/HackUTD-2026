@@ -1,0 +1,6 @@
+{
+  "status": "not_run",
+  "reason": "Live-service validation deferred by user on 2026-11-08. No live credentials are configured in this checkout.",
+  "accepted": false,
+  "liveEvidence": false
+}

@@ -1,5 +1,7 @@
 # Derived data pipeline — implementation plan
 
+> Implementation update, 2026-11-08: the code and local validation are described in [the runbook](derived-data-pipeline-runbook.md). Live-service testing was explicitly deferred by the user. Statements below describing the pre-build baseline are retained as the original plan.
+
 Written 2026-11-08 against `main` at commit `eaa65cd`. The companion file [derived-data-pipeline-context.md](derived-data-pipeline-context.md) describes what exists today. This file says what to build, in what order, and how each piece is shown to work.
 
 Nothing in this plan has been built yet. Section 19 says what was checked while writing it, and how.

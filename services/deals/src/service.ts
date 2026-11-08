@@ -18,7 +18,7 @@ import {
   validateEvidence,
 } from "./extraction.js";
 import { evaluateOffer } from "./eligibility.js";
-import { proposeWithNemotron } from "./nemotron.js";
+import { proposeWithNemotron, classifyWelcome } from "./nemotron.js";
 
 export async function consent(
   tx: Tx,
@@ -52,8 +52,10 @@ export async function consent(
     "capital_one_shopping",
   ]) {
     const isCapitalOne = product.startsWith("capital_one");
-    const status = isCapitalOne ? "ready" : "blocked";
-    const reason = isCapitalOne ? null : "provider_readiness_unverified";
+    const status = "blocked";
+    const reason = isCapitalOne
+      ? "no_permitted_acquisition_route"
+      : "provider_readiness_unverified";
     await tx.query(
       `INSERT INTO deals.source(owner_id,product,status,reason) VALUES($1,$2,$3,$4)
       ON CONFLICT(owner_id,product) DO UPDATE SET status=$3,reason=$4,updated_at=now()`,
@@ -128,9 +130,10 @@ async function updateEnrollmentFromPurchases(
   now: Date,
 ) {
   const program = (
-    await tx.query("SELECT * FROM deals.program WHERE merchant_id=$1", [
-      merchant,
-    ])
+    await tx.query(
+      "SELECT * FROM deals.program WHERE merchant_id=$1 AND kind='store_loyalty'",
+      [merchant],
+    )
   ).rows[0];
   if (!program)
     return { status: "unsupported", reason: "no_supported_merchant_program" };
@@ -208,11 +211,16 @@ async function updateEnrollmentFromPurchases(
   return { status: row.state, enrollmentId: row.id };
 }
 
-export async function enrollmentHandoff(tx: Tx, owner: string, id: string) {
+export async function enrollmentHandoff(
+  tx: Tx,
+  owner: string,
+  id: string,
+  cfg?: Config,
+) {
   await assertConsent(tx, owner, true);
   const e = (
     await tx.query(
-      `SELECT e.*,p.signup_url,p.preferences_url,p.capabilities FROM deals.enrollment e
+      `SELECT e.*,p.signup_url,p.preferences_url,p.capabilities,p.assisted_supported,p.kind FROM deals.enrollment e
     JOIN deals.program p ON p.id=e.program_id WHERE e.owner_id=$1 AND e.id=$2 FOR UPDATE OF e`,
       [owner, id],
     )
@@ -224,69 +232,36 @@ export async function enrollmentHandoff(tx: Tx, owner: string, id: string) {
   )
     return;
 
-  if (e.capabilities?.mode === "automatic") {
-    // Automated cardholder registration for card-linked programs (Capital One)
-    if (e.existing_membership === "yes") {
-      const row = (
-        await tx.query(
-          `UPDATE deals.enrollment SET state='enrolled',loyalty_status='existing',
-          promotion_status='subscribed',signup_status='confirmed',reason=NULL,
-          evidence=$3,version=version+1,updated_at=now() WHERE owner_id=$1 AND id=$2 RETURNING *`,
-          [
-            owner,
-            id,
-            JSON.stringify({
-              kind: "automated_cardholder_sync",
-              completedAt: new Date().toISOString(),
-              existingMembership: "yes",
-              autoSubscribed: true,
-            }),
-          ],
-        )
-      ).rows[0];
-      await emit(
-        tx,
-        owner,
-        "enrollment.changed",
-        id,
-        row.version,
-        "automated_preference_sync_confirmed",
+  const user = (
+    await tx.query("SELECT synthetic_person FROM deals.owner WHERE id=$1", [
+      owner,
+    ])
+  ).rows[0];
+  if (user.synthetic_person) {
+    if (!cfg?.DEALS_DEMO_SIMULATED_SIGNUP) {
+      await tx.query(
+        "UPDATE deals.enrollment SET state='unsupported',reason='simulated_signup_disabled',version=version+1 WHERE owner_id=$1 AND id=$2",
+        [owner, id],
       );
-    } else {
-      const row = (
-        await tx.query(
-          `UPDATE deals.enrollment SET state='enrolled',loyalty_status='enrolled',
-          promotion_status='subscribed',signup_status='confirmed',reason=NULL,
-          existing_membership='yes',evidence=$3,version=version+1,updated_at=now()
-          WHERE owner_id=$1 AND id=$2 RETURNING *`,
-          [
-            owner,
-            id,
-            JSON.stringify({
-              kind: "automated_cardholder_enrollment",
-              completedAt: new Date().toISOString(),
-              autoEnrolled: true,
-              promotionsSubscribed: true,
-            }),
-          ],
-        )
-      ).rows[0];
-      await emit(
-        tx,
-        owner,
-        "enrollment.changed",
-        id,
-        row.version,
-        "automated_merchant_signup_confirmed",
-      );
+      return;
     }
-  } else {
-    // Assisted merchant registration for programs requiring real user phone/SMS OTP (Panera, Chipotle)
+    const alias = (
+      await tx.query("SELECT address FROM deals.identity WHERE owner_id=$1", [
+        owner,
+      ])
+    ).rows[0]?.address;
     await tx.query(
-      `UPDATE deals.enrollment SET state='needs_user_input',reason='complete_merchant_signup_with_alias',
-      signup_status='awaiting_user',verification_started_at=coalesce(verification_started_at,now()),
-      version=version+1,updated_at=now() WHERE owner_id=$1 AND id=$2`,
-      [owner, id],
+      `UPDATE deals.enrollment SET state='enrolled',simulated=true,loyalty_status='simulated',promotion_status='unknown',signup_status='confirmed',existing_membership='no',evidence=$3,reason='simulated_signup_recorded',version=version+1,updated_at=now() WHERE owner_id=$1 AND id=$2`,
+      [
+        owner,
+        id,
+        JSON.stringify({
+          kind: "simulated_demo_signup",
+          at: new Date().toISOString(),
+          aliasThatWouldBeUsed: alias,
+          programTermsUrl: e.signup_url,
+        }),
+      ],
     );
     await emit(
       tx,
@@ -294,10 +269,31 @@ export async function enrollmentHandoff(tx: Tx, owner: string, id: string) {
       "enrollment.changed",
       id,
       e.version + 1,
-      "merchant_verification_required",
+      "simulated_signup_recorded",
     );
+    return;
   }
+  if (!e.assisted_supported || e.kind !== "store_loyalty") {
+    await tx.query(
+      "UPDATE deals.enrollment SET state='unsupported',reason='no_supported_signup_path',version=version+1 WHERE owner_id=$1 AND id=$2",
+      [owner, id],
+    );
+    return;
+  }
+  await tx.query(
+    "UPDATE deals.enrollment SET state='needs_user_input',reason='complete_merchant_signup_with_alias',signup_status='awaiting_user',verification_started_at=coalesce(verification_started_at,now()),version=version+1,updated_at=now() WHERE owner_id=$1 AND id=$2",
+    [owner, id],
+  );
+  await emit(
+    tx,
+    owner,
+    "enrollment.changed",
+    id,
+    e.version + 1,
+    "merchant_verification_required",
+  );
 }
+
 export async function confirmEnrollment(
   tx: Tx,
   owner: string,
@@ -311,7 +307,8 @@ export async function confirmEnrollment(
     expectedVersion: number;
   },
 ) {
-  await assertConsent(tx, owner, true);
+  const user=await assertConsent(tx, owner, true);
+  if(user.synthetic_person)throw new DomainError('synthetic_owner_simulation_only',422);
   const e = (
     await tx.query(
       "SELECT e.*,p.sender_domains FROM deals.enrollment e JOIN deals.program p ON p.id=e.program_id WHERE owner_id=$1 AND e.id=$2 FOR UPDATE OF e",
@@ -399,7 +396,7 @@ export async function processMessage(
   const programs = (
     await tx.query(
       `SELECT p.*,e.suppressed_at,e.opted_out_at FROM deals.program p
-    JOIN deals.enrollment e ON e.program_id=p.id WHERE e.owner_id=$1`,
+    JOIN deals.enrollment e ON e.program_id=p.id WHERE e.owner_id=$1 AND p.kind='store_loyalty'`,
       [owner],
     )
   ).rows;
@@ -419,56 +416,7 @@ export async function processMessage(
   }
   const program = matching[0];
 
-  // Auto-confirm pending assisted enrollment when a verified merchant message arrives
-  const pendingEnrollment = (
-    await tx.query(
-      `SELECT id, version, verification_started_at, loyalty_status, promotion_status
-       FROM deals.enrollment
-       WHERE owner_id=$1 AND program_id=$2 AND state='needs_user_input'
-       FOR UPDATE`,
-      [owner, program.id],
-    )
-  ).rows[0];
-
-  if (
-    pendingEnrollment &&
-    (!pendingEnrollment.verification_started_at ||
-      new Date(m.received_at) >=
-        new Date(pendingEnrollment.verification_started_at))
-  ) {
-    const row = (
-      await tx.query(
-        `UPDATE deals.enrollment SET state='enrolled',
-        loyalty_status=CASE WHEN loyalty_status='unknown' THEN 'enrolled' ELSE loyalty_status END,
-        promotion_status='subscribed',
-        signup_status='confirmed',
-        reason=NULL,
-        evidence=$3,
-        existing_membership='yes',
-        version=version+1,
-        updated_at=now()
-        WHERE owner_id=$1 AND id=$2 RETURNING *`,
-        [
-          owner,
-          pendingEnrollment.id,
-          JSON.stringify({
-            kind: "merchant_welcome_email_auto_confirmed",
-            messageId: m.id,
-            confirmedAt: new Date().toISOString(),
-            sender: m.sender,
-          }),
-        ],
-      )
-    ).rows[0];
-    await emit(
-      tx,
-      owner,
-      "enrollment.changed",
-      pendingEnrollment.id,
-      row.version,
-      "merchant_welcome_email_confirmed",
-    );
-  }
+  const welcomed = await matchWelcomeEmail(tx, owner, m, program, cfg);
   const parsed = extract(m.sanitized_text, m.subject);
   let proposals = parsed.proposals;
   if (
@@ -492,7 +440,9 @@ export async function processMessage(
         ? "needs_review"
         : proposals.length
           ? "promotion"
-          : parsed.classification,
+          : welcomed
+            ? "loyalty_welcome"
+            : parsed.classification,
     ],
   );
   for (const terms of proposals)
@@ -636,11 +586,11 @@ export async function candidates(
   await assertConsent(tx, owner);
   const offers = (
     await tx.query(
-      `SELECT o.*,p.merchant_id FROM deals.offer o JOIN deals.program p ON p.id=o.program_id
-    JOIN deals.enrollment e ON e.owner_id=o.owner_id AND e.program_id=o.program_id
+      `SELECT o.*,p.merchant_id,p.provenance,p.kind FROM deals.offer o JOIN deals.program p ON p.id=o.program_id
+    LEFT JOIN deals.enrollment e ON e.owner_id=o.owner_id AND e.program_id=o.program_id
       LEFT JOIN deals.message m ON m.id=o.message_id AND m.owner_id=o.owner_id
-    WHERE o.owner_id=$1 AND p.merchant_id=ANY($2) AND e.suppressed_at IS NULL AND e.opted_out_at IS NULL
-      AND ($3 OR m.project_id IS DISTINCT FROM 'capital_one')
+    WHERE o.owner_id=$1 AND p.merchant_id=ANY($2) AND (p.kind='card_linked_offer' OR (e.id IS NOT NULL AND e.state='enrolled' AND e.suppressed_at IS NULL AND e.opted_out_at IS NULL))
+      AND ($3 OR p.provenance <> 'synthetic_fixture')
     AND o.status NOT IN ('withdrawn','expired','rejected') ORDER BY o.created_at DESC LIMIT 200`,
       [owner, context.merchantIds, allowTestFixtures],
     )
@@ -971,12 +921,69 @@ export async function bootstrapOwner(
   pool: pg.Pool,
   id: string,
   timezone: string,
+  syntheticPerson = false,
+  firstName?: string,
 ) {
   validateTimezone(timezone);
   return tenant(pool, id, async (tx) => {
     await tx.query(
-      "INSERT INTO deals.owner(id,timezone) VALUES($1,$2) ON CONFLICT(id) DO NOTHING",
-      [id, timezone],
+      "INSERT INTO deals.owner(id,timezone,synthetic_person,first_name) VALUES($1,$2,$3,$4) ON CONFLICT(id) DO UPDATE SET synthetic_person=deals.owner.synthetic_person OR $3,first_name=coalesce($4,deals.owner.first_name)",
+      [id, timezone, syntheticPerson, firstName ?? null],
     );
   });
+}
+
+export async function matchWelcomeEmail(
+  tx: Tx,
+  owner: string,
+  message: any,
+  program: any,
+  cfg: Config,
+  classify: typeof classifyWelcome = classifyWelcome,
+) {
+  if (
+    !matchesDomain(message.sender, program.sender_domains) ||
+    message.trust?.unreadable
+  )
+    return false;
+  const e = (
+    await tx.query(
+      "SELECT * FROM deals.enrollment WHERE owner_id=$1 AND program_id=$2 AND signup_status IN ('awaiting_user','verification_pending','outcome_unknown') AND simulated=false AND suppressed_at IS NULL AND opted_out_at IS NULL FOR UPDATE",
+      [owner, program.id],
+    )
+  ).rows[0];
+  if (
+    !e?.verification_started_at ||
+    new Date(message.received_at) < new Date(e.verification_started_at)
+  )
+    return false;
+  const quote = await classify(message.sanitized_text, program.name, cfg);
+  if (
+    !quote ||
+    !message.sanitized_text.includes(quote) ||
+    !quote.toLowerCase().includes(program.name.toLowerCase()) ||
+    !/(?:joined|membership (?:is|has)|enrolled|now a member)/i.test(quote)
+  )
+    return false;
+  await confirmEnrollment(tx, owner, e.id, {
+    messageId: message.id,
+    loyalty: "enrolled",
+    promotions: false,
+    senderVerified: true,
+    expectedVersion: e.version,
+    existingMembershipChecked: true,
+  });
+  await tx.query(
+    "UPDATE deals.enrollment SET evidence=evidence || $3::jsonb WHERE owner_id=$1 AND id=$2",
+    [
+      owner,
+      e.id,
+      JSON.stringify({
+        kind: "merchant_welcome_email",
+        quote,
+        messageId: message.id,
+      }),
+    ],
+  );
+  return true;
 }

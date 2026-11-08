@@ -63,6 +63,14 @@ class PaymentMethod(Frozen):
     name: str
     kind: Literal["debit", "credit", "cash"]
     base_cashback_bps: int = Field(default=0, ge=0, le=10_000, description="Card's own cashback, basis points.")
+    category_cashback_bps: dict[str, int] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def _category_rates(self):
+        if any(not isinstance(rate, int) or isinstance(rate, bool) or rate < 0 or rate > 10_000 for rate in self.category_cashback_bps.values()):
+            raise ValueError("category cashback must be 0..10000 basis points")
+        return self
+
     points_program: str | None = None
     points_per_dollar: int = Field(default=0, ge=0, description="Whole points per whole dollar paid.")
     is_default: bool = False

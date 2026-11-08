@@ -172,3 +172,18 @@ Details and evidence: [context.md, section 19](context.md#19-branch-merge-and-in
 - [ ] INTEG-06 — Feed the app's OpenStreetMap nearby stores to the backend, which today recommends only from its own demo offer catalog.
 - [ ] INTEG-07 — Combine the four Expo apps (`app/`, root `App.js`, `nessie-signin-prototype/`, `services/deals/mobile/`) into one, or record which ones to retire.
 - [ ] INTEG-08 — Run the deals PostgreSQL integration tests on the merged tree.
+
+### Derived data pipeline — November 8, 2026
+
+Implementation and validation details: [pipeline runbook](docs/derived-data-pipeline-runbook.md). Local PostgreSQL-engine tests use isolated PGlite databases; network PostgreSQL, providers and device acceptance are separate. Live testing deferred by the user. Existing REWARD-02 and REWARD-05 checkboxes are unchanged pending Arjun's decision from plan section 17.4.
+
+- [x] **PIPE-01** — Sandbox identification, stable UUID ownership and expiring hashed sessions. Evidence: test/onboarding.test.js, test/owners.test.js, test/pipeline-http.test.js.
+- [x] **PIPE-02** — Owner-scoped v2 ledger, replay, transfers, reversal screening and 5,000-row fallback. Evidence: test/ledger.test.js, test/nessie-v2.test.js. Live probe not run.
+- [x] **PIPE-03** — Deterministic labeled persona history and gated replay-safe loading. Evidence: test/persona.test.js. Branch setup for Taco Bell/JCPenney remains unrun.
+- [ ] **PIPE-04** — Forecast bands and rolling-origin comparisons implemented; adoption requires live-data scores and coverage. Evidence: test/forecast-bands.test.js, test/forecast-backtest.test.js; docs/forecast-backtest.json records not-run status.
+- [x] **PIPE-05** — Chance-tested routines; simulator trap yields none. Evidence: test/routines-v2.test.js. Thresholds still need live-data tuning.
+- [x] **PIPE-06** — Enforced derived budgets and versioned user overrides. Evidence: test/budget-derive.test.js, test/pipeline-http.test.js, test/optimizer-world.test.js.
+- [x] **PIPE-07** — Frequency/routine selection and persistent user choice. Evidence: test/store-selection.test.js, test/pipeline.test.js.
+- [x] **PIPE-08** — Program kinds, sample labeling, simulated enrollments, assisted handoff and quote-checked welcome adapter. Evidence: services/deals/test/pipeline.test.ts and existing deals tests. Real signup and welcome-mail acceptance unrun.
+- [ ] **PIPE-09** — Card/offer/loyalty world and independent money guards implemented and exercised with the real local Python engine. Live rehearsal remains unrun: docs/pipeline-rehearsal.json.
+- [x] **PIPE-10** — Durable dependency order, replay skips and visible terminal failures. Evidence: test/pipeline.test.js. Two-worker network PostgreSQL check is opt-in and not run.

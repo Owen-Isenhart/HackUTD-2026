@@ -15,6 +15,9 @@ export type Purchase = z.infer<typeof purchaseSchema>;
 export const enrollmentRequestSchema = z
   .object({
     programId: z.string().min(1).max(100),
+    initiation: z
+      .enum(["owner_request", "store_selection"])
+      .default("owner_request"),
     existingMembership: z.enum(["unknown", "yes", "no"]),
     intent: z
       .enum(["loyalty_and_promotions", "promotions_only"])

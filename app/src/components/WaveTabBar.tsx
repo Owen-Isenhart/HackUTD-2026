@@ -1,11 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, Platform, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import {Tabs} from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { c } from '../theme';
 import { useReducedMotion, useTimed } from '../motion';
 import { Icon, IconName, T } from './ui';
+
+
+type BottomTabBarProps=Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
 
 const WAVE_H = 40;
 const WAVES_H = 88;
@@ -19,7 +22,7 @@ const ICONS: Record<string, { icon: IconName; label: string }> = {
 };
 
 // Water-wave nav from the Stitch design: 3 layered wave paths over a dark slab.
-export function WaveTabBar({ state, navigation }: BottomTabBarProps) {
+export function WaveTabBar({ state, emitter, navigateToTab }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   return (
     <View style={s.wrap} pointerEvents="box-none">
@@ -41,8 +44,8 @@ export function WaveTabBar({ state, navigation }: BottomTabBarProps) {
                 accessibilityRole="button"
                 accessibilityState={{ selected: focused }}
                 onPress={() => {
-                  const e = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-                  if (!focused && !e.defaultPrevented) navigation.navigate(route.name);
+                  const e = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+                  if (!focused && !e.defaultPrevented) navigateToTab(route.key);
                 }}
                 style={s.item}
               >

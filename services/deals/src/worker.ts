@@ -80,7 +80,7 @@ export async function runOne(
           await processMessage(tx, job.owner_id, p.messageId, cfg);
           break;
         case "enroll":
-          await enrollmentHandoff(tx, job.owner_id, p.enrollmentId);
+          await enrollmentHandoff(tx, job.owner_id, p.enrollmentId, cfg);
           break;
         case "unsubscribe":
           await unsubscribeHandoff(tx, job.owner_id, p.enrollmentId, p.version);

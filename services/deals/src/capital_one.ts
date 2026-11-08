@@ -239,7 +239,7 @@ export const CAPITAL_ONE_SPECS: CapitalOneOfferSpec[] = [
     expiresAt: "2026-12-31T23:59:59Z",
   },
   {
-    programId: "chipotle_rewards",
+    programId: "capital_one_chipotle",
     merchantId: "chipotle",
     campaignKey: "c1-chipotle-3off15-2026",
     title: "$3 off Chipotle Online or App Orders Over $15",
@@ -259,7 +259,7 @@ export const CAPITAL_ONE_SPECS: CapitalOneOfferSpec[] = [
     expiresAt: "2026-12-31T23:59:59Z",
   },
   {
-    programId: "mypanera",
+    programId: "capital_one_panera",
     merchantId: "panera",
     campaignKey: "c1-panera-20pct-2026",
     title: "20% off Any Panera Entree or Warm Bowl",
@@ -412,7 +412,7 @@ export async function seedCapitalOneOffers(
     message = (
       await tx.query(
         `INSERT INTO deals.message(owner_id, project_id, provider_id, sender, received_at, subject, sanitized_text, content_hash, classification, trust, purge_at)
-        VALUES($1, 'capital_one', 'c1_feed_aggregator', 'offers@capitalone.com', $2, 'Capital One Offers and Shopping Feed', $3, $4, 'capital_one_feed', $5, $6)
+        VALUES($1, 'capital_one', 'c1_feed_aggregator', 'synthetic-fixture@invalid', $2, 'Capital One Offers and Shopping Feed', $3, $4, 'synthetic_fixture', $5, $6)
         RETURNING id`,
         [
           owner,
@@ -420,8 +420,8 @@ export async function seedCapitalOneOffers(
           feedText,
           contentHash,
           JSON.stringify({
-            origin: "capital_one",
-            verified: true,
+            origin: "synthetic_fixture",
+            verified: false,
             aggregationVersion: "1.0",
           }),
           purgeAt,
@@ -430,6 +430,18 @@ export async function seedCapitalOneOffers(
     ).rows[0];
   }
 
+  await tx.query(
+    "UPDATE deals.message SET sender='synthetic-fixture@invalid',classification='synthetic_fixture',trust=$3 WHERE owner_id=$1 AND id=$2",
+    [
+      owner,
+      message.id,
+      JSON.stringify({
+        origin: "synthetic_fixture",
+        verified: false,
+        consistency: "quotes_match_fixture_text",
+      }),
+    ],
+  );
   const messageId = message.id;
   let count = 0;
 
@@ -438,25 +450,6 @@ export async function seedCapitalOneOffers(
     const staleAt = new Date(Date.parse(spec.expiresAt) - 7 * 86400_000);
     const evidencePurgeAt = new Date(
       Date.parse(spec.expiresAt) + 30 * 86400_000,
-    );
-
-    // 2. Ensure owner is enrolled in the program
-    await tx.query(
-      `INSERT INTO deals.enrollment(owner_id, program_id, state, initiation, enrollment_intent, existing_membership,
-      loyalty_status, promotion_status, signup_status, activation_at, inactivity_at, reason, evidence)
-      VALUES($1, $2, 'enrolled', 'owner_request', 'loyalty_and_promotions', 'yes', 'enrolled', 'subscribed', 'confirmed', $3, $4, NULL, $5)
-      ON CONFLICT(owner_id, program_id) DO UPDATE SET
-        state='enrolled', loyalty_status='enrolled', promotion_status='subscribed', signup_status='confirmed', reason=NULL, updated_at=now()`,
-      [
-        owner,
-        spec.programId,
-        now,
-        new Date(now.getTime() + 365 * 86400_000),
-        JSON.stringify({
-          kind: "capital_one_cardholder_automatic_enrollment",
-          seededAt: now.toISOString(),
-        }),
-      ],
     );
 
     // 3. Upsert offer into deals.offer
@@ -496,8 +489,8 @@ export async function seedCapitalOneOffers(
   for (const product of ["capital_one_offers", "capital_one_shopping"]) {
     await tx.query(
       `INSERT INTO deals.source(owner_id, product, status, reason, last_success_at)
-      VALUES($1, $2, 'ready', NULL, $3)
-      ON CONFLICT(owner_id, product) DO UPDATE SET status='ready', reason=NULL, last_success_at=$3, updated_at=now()`,
+      VALUES($1, $2, 'ready', 'synthetic_fixture', $3)
+      ON CONFLICT(owner_id, product) DO UPDATE SET status='ready', reason='synthetic_fixture', last_success_at=$3, updated_at=now()`,
       [owner, product, now],
     );
   }
@@ -508,7 +501,7 @@ export async function seedCapitalOneOffers(
     "deal_source.ready",
     "capital_one_offers",
     1,
-    "offers_aggregated_and_seeded",
+    "synthetic_fixture_seeded",
   );
   return count;
 }

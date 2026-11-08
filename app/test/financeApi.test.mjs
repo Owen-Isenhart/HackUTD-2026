@@ -1,3 +1,5 @@
+import {setSessionStore,saveSession,getSession} from '../src/finance/session.ts';
+const memory=new Map();setSessionStore({getItemAsync:async k=>memory.get(k)||null,setItemAsync:async(k,v)=>{memory.set(k,v);},deleteItemAsync:async k=>{memory.delete(k);}});
 // Tests for src/finance/financeApi.ts: the app's location events reach the finance backend's
 // recommendVisit() (backend/recommendation.js) in the shape it accepts. No network: fetch is
 // replaced with a fake that runs the real backend function on the request body.
@@ -55,11 +57,11 @@ test('the backend origin comes from EXPO_PUBLIC_FINANCE_API_URL without a traili
   assert.equal(FINANCE_API_URL, 'https://finance.test');
 });
 
-test('a live event is sent as a fix; a demo event sends only the demo flag', () => {
+test('a live event is sent as a fix; a demo event includes labeled marker coordinates', () => {
   assert.deepEqual(recommendationRequest(live({ latitude: 1, longitude: 2 }, 7)), {
     source: 'live', fix: { coords: { latitude: 1, longitude: 2, accuracy: 7 }, timestamp: now },
   });
-  assert.deepEqual(recommendationRequest({ latitude: 1, longitude: 2, accuracyM: 0, timestamp: now, source: 'demo' }), { source: 'demo' });
+  assert.deepEqual(recommendationRequest({ latitude: 1, longitude: 2, accuracyM: 0, timestamp: now, source: 'demo' }), { source: 'demo',fix:{coords:{latitude:1,longitude:2,accuracy:0},timestamp:now} });
   assert.equal(recommendationRequest(live({ latitude: 1, longitude: 2 }, null)), null);
 });
 
@@ -99,4 +101,10 @@ test('a live event without accuracy is not sent', async () => {
 test('a wrong token gives a clear error', async () => {
   fakeBackend('right-token');
   await assert.rejects(loadFinanceProfile('wrong-token'), /token was not accepted/);
+});
+
+test('identify sends no token, later calls use stored session, and 401 clears it',async()=>{
+ const {identifySandbox,api}=await import('../src/finance/financeApi.ts');const calls=[];
+ globalThis.fetch=async(url,init)=>{calls.push({url,init});return {ok:true,status:201,json:async()=>url.endsWith('/identify')?{session:{token:'sandbox-session'}}:{step:'done'}};};
+ await identifySandbox({firstName:'Alex',lastName:'Taylor',last4:'6619'});assert.equal(calls[0].init.headers.Authorization,undefined);assert.equal(await getSession(),'sandbox-session');await api('/api/v1/onboarding');assert.equal(calls[1].init.headers.Authorization,'Bearer sandbox-session');globalThis.fetch=async()=>({ok:false,status:401});await assert.rejects(api('/api/v1/onboarding'),/session token/);assert.equal(await getSession(),null);
 });

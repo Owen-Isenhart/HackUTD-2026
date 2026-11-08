@@ -1,0 +1,14 @@
+{
+  "provenance": "public_terms",
+  "url": "https://www.capitalone.com/credit-cards/savor/",
+  "verifiedOn": "2026-11-08",
+  "label": "Sandbox card modeled on public Savor terms",
+  "note": "Sandbox nickname says SavorOne; current public product is Savor. Grocery superstores excluded. Channel-specific travel and entertainment bonuses not modeled.",
+  "baseCashbackBps": 100,
+  "categoryCashbackBps": {
+    "dining": 300,
+    "coffee": 300,
+    "groceries": 300
+  },
+  "quote": "plus 1% cash back on all other purchases."
+}

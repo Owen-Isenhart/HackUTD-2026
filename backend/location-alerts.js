@@ -53,6 +53,13 @@ function createLocationAlerts(pool, ownerId) {
 }
 
 function routineRegions(profile) {
+  if(profile.selectedStores){
+    const routineIds=new Set(profile.routines.map(r=>r.branch_merchant_id));
+    return profile.selectedStores.filter(s=>s.selected).flatMap(s=>s.branches)
+      .filter(b=>Number.isFinite(Number(b.lat))&&Number.isFinite(Number(b.lon))&&b.lat!=null&&b.lon!=null)
+      .sort((a,b)=>Number(routineIds.has(b.id))-Number(routineIds.has(a.id))||(b.visits||0)-(a.visits||0)||a.id.localeCompare(b.id))
+      .slice(0,20).map(b=>({identifier:b.id,latitude:Number(b.lat),longitude:Number(b.lon),radius:SEARCH_RADIUS_METERS,notifyOnExit:false}));
+  }
   const timedMerchants = new Set(profile.routines.filter(({ daypart }) => daypart).map(({ provenance }) => provenance.merchantSourceId));
   return offers.filter((offer) => timedMerchants.has(offer.nessieMerchantId)).slice(0, 20)
     .map(({ id, coordinates }) => ({ identifier: id, ...coordinates, radius: SEARCH_RADIUS_METERS, notifyOnExit: false }));

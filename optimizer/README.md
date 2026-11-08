@@ -132,3 +132,5 @@ Revisit these under `DISC-08`:
 - The comparison baseline is the usual item, at list price, on the default card.
 - The search radius defaults to 1 mile when the profile doesn't give one.
 - The balance projection in [`forecast.py`](src/optimizer/forecast.py) is a stand-in until the forecast tasks are built (`FORECAST-05`, `FORECAST-06`). It counts uncertain expenses at their upper estimate, and on the same day it applies money out before money in.
+
+Budgets derived by deterministic code from the forecast are enforced like user-set budgets. Rules inferred by Nemotron are still held for confirmation.

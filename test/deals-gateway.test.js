@@ -35,3 +35,12 @@ test('the Deals gateway exchanges mobile auth for an owner scope and preserves s
   assert.deepEqual(calls[1].options.headers, signature);
   assert.deepEqual(calls[1].options.body, Buffer.from(body));
 });
+
+
+test('pipeline gateway provisions and signs each request for its own owner and scope',async()=>{
+ const {createDealsGateway}=require('../backend/deals-gateway');const {decodeJwt}=await import('jose');const seen=[];
+ const gateway=createDealsGateway({DEALS_API_URL:'http://127.0.0.1:3001',DEALS_AUTH_SECRET:'x'.repeat(40)},async(url,init)=>{seen.push({url,init,jwt:decodeJwt(init.headers.Authorization.slice(7))});return Response.json({});});
+ const a='00000000-0000-4000-8000-000000000001',b='00000000-0000-4000-8000-000000000002';
+ await gateway.provision({id:a,time_zone:'America/Chicago',is_synthetic_person:true,first_name:'Alex'});await gateway.enroll(b,'chipotle_rewards');
+ assert.equal(seen[0].jwt.sub,a);assert.equal(seen[0].jwt.scope,'deals:provision');assert.equal(seen[1].jwt.sub,b);assert.equal(JSON.parse(seen[1].init.body).initiation,'store_selection');
+});

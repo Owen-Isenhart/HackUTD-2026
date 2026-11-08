@@ -1,0 +1,6621 @@
+{
+  "provenance": "synthetic_persona",
+  "generator": "generate-persona-history.mjs",
+  "generatorVersion": 1,
+  "seed": 2026,
+  "nessieCustomerId": "cust_01m6x5w635z27trg3dfbhjxjvx",
+  "timeZone": "America/Chicago",
+  "from": "2024-11-09",
+  "to": "2026-11-07",
+  "notice": "Generated demo habits. Not real purchases. Merchant IDs resolved from the imported catalog; no invented branch IDs.",
+  "records": [
+    {
+      "id": "persona_d6cd66d61ed5",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2024-11-09T20:10:00.000Z",
+      "amountCents": 4337,
+      "category": "retail"
+    },
+    {
+      "id": "persona_6994fe2502f6",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2024-11-11T14:10:00.000Z",
+      "amountCents": 610,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_9659512da253",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-11-11T17:14:00.000Z",
+      "amountCents": 1282,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e56f4e72ada3",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-11-12T17:09:00.000Z",
+      "amountCents": 1333,
+      "category": "dining"
+    },
+    {
+      "id": "persona_96096b796512",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2024-11-13T14:19:00.000Z",
+      "amountCents": 694,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_9a0884dde020",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-11-13T17:17:00.000Z",
+      "amountCents": 1274,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9f04e3d4d115",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-11-14T17:07:00.000Z",
+      "amountCents": 1279,
+      "category": "dining"
+    },
+    {
+      "id": "persona_85be706d99f9",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2024-11-15T14:19:00.000Z",
+      "amountCents": 534,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_93366d59a89a",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2024-11-16T03:44:00.000Z",
+      "amountCents": 1037,
+      "category": "dining"
+    },
+    {
+      "id": "persona_596843b0a983",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-11-18T17:10:00.000Z",
+      "amountCents": 1164,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d026586530e8",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-11-19T17:13:00.000Z",
+      "amountCents": 1273,
+      "category": "dining"
+    },
+    {
+      "id": "persona_80f6bd6f404d",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2024-11-19T18:34:00.000Z",
+      "amountCents": 1090,
+      "category": "dining"
+    },
+    {
+      "id": "persona_95af26ba3197",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2024-11-20T14:13:00.000Z",
+      "amountCents": 635,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_640c7b3f932d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-11-21T17:10:00.000Z",
+      "amountCents": 1453,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3898e088578f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-11-22T17:18:00.000Z",
+      "amountCents": 1186,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6324f7b045a5",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2024-11-23T16:47:00.000Z",
+      "amountCents": 1553,
+      "category": "dining"
+    },
+    {
+      "id": "persona_26949ca5ce4f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-11-25T17:14:00.000Z",
+      "amountCents": 1157,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7382ad089e97",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-11-26T17:13:00.000Z",
+      "amountCents": 1419,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4973a94097aa",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2024-11-27T14:28:00.000Z",
+      "amountCents": 731,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_be483c041211",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-11-27T17:14:00.000Z",
+      "amountCents": 1584,
+      "category": "dining"
+    },
+    {
+      "id": "persona_da335a612aa6",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-11-28T17:18:00.000Z",
+      "amountCents": 1259,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ccf4e17ffc80",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2024-11-29T14:24:00.000Z",
+      "amountCents": 634,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_090595555cc4",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2024-12-02T14:21:00.000Z",
+      "amountCents": 535,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_430f0b938340",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-12-02T17:11:00.000Z",
+      "amountCents": 1536,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f9ebaa3ac385",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-12-03T17:07:00.000Z",
+      "amountCents": 1422,
+      "category": "dining"
+    },
+    {
+      "id": "persona_85344f2ab0ea",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2024-12-03T18:21:00.000Z",
+      "amountCents": 915,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b869ba090573",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2024-12-04T14:09:00.000Z",
+      "amountCents": 605,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_504ad8b375ba",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2024-12-06T14:24:00.000Z",
+      "amountCents": 547,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_b26b4a36e9b0",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-12-06T17:10:00.000Z",
+      "amountCents": 1262,
+      "category": "dining"
+    },
+    {
+      "id": "persona_55c724086b83",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2024-12-07T17:25:00.000Z",
+      "amountCents": 1265,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6a9f5a19602d",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2024-12-07T20:08:00.000Z",
+      "amountCents": 8479,
+      "category": "retail"
+    },
+    {
+      "id": "persona_e063dc3f70d7",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2024-12-09T14:17:00.000Z",
+      "amountCents": 638,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_c9609721d984",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-12-09T17:19:00.000Z",
+      "amountCents": 1416,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6067f5e25bfe",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-12-10T17:15:00.000Z",
+      "amountCents": 1378,
+      "category": "dining"
+    },
+    {
+      "id": "persona_970f285cef01",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2024-12-10T18:25:00.000Z",
+      "amountCents": 903,
+      "category": "dining"
+    },
+    {
+      "id": "persona_35f52cf6f541",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2024-12-11T14:23:00.000Z",
+      "amountCents": 624,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_7465da1818a1",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-12-11T17:08:00.000Z",
+      "amountCents": 1205,
+      "category": "dining"
+    },
+    {
+      "id": "persona_46b2d8350577",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-12-12T17:14:00.000Z",
+      "amountCents": 1268,
+      "category": "dining"
+    },
+    {
+      "id": "persona_48a913da1b1c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-12-13T17:17:00.000Z",
+      "amountCents": 1248,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8790fbdfa78c",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2024-12-14T21:16:00.000Z",
+      "amountCents": 7156,
+      "category": "retail"
+    },
+    {
+      "id": "persona_5f5c5f0a1276",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2024-12-28T03:41:00.000Z",
+      "amountCents": 1059,
+      "category": "dining"
+    },
+    {
+      "id": "persona_05b3ad99904d",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2024-12-30T14:13:00.000Z",
+      "amountCents": 549,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_2894120e8d25",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-12-30T17:14:00.000Z",
+      "amountCents": 1589,
+      "category": "dining"
+    },
+    {
+      "id": "persona_124f2e6a555b",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2024-12-31T17:08:00.000Z",
+      "amountCents": 1155,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5d601c99ce0e",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-01-04T03:15:00.000Z",
+      "amountCents": 836,
+      "category": "dining"
+    },
+    {
+      "id": "persona_bfdd10c0cad7",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2025-01-04T20:09:00.000Z",
+      "amountCents": 6205,
+      "category": "retail"
+    },
+    {
+      "id": "persona_ce07260ce4a7",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-01-08T14:17:00.000Z",
+      "amountCents": 701,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_b9a62026fc7a",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-08T17:15:00.000Z",
+      "amountCents": 1327,
+      "category": "dining"
+    },
+    {
+      "id": "persona_855b689e8836",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-01-10T14:14:00.000Z",
+      "amountCents": 552,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_78385e81a948",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-10T17:12:00.000Z",
+      "amountCents": 1207,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a53260b390bb",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-13T17:08:00.000Z",
+      "amountCents": 1471,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ed5682a39354",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-14T17:12:00.000Z",
+      "amountCents": 1548,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d1277106e35a",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-01-14T18:25:00.000Z",
+      "amountCents": 918,
+      "category": "dining"
+    },
+    {
+      "id": "persona_814bbb20f5d2",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-15T17:11:00.000Z",
+      "amountCents": 1526,
+      "category": "dining"
+    },
+    {
+      "id": "persona_078f46d67506",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-01-17T14:14:00.000Z",
+      "amountCents": 711,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_faafd399d4a2",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-17T17:10:00.000Z",
+      "amountCents": 1210,
+      "category": "dining"
+    },
+    {
+      "id": "persona_699e40d099c5",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-01-18T03:33:00.000Z",
+      "amountCents": 1318,
+      "category": "dining"
+    },
+    {
+      "id": "persona_84e69d47314a",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-01-20T14:15:00.000Z",
+      "amountCents": 664,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_4006ff0983af",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-20T17:17:00.000Z",
+      "amountCents": 1375,
+      "category": "dining"
+    },
+    {
+      "id": "persona_fcfc2dfa7247",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-21T17:12:00.000Z",
+      "amountCents": 1338,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8fd23b68e3d4",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-23T17:15:00.000Z",
+      "amountCents": 1575,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5fa9a21ed08e",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-01-23T18:16:00.000Z",
+      "amountCents": 938,
+      "category": "dining"
+    },
+    {
+      "id": "persona_27c8d4cf9b3c",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-01-24T14:15:00.000Z",
+      "amountCents": 609,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_4c28b3634f57",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-24T17:16:00.000Z",
+      "amountCents": 1398,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6fb5a3eb0f3e",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-01-25T04:01:00.000Z",
+      "amountCents": 1156,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ae9f670d547f",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-01-27T14:22:00.000Z",
+      "amountCents": 586,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_23a8653bb8c6",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-28T17:07:00.000Z",
+      "amountCents": 1236,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e9256b54fd59",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-01-29T14:17:00.000Z",
+      "amountCents": 737,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_eaf07dc842ef",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-29T17:21:00.000Z",
+      "amountCents": 1393,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1fcdded8e717",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-30T17:15:00.000Z",
+      "amountCents": 1431,
+      "category": "dining"
+    },
+    {
+      "id": "persona_770f93bac9ec",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-01-31T14:22:00.000Z",
+      "amountCents": 700,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_e621ebba51cf",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-01-31T17:04:00.000Z",
+      "amountCents": 1553,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9b7d5347d3ef",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2025-02-01T20:30:00.000Z",
+      "amountCents": 4379,
+      "category": "retail"
+    },
+    {
+      "id": "persona_733f343b69c7",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-03T17:17:00.000Z",
+      "amountCents": 1457,
+      "category": "dining"
+    },
+    {
+      "id": "persona_aa3dd723cf36",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-04T17:08:00.000Z",
+      "amountCents": 1345,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e2261bf0dcf4",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-02-04T18:23:00.000Z",
+      "amountCents": 1011,
+      "category": "dining"
+    },
+    {
+      "id": "persona_bc4fc20e0370",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-02-05T14:20:00.000Z",
+      "amountCents": 619,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_a5d14e6c11b1",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-05T17:13:00.000Z",
+      "amountCents": 1394,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0615df597fe8",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-02-07T14:13:00.000Z",
+      "amountCents": 528,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d587ad88a095",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-07T17:20:00.000Z",
+      "amountCents": 1546,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1cb873daf8ad",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-02-08T03:45:00.000Z",
+      "amountCents": 1236,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4ad9f42d30e6",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-02-10T14:15:00.000Z",
+      "amountCents": 557,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_5ccfe15de586",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-11T17:15:00.000Z",
+      "amountCents": 1489,
+      "category": "dining"
+    },
+    {
+      "id": "persona_817dc96fa8f6",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-02-12T14:18:00.000Z",
+      "amountCents": 545,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_badb79ac1005",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-12T17:04:00.000Z",
+      "amountCents": 1337,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1caae4c1bd4f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-13T17:17:00.000Z",
+      "amountCents": 1277,
+      "category": "dining"
+    },
+    {
+      "id": "persona_31deeada1c3d",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-02-13T18:36:00.000Z",
+      "amountCents": 937,
+      "category": "dining"
+    },
+    {
+      "id": "persona_fc88b75c0f48",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-14T17:15:00.000Z",
+      "amountCents": 1201,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f44a1e29cfb5",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2025-02-15T17:34:00.000Z",
+      "amountCents": 1302,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2c50653d3234",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-17T17:12:00.000Z",
+      "amountCents": 1189,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7ca42832b6ca",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-18T17:01:00.000Z",
+      "amountCents": 1490,
+      "category": "dining"
+    },
+    {
+      "id": "persona_fd7439ffe2df",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-02-19T14:22:00.000Z",
+      "amountCents": 652,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_9917b61bd7c2",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-19T17:16:00.000Z",
+      "amountCents": 1338,
+      "category": "dining"
+    },
+    {
+      "id": "persona_473377cbaaba",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-20T17:07:00.000Z",
+      "amountCents": 1550,
+      "category": "dining"
+    },
+    {
+      "id": "persona_00a5a855e181",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-02-20T18:29:00.000Z",
+      "amountCents": 1001,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d801377fe337",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-02-21T14:23:00.000Z",
+      "amountCents": 682,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_125521f3ecba",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-21T17:11:00.000Z",
+      "amountCents": 1208,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0ff9d8e62dbc",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-02-22T03:49:00.000Z",
+      "amountCents": 1357,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a8eb8efe7708",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-02-24T14:23:00.000Z",
+      "amountCents": 739,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_8d7ffd5d0cd3",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-24T17:12:00.000Z",
+      "amountCents": 1412,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b6a657387da4",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-25T17:11:00.000Z",
+      "amountCents": 1562,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3efcea5a74ee",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-02-26T14:16:00.000Z",
+      "amountCents": 566,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_ad81362458ac",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-26T17:18:00.000Z",
+      "amountCents": 1571,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4ce019992418",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-27T17:09:00.000Z",
+      "amountCents": 1332,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ffabcb206d4a",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-02-27T18:28:00.000Z",
+      "amountCents": 1054,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d4d0b2650037",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-02-28T14:21:00.000Z",
+      "amountCents": 721,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_bf83a96ebdef",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-02-28T17:15:00.000Z",
+      "amountCents": 1432,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0b1ebdc4c3b3",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-03-01T03:18:00.000Z",
+      "amountCents": 929,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3e6b028b65ac",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2025-03-01T17:19:00.000Z",
+      "amountCents": 1454,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4cdad552e043",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2025-03-01T20:41:00.000Z",
+      "amountCents": 4056,
+      "category": "retail"
+    },
+    {
+      "id": "persona_31ae21864294",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-03-03T14:13:00.000Z",
+      "amountCents": 704,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_1637c9de39f1",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-04T17:13:00.000Z",
+      "amountCents": 1483,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2058df3fb1d4",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-03-04T18:20:00.000Z",
+      "amountCents": 1129,
+      "category": "dining"
+    },
+    {
+      "id": "persona_bd758ab95931",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-05T17:09:00.000Z",
+      "amountCents": 1486,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9b1b8ee0b5ba",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-06T17:12:00.000Z",
+      "amountCents": 1470,
+      "category": "dining"
+    },
+    {
+      "id": "persona_62e3aa9108a5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-07T17:14:00.000Z",
+      "amountCents": 1444,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2934264da273",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-03-08T03:57:00.000Z",
+      "amountCents": 1043,
+      "category": "dining"
+    },
+    {
+      "id": "persona_730318d24ee4",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2025-03-08T21:56:00.000Z",
+      "amountCents": 8729,
+      "category": "retail"
+    },
+    {
+      "id": "persona_8fffbbb65339",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-03-10T13:12:00.000Z",
+      "amountCents": 733,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_5f77797bb80a",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-10T16:16:00.000Z",
+      "amountCents": 1585,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8a7358f3ccf9",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-11T16:18:00.000Z",
+      "amountCents": 1277,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b9da03ebd367",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-03-11T17:27:00.000Z",
+      "amountCents": 1209,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3501c1acf667",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-03-12T13:25:00.000Z",
+      "amountCents": 625,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_e99dd1984d07",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-03-13T17:24:00.000Z",
+      "amountCents": 1214,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b0b24bf36c68",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-03-14T13:10:00.000Z",
+      "amountCents": 587,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_ccc2bac3bca8",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-14T16:11:00.000Z",
+      "amountCents": 1322,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b0edfa39b559",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-03-17T13:20:00.000Z",
+      "amountCents": 574,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_433cbabe9c5b",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-17T16:12:00.000Z",
+      "amountCents": 1306,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2b49ad1c6166",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-18T16:10:00.000Z",
+      "amountCents": 1336,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d877104853d9",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-03-18T17:23:00.000Z",
+      "amountCents": 1150,
+      "category": "dining"
+    },
+    {
+      "id": "persona_46a5b2f5be16",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-03-19T13:18:00.000Z",
+      "amountCents": 745,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_98fcfcaa1abd",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-19T16:15:00.000Z",
+      "amountCents": 1454,
+      "category": "dining"
+    },
+    {
+      "id": "persona_965fb3829d93",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-20T16:19:00.000Z",
+      "amountCents": 1433,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d30d537d6b11",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-03-20T17:19:00.000Z",
+      "amountCents": 946,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a408638b00ca",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-03-21T13:27:00.000Z",
+      "amountCents": 684,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_6953fe59424d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-21T16:12:00.000Z",
+      "amountCents": 1279,
+      "category": "dining"
+    },
+    {
+      "id": "persona_51d3a3851f5c",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-03-22T02:50:00.000Z",
+      "amountCents": 1020,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c79ac1034f3f",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-03-24T13:13:00.000Z",
+      "amountCents": 540,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_7970bad522e1",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-24T16:19:00.000Z",
+      "amountCents": 1559,
+      "category": "dining"
+    },
+    {
+      "id": "persona_bcc8cccce2ac",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-03-25T17:22:00.000Z",
+      "amountCents": 1179,
+      "category": "dining"
+    },
+    {
+      "id": "persona_95a62dd3212c",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-03-26T13:13:00.000Z",
+      "amountCents": 578,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_cb6f9fbd3cd6",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-27T16:10:00.000Z",
+      "amountCents": 1442,
+      "category": "dining"
+    },
+    {
+      "id": "persona_32834daff958",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-03-28T13:15:00.000Z",
+      "amountCents": 725,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_f077f9f8719d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-28T16:11:00.000Z",
+      "amountCents": 1388,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b686d17f941f",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-03-29T02:30:00.000Z",
+      "amountCents": 1387,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5b76cb0e7979",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2025-03-29T15:47:00.000Z",
+      "amountCents": 1728,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a8f248361f6b",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-03-31T13:15:00.000Z",
+      "amountCents": 591,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_7e0dabd688dd",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-03-31T16:14:00.000Z",
+      "amountCents": 1577,
+      "category": "dining"
+    },
+    {
+      "id": "persona_58cfeaf913e8",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-02T13:10:00.000Z",
+      "amountCents": 690,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d81f3ebab831",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-02T16:13:00.000Z",
+      "amountCents": 1260,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3c09ebc06c55",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-03T16:14:00.000Z",
+      "amountCents": 1314,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5bc7c802fd4b",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-04T13:10:00.000Z",
+      "amountCents": 637,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_432dfa9bbb88",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-04T16:13:00.000Z",
+      "amountCents": 1156,
+      "category": "dining"
+    },
+    {
+      "id": "persona_146d9d78eab2",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-04-05T02:39:00.000Z",
+      "amountCents": 1032,
+      "category": "dining"
+    },
+    {
+      "id": "persona_382fd4b65ede",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2025-04-05T15:58:00.000Z",
+      "amountCents": 1302,
+      "category": "dining"
+    },
+    {
+      "id": "persona_701a233f7b6a",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2025-04-05T19:35:00.000Z",
+      "amountCents": 7432,
+      "category": "retail"
+    },
+    {
+      "id": "persona_38c86ec35047",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-07T13:16:00.000Z",
+      "amountCents": 642,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d8fee2a5e77b",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-07T16:20:00.000Z",
+      "amountCents": 1182,
+      "category": "dining"
+    },
+    {
+      "id": "persona_89695d708faf",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-09T13:20:00.000Z",
+      "amountCents": 678,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_78fcdbb2d92b",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-10T16:07:00.000Z",
+      "amountCents": 1249,
+      "category": "dining"
+    },
+    {
+      "id": "persona_565b1a99a4d7",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-04-10T17:25:00.000Z",
+      "amountCents": 1009,
+      "category": "dining"
+    },
+    {
+      "id": "persona_709bdee8893c",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-11T13:18:00.000Z",
+      "amountCents": 727,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_ab887f9daf45",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-11T16:15:00.000Z",
+      "amountCents": 1560,
+      "category": "dining"
+    },
+    {
+      "id": "persona_dcbda58b9a0c",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-04-12T03:13:00.000Z",
+      "amountCents": 813,
+      "category": "dining"
+    },
+    {
+      "id": "persona_65e7405c1dfd",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-14T13:21:00.000Z",
+      "amountCents": 635,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_17af72c8eb2c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-14T16:11:00.000Z",
+      "amountCents": 1437,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a9b239eec941",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-15T16:15:00.000Z",
+      "amountCents": 1176,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ca3e196a5c7d",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-04-15T17:28:00.000Z",
+      "amountCents": 999,
+      "category": "dining"
+    },
+    {
+      "id": "persona_23d82e763667",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-16T13:14:00.000Z",
+      "amountCents": 530,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_c97b2b94d37a",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-16T16:12:00.000Z",
+      "amountCents": 1404,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ac3b9fa3203d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-17T16:11:00.000Z",
+      "amountCents": 1216,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f20971db57b1",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-18T13:17:00.000Z",
+      "amountCents": 637,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d8285e2a3ad3",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2025-04-19T20:48:00.000Z",
+      "amountCents": 5822,
+      "category": "retail"
+    },
+    {
+      "id": "persona_aa76b03bcf42",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-21T13:18:00.000Z",
+      "amountCents": 621,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_130421206466",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-21T16:12:00.000Z",
+      "amountCents": 1252,
+      "category": "dining"
+    },
+    {
+      "id": "persona_639848b9c6e3",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-22T16:06:00.000Z",
+      "amountCents": 1562,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c3e24a566def",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-04-22T17:19:00.000Z",
+      "amountCents": 935,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e3ee9405f85a",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-23T13:14:00.000Z",
+      "amountCents": 635,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_4d63ab52e86c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-24T16:18:00.000Z",
+      "amountCents": 1501,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b5ae0f8428df",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-04-24T17:16:00.000Z",
+      "amountCents": 1165,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5dea05c8fc2a",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-25T13:20:00.000Z",
+      "amountCents": 573,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_b4f3ff18558f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-25T16:16:00.000Z",
+      "amountCents": 1459,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2e0db0c0d608",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-28T13:19:00.000Z",
+      "amountCents": 637,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_99f1587431e7",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-28T16:09:00.000Z",
+      "amountCents": 1410,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6f1af4ceb4d5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-04-29T16:08:00.000Z",
+      "amountCents": 1398,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c06a7d1a1e21",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-04-29T17:20:00.000Z",
+      "amountCents": 989,
+      "category": "dining"
+    },
+    {
+      "id": "persona_083741c707a8",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-04-30T13:15:00.000Z",
+      "amountCents": 727,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_70294ea7bf60",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-01T16:18:00.000Z",
+      "amountCents": 1589,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ac79bbf8487a",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-05-02T13:15:00.000Z",
+      "amountCents": 648,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_b493e77f51d9",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-02T16:11:00.000Z",
+      "amountCents": 1579,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ab7c5f89b3d4",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-05-05T13:12:00.000Z",
+      "amountCents": 549,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_de829ab31b53",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-05T16:09:00.000Z",
+      "amountCents": 1329,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1206809c83fa",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-06T16:10:00.000Z",
+      "amountCents": 1409,
+      "category": "dining"
+    },
+    {
+      "id": "persona_66286f951c85",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-05-07T13:14:00.000Z",
+      "amountCents": 637,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d9fca2776df7",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-07T16:10:00.000Z",
+      "amountCents": 1566,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4f9826c3000e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-08T16:08:00.000Z",
+      "amountCents": 1346,
+      "category": "dining"
+    },
+    {
+      "id": "persona_dd1c3efe230c",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-05-09T13:15:00.000Z",
+      "amountCents": 597,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_b9039a554131",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-09T16:12:00.000Z",
+      "amountCents": 1485,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5d0cffb644b2",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-05-10T02:51:00.000Z",
+      "amountCents": 943,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8a0f63c7e7db",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-05-12T13:19:00.000Z",
+      "amountCents": 596,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_7520e14f2753",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-12T16:16:00.000Z",
+      "amountCents": 1585,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4af92ab1aa1b",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-13T16:19:00.000Z",
+      "amountCents": 1525,
+      "category": "dining"
+    },
+    {
+      "id": "persona_522a23e817a8",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-05-13T17:27:00.000Z",
+      "amountCents": 1233,
+      "category": "dining"
+    },
+    {
+      "id": "persona_09e2e0df8311",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-05-14T13:25:00.000Z",
+      "amountCents": 709,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_519600dcfdbc",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-14T16:18:00.000Z",
+      "amountCents": 1337,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2790b34a02f5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-15T16:14:00.000Z",
+      "amountCents": 1322,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9e6df6b3ef9f",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-05-15T17:32:00.000Z",
+      "amountCents": 1060,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9657edb5fddf",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-05-16T13:16:00.000Z",
+      "amountCents": 686,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_0fb865ccb9f3",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-16T16:12:00.000Z",
+      "amountCents": 1177,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5f16a9e3930d",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-05-30T13:18:00.000Z",
+      "amountCents": 529,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_e46a5686b358",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-05-30T16:09:00.000Z",
+      "amountCents": 1591,
+      "category": "dining"
+    },
+    {
+      "id": "persona_31d6d85778b0",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-05-31T02:28:00.000Z",
+      "amountCents": 848,
+      "category": "dining"
+    },
+    {
+      "id": "persona_250ef6147b75",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2025-05-31T16:45:00.000Z",
+      "amountCents": 1485,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e0f989a09a09",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2025-05-31T20:28:00.000Z",
+      "amountCents": 6220,
+      "category": "retail"
+    },
+    {
+      "id": "persona_ced4d92cad37",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-06-02T13:12:00.000Z",
+      "amountCents": 563,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_4dba49bc08f3",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-03T16:15:00.000Z",
+      "amountCents": 1299,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b596d6d13c0f",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-06-04T13:15:00.000Z",
+      "amountCents": 632,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_9695552db168",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-05T16:20:00.000Z",
+      "amountCents": 1525,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b9ea48af3a4d",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-06-05T17:16:00.000Z",
+      "amountCents": 1051,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f5c2c905b294",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-06-07T03:19:00.000Z",
+      "amountCents": 855,
+      "category": "dining"
+    },
+    {
+      "id": "persona_cb7e5f0a504b",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2025-06-07T19:07:00.000Z",
+      "amountCents": 5431,
+      "category": "retail"
+    },
+    {
+      "id": "persona_1e9ff36dd7b7",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-06-09T13:17:00.000Z",
+      "amountCents": 583,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d593d0a72a7a",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-09T16:11:00.000Z",
+      "amountCents": 1459,
+      "category": "dining"
+    },
+    {
+      "id": "persona_57299519b79a",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-10T16:19:00.000Z",
+      "amountCents": 1375,
+      "category": "dining"
+    },
+    {
+      "id": "persona_73b6827af9dc",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-06-11T13:13:00.000Z",
+      "amountCents": 682,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_05425d4105a4",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-11T16:14:00.000Z",
+      "amountCents": 1230,
+      "category": "dining"
+    },
+    {
+      "id": "persona_54282cdae1bb",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-06-12T17:29:00.000Z",
+      "amountCents": 972,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a2eac9ccfe12",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-06-13T13:17:00.000Z",
+      "amountCents": 596,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_5aa9fa72b458",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-13T16:14:00.000Z",
+      "amountCents": 1311,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7d17daba853f",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-06-14T02:49:00.000Z",
+      "amountCents": 1122,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f8de6891c18e",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-06-16T13:23:00.000Z",
+      "amountCents": 570,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_76823b4e8403",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-17T16:08:00.000Z",
+      "amountCents": 1520,
+      "category": "dining"
+    },
+    {
+      "id": "persona_18dbf6e3a6cd",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-06-17T17:27:00.000Z",
+      "amountCents": 888,
+      "category": "dining"
+    },
+    {
+      "id": "persona_25d7207f206a",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-18T16:15:00.000Z",
+      "amountCents": 1241,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2165eef91ad0",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-06-20T13:15:00.000Z",
+      "amountCents": 625,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_590a4595e5d4",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-20T16:14:00.000Z",
+      "amountCents": 1217,
+      "category": "dining"
+    },
+    {
+      "id": "persona_67112c70a55f",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-06-21T02:17:00.000Z",
+      "amountCents": 1303,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5aea7753d2f8",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-06-23T13:11:00.000Z",
+      "amountCents": 553,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_68863e9c2b73",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-23T16:12:00.000Z",
+      "amountCents": 1476,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3f4ba308a2f7",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-24T16:07:00.000Z",
+      "amountCents": 1370,
+      "category": "dining"
+    },
+    {
+      "id": "persona_fa4b59ff030c",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-06-24T17:26:00.000Z",
+      "amountCents": 1075,
+      "category": "dining"
+    },
+    {
+      "id": "persona_27185ebb9f06",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-06-25T13:15:00.000Z",
+      "amountCents": 709,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_649a09d7fe92",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-25T16:17:00.000Z",
+      "amountCents": 1543,
+      "category": "dining"
+    },
+    {
+      "id": "persona_64b2ab4cfcae",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-26T16:13:00.000Z",
+      "amountCents": 1496,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6de0247653a8",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-06-26T17:26:00.000Z",
+      "amountCents": 915,
+      "category": "dining"
+    },
+    {
+      "id": "persona_fcc7d2694f63",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-06-27T13:14:00.000Z",
+      "amountCents": 542,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_80c64c0bc058",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-27T16:03:00.000Z",
+      "amountCents": 1281,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4f6eb9972b33",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-06-30T13:16:00.000Z",
+      "amountCents": 715,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_6aae30d7a2de",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-06-30T16:21:00.000Z",
+      "amountCents": 1568,
+      "category": "dining"
+    },
+    {
+      "id": "persona_af3d2b488155",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-01T16:13:00.000Z",
+      "amountCents": 1197,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a562d3bba2d1",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-02T16:08:00.000Z",
+      "amountCents": 1575,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0b89601e7fd3",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-07-03T17:31:00.000Z",
+      "amountCents": 1140,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6ac58f497a6e",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-07-04T13:18:00.000Z",
+      "amountCents": 718,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_6d97a4da6335",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-04T16:14:00.000Z",
+      "amountCents": 1255,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d5a1b341eb0f",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-07-05T03:07:00.000Z",
+      "amountCents": 948,
+      "category": "dining"
+    },
+    {
+      "id": "persona_67a4e6a936e1",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2025-07-05T20:03:00.000Z",
+      "amountCents": 7702,
+      "category": "retail"
+    },
+    {
+      "id": "persona_56f86a71f5b4",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-07-07T13:16:00.000Z",
+      "amountCents": 672,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_c04e481fd53f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-07T16:20:00.000Z",
+      "amountCents": 1226,
+      "category": "dining"
+    },
+    {
+      "id": "persona_272c9de98987",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-08T16:11:00.000Z",
+      "amountCents": 1459,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d2810860a930",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-07-09T13:15:00.000Z",
+      "amountCents": 720,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_2a8fe7958dc9",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-09T16:15:00.000Z",
+      "amountCents": 1219,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c69469c4d2b9",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-10T16:11:00.000Z",
+      "amountCents": 1477,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2e691518e978",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-07-10T17:28:00.000Z",
+      "amountCents": 891,
+      "category": "dining"
+    },
+    {
+      "id": "persona_14f779534f59",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-07-11T13:21:00.000Z",
+      "amountCents": 585,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_71a47584000f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-11T16:22:00.000Z",
+      "amountCents": 1457,
+      "category": "dining"
+    },
+    {
+      "id": "persona_43abcd54f13e",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2025-07-12T20:41:00.000Z",
+      "amountCents": 7848,
+      "category": "retail"
+    },
+    {
+      "id": "persona_ccb87a2effb2",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-07-14T13:20:00.000Z",
+      "amountCents": 605,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_e85fb2bab9c4",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-14T16:11:00.000Z",
+      "amountCents": 1533,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ae72086823c3",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-15T16:11:00.000Z",
+      "amountCents": 1594,
+      "category": "dining"
+    },
+    {
+      "id": "persona_da28219b143d",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-07-15T17:27:00.000Z",
+      "amountCents": 1156,
+      "category": "dining"
+    },
+    {
+      "id": "persona_43b442624d5e",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-07-16T13:11:00.000Z",
+      "amountCents": 638,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_bc5c3e92814a",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-16T16:07:00.000Z",
+      "amountCents": 1411,
+      "category": "dining"
+    },
+    {
+      "id": "persona_656bfbabfa86",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-17T16:16:00.000Z",
+      "amountCents": 1189,
+      "category": "dining"
+    },
+    {
+      "id": "persona_dae6e4b8b980",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-18T16:15:00.000Z",
+      "amountCents": 1359,
+      "category": "dining"
+    },
+    {
+      "id": "persona_25e16d4bf4c4",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-07-21T13:16:00.000Z",
+      "amountCents": 572,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_19306bec3a88",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-21T16:17:00.000Z",
+      "amountCents": 1214,
+      "category": "dining"
+    },
+    {
+      "id": "persona_112ad27810aa",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-22T16:09:00.000Z",
+      "amountCents": 1207,
+      "category": "dining"
+    },
+    {
+      "id": "persona_284840440724",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-07-22T17:25:00.000Z",
+      "amountCents": 1123,
+      "category": "dining"
+    },
+    {
+      "id": "persona_da7486e2fedc",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-07-23T13:12:00.000Z",
+      "amountCents": 700,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_df0131caaf97",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-23T16:14:00.000Z",
+      "amountCents": 1567,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c4a117764d4c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-24T16:17:00.000Z",
+      "amountCents": 1386,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f2de59f3398c",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-07-24T17:24:00.000Z",
+      "amountCents": 1060,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a23d1ee03533",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-07-25T13:16:00.000Z",
+      "amountCents": 576,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_1d65d1ff0f35",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-07-26T03:05:00.000Z",
+      "amountCents": 1165,
+      "category": "dining"
+    },
+    {
+      "id": "persona_07878991bed8",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-28T16:25:00.000Z",
+      "amountCents": 1320,
+      "category": "dining"
+    },
+    {
+      "id": "persona_00ced443d122",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-07-30T13:15:00.000Z",
+      "amountCents": 702,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_577aca3602d3",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-30T16:21:00.000Z",
+      "amountCents": 1339,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d31cbc2f5437",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-07-31T16:17:00.000Z",
+      "amountCents": 1310,
+      "category": "dining"
+    },
+    {
+      "id": "persona_716ba2c1d0cb",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-08-01T13:18:00.000Z",
+      "amountCents": 720,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_5791a1aafa9e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-01T16:11:00.000Z",
+      "amountCents": 1238,
+      "category": "dining"
+    },
+    {
+      "id": "persona_fb7dff218017",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-08-02T02:49:00.000Z",
+      "amountCents": 1209,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3ee26247030a",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2025-08-02T18:43:00.000Z",
+      "amountCents": 4633,
+      "category": "retail"
+    },
+    {
+      "id": "persona_18eb7f69aace",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-08-04T13:21:00.000Z",
+      "amountCents": 627,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_03f3d5e9e318",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-04T16:06:00.000Z",
+      "amountCents": 1350,
+      "category": "dining"
+    },
+    {
+      "id": "persona_75b1bf9824fa",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-05T16:17:00.000Z",
+      "amountCents": 1228,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f7a228cf4dd8",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-08-06T13:17:00.000Z",
+      "amountCents": 609,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_c6393acb004d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-06T16:12:00.000Z",
+      "amountCents": 1409,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1a9e44d5e406",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-07T16:09:00.000Z",
+      "amountCents": 1335,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3f586f6080ef",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-08-07T17:26:00.000Z",
+      "amountCents": 1061,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1d9bc7059666",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-08-08T13:21:00.000Z",
+      "amountCents": 567,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_ec28698aac99",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-08T16:13:00.000Z",
+      "amountCents": 1588,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d3ca952d5ea1",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2025-08-09T16:03:00.000Z",
+      "amountCents": 1375,
+      "category": "dining"
+    },
+    {
+      "id": "persona_331076095b39",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-08-11T13:21:00.000Z",
+      "amountCents": 625,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_c700eaee0729",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-11T16:13:00.000Z",
+      "amountCents": 1556,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ccb36e74d06d",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-08-12T17:19:00.000Z",
+      "amountCents": 989,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2182e3c242ba",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-13T16:06:00.000Z",
+      "amountCents": 1272,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c396a1358c6f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-14T16:10:00.000Z",
+      "amountCents": 1376,
+      "category": "dining"
+    },
+    {
+      "id": "persona_76566587d097",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-15T16:13:00.000Z",
+      "amountCents": 1165,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a8c6307851de",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-08-16T02:42:00.000Z",
+      "amountCents": 871,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0f56c41980c1",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-08-18T13:16:00.000Z",
+      "amountCents": 615,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_03c487b9da53",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-08-20T13:21:00.000Z",
+      "amountCents": 646,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_3495ddcdc384",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-21T16:12:00.000Z",
+      "amountCents": 1290,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f0278a1bfd73",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-08-22T13:14:00.000Z",
+      "amountCents": 578,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_75386eb09cbb",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-22T16:07:00.000Z",
+      "amountCents": 1569,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a88fe378c0b6",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-08-23T03:03:00.000Z",
+      "amountCents": 817,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c6f0a70a063c",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2025-08-23T20:27:00.000Z",
+      "amountCents": 8060,
+      "category": "retail"
+    },
+    {
+      "id": "persona_838fa9a2925e",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-08-25T13:19:00.000Z",
+      "amountCents": 717,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_b64576029b6f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-25T16:03:00.000Z",
+      "amountCents": 1550,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1161aad2c39e",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-08-26T17:29:00.000Z",
+      "amountCents": 852,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3fb483ee88d7",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-08-27T13:15:00.000Z",
+      "amountCents": 711,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_9e5836363fa0",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-27T16:13:00.000Z",
+      "amountCents": 1215,
+      "category": "dining"
+    },
+    {
+      "id": "persona_71a73c8a804a",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-28T16:17:00.000Z",
+      "amountCents": 1320,
+      "category": "dining"
+    },
+    {
+      "id": "persona_068de903cde6",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-08-29T13:19:00.000Z",
+      "amountCents": 577,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_77cf63998a42",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-08-29T16:13:00.000Z",
+      "amountCents": 1491,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9a96f6e92c1f",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-09-01T13:15:00.000Z",
+      "amountCents": 554,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d1a719d00752",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-01T16:17:00.000Z",
+      "amountCents": 1481,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d910f7364ccb",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-02T16:11:00.000Z",
+      "amountCents": 1257,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f2703e48ff5b",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-09-02T17:19:00.000Z",
+      "amountCents": 1218,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e7d931558ad5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-03T16:15:00.000Z",
+      "amountCents": 1451,
+      "category": "dining"
+    },
+    {
+      "id": "persona_78415846d156",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-09-04T17:23:00.000Z",
+      "amountCents": 987,
+      "category": "dining"
+    },
+    {
+      "id": "persona_27d49d7c00d1",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-09-05T13:11:00.000Z",
+      "amountCents": 701,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_bcaf1eee75b6",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-05T16:13:00.000Z",
+      "amountCents": 1475,
+      "category": "dining"
+    },
+    {
+      "id": "persona_795e1a6e3928",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-09-06T03:19:00.000Z",
+      "amountCents": 803,
+      "category": "dining"
+    },
+    {
+      "id": "persona_baf550e678ec",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2025-09-06T18:51:00.000Z",
+      "amountCents": 5052,
+      "category": "retail"
+    },
+    {
+      "id": "persona_1e349fa14782",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-09-08T13:12:00.000Z",
+      "amountCents": 558,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_0bb8e28849c5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-08T16:14:00.000Z",
+      "amountCents": 1224,
+      "category": "dining"
+    },
+    {
+      "id": "persona_217080cd1b79",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-09T16:13:00.000Z",
+      "amountCents": 1533,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c233c166e832",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-10T16:13:00.000Z",
+      "amountCents": 1327,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5ddc55e40ad6",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-11T16:05:00.000Z",
+      "amountCents": 1575,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0f6f28403d1b",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-09-12T13:15:00.000Z",
+      "amountCents": 601,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_df55c676e6ea",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-12T16:05:00.000Z",
+      "amountCents": 1437,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c5a1cfb65489",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-09-13T03:12:00.000Z",
+      "amountCents": 854,
+      "category": "dining"
+    },
+    {
+      "id": "persona_731680443fbc",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2025-09-13T16:17:00.000Z",
+      "amountCents": 1286,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e7ff27959f72",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-15T16:14:00.000Z",
+      "amountCents": 1240,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e78c68071c9a",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-16T16:15:00.000Z",
+      "amountCents": 1338,
+      "category": "dining"
+    },
+    {
+      "id": "persona_798945100618",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-09-17T13:14:00.000Z",
+      "amountCents": 674,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_594c4244460c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-17T16:17:00.000Z",
+      "amountCents": 1520,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8db0fbf594fb",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-09-18T17:28:00.000Z",
+      "amountCents": 965,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7b106198f01c",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-09-19T13:16:00.000Z",
+      "amountCents": 646,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_2ff191b6d89f",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-09-20T02:28:00.000Z",
+      "amountCents": 1235,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f6766364a727",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-09-22T13:19:00.000Z",
+      "amountCents": 564,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_740266b94cef",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-22T16:17:00.000Z",
+      "amountCents": 1216,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8b1ffc511f87",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-23T16:19:00.000Z",
+      "amountCents": 1372,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5edecd2f4987",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-09-23T17:21:00.000Z",
+      "amountCents": 966,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d182fb7661a5",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-09-24T13:15:00.000Z",
+      "amountCents": 603,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_69548f14bf9a",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-24T16:12:00.000Z",
+      "amountCents": 1470,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0cd5ec01b844",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-25T16:11:00.000Z",
+      "amountCents": 1354,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e4603560911b",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-09-26T13:20:00.000Z",
+      "amountCents": 646,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_126ac0f94c96",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-09-26T16:15:00.000Z",
+      "amountCents": 1424,
+      "category": "dining"
+    },
+    {
+      "id": "persona_010cb83cc50d",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-09-27T02:50:00.000Z",
+      "amountCents": 855,
+      "category": "dining"
+    },
+    {
+      "id": "persona_da5056ada94d",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-09-29T13:20:00.000Z",
+      "amountCents": 722,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_59abfafc6e3c",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-09-30T17:22:00.000Z",
+      "amountCents": 1228,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6f9ce98ba702",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-01T16:20:00.000Z",
+      "amountCents": 1469,
+      "category": "dining"
+    },
+    {
+      "id": "persona_28a9ed3faffb",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-02T16:13:00.000Z",
+      "amountCents": 1251,
+      "category": "dining"
+    },
+    {
+      "id": "persona_548c7f8e8536",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-10-03T13:15:00.000Z",
+      "amountCents": 640,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_7c57d739ba9c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-03T16:13:00.000Z",
+      "amountCents": 1503,
+      "category": "dining"
+    },
+    {
+      "id": "persona_59f6a70e455f",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2025-10-04T16:11:00.000Z",
+      "amountCents": 1740,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8aa9910bc02b",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2025-10-04T19:34:00.000Z",
+      "amountCents": 8674,
+      "category": "retail"
+    },
+    {
+      "id": "persona_4b56f67c3e66",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2025-10-04T20:44:00.000Z",
+      "amountCents": 11468,
+      "category": "retail"
+    },
+    {
+      "id": "persona_8f172b277d3b",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-06T16:10:00.000Z",
+      "amountCents": 1247,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c7b6aeaec6f2",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-07T16:12:00.000Z",
+      "amountCents": 1497,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c2dbaf9ab93c",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-10-08T13:19:00.000Z",
+      "amountCents": 620,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_654ddc9fc3fc",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-08T16:09:00.000Z",
+      "amountCents": 1490,
+      "category": "dining"
+    },
+    {
+      "id": "persona_681b124461eb",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-10-09T17:25:00.000Z",
+      "amountCents": 866,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1b9b345ab685",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-10-10T13:19:00.000Z",
+      "amountCents": 527,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_542b6584142d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-10T16:15:00.000Z",
+      "amountCents": 1292,
+      "category": "dining"
+    },
+    {
+      "id": "persona_de54c704fca2",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-13T16:09:00.000Z",
+      "amountCents": 1244,
+      "category": "dining"
+    },
+    {
+      "id": "persona_90d4944c3999",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-14T16:16:00.000Z",
+      "amountCents": 1262,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a3dccad191ea",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-10-15T13:21:00.000Z",
+      "amountCents": 661,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_375b60d081d7",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-16T16:16:00.000Z",
+      "amountCents": 1302,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2ed721089233",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-10-17T13:10:00.000Z",
+      "amountCents": 559,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_acd3a655bbf5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-17T16:19:00.000Z",
+      "amountCents": 1264,
+      "category": "dining"
+    },
+    {
+      "id": "persona_27a084f01cdf",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2025-10-18T16:15:00.000Z",
+      "amountCents": 1553,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7141593ce4a6",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-10-20T13:19:00.000Z",
+      "amountCents": 656,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_ce23c605cb2e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-20T16:13:00.000Z",
+      "amountCents": 1280,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e040ed4c91bb",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-21T16:16:00.000Z",
+      "amountCents": 1422,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e2a38b27ed50",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-10-22T13:16:00.000Z",
+      "amountCents": 590,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_32e5c261e96b",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-22T16:16:00.000Z",
+      "amountCents": 1515,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c311b6dc738b",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-23T16:19:00.000Z",
+      "amountCents": 1474,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8d95770ffe48",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-10-23T17:29:00.000Z",
+      "amountCents": 914,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c901cfad8dac",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-10-24T13:16:00.000Z",
+      "amountCents": 702,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_22e12c5d363c",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-10-25T02:38:00.000Z",
+      "amountCents": 827,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8ad0460f4efe",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-10-27T13:14:00.000Z",
+      "amountCents": 647,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_394f98376d8c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-28T16:10:00.000Z",
+      "amountCents": 1470,
+      "category": "dining"
+    },
+    {
+      "id": "persona_58900e38b91f",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-10-29T13:12:00.000Z",
+      "amountCents": 738,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_cb93c718fd55",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-29T16:13:00.000Z",
+      "amountCents": 1563,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a7c1b1f259d5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-30T16:10:00.000Z",
+      "amountCents": 1362,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ad82ae4e20d5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-10-31T16:08:00.000Z",
+      "amountCents": 1165,
+      "category": "dining"
+    },
+    {
+      "id": "persona_fc2d16078b0a",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-11-01T03:01:00.000Z",
+      "amountCents": 1098,
+      "category": "dining"
+    },
+    {
+      "id": "persona_11397a6e3421",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2025-11-01T19:50:00.000Z",
+      "amountCents": 7672,
+      "category": "retail"
+    },
+    {
+      "id": "persona_8fc0b910d71c",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-11-03T14:23:00.000Z",
+      "amountCents": 621,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_16d86c4183d5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-11-03T17:11:00.000Z",
+      "amountCents": 1599,
+      "category": "dining"
+    },
+    {
+      "id": "persona_652ec59db2bd",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-11-04T18:19:00.000Z",
+      "amountCents": 1040,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a92ccc432ec7",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-11-05T14:19:00.000Z",
+      "amountCents": 591,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_6df4ee7209ed",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-11-05T17:09:00.000Z",
+      "amountCents": 1224,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d929fe3b060d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-11-06T17:15:00.000Z",
+      "amountCents": 1328,
+      "category": "dining"
+    },
+    {
+      "id": "persona_04465d5ad742",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-11-06T18:21:00.000Z",
+      "amountCents": 851,
+      "category": "dining"
+    },
+    {
+      "id": "persona_52932785604e",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-11-07T14:19:00.000Z",
+      "amountCents": 739,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_e0fcabca6ea8",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-11-07T17:13:00.000Z",
+      "amountCents": 1409,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7a309166a28c",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-11-08T03:37:00.000Z",
+      "amountCents": 862,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a7b4817b87fa",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2025-11-08T17:22:00.000Z",
+      "amountCents": 1783,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9d3e35187716",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-11-10T14:19:00.000Z",
+      "amountCents": 662,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_a6b538ccf8e2",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-11-10T17:12:00.000Z",
+      "amountCents": 1315,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0d7f5daef6bd",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-11-11T18:29:00.000Z",
+      "amountCents": 915,
+      "category": "dining"
+    },
+    {
+      "id": "persona_04ea182952d8",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-11-12T14:19:00.000Z",
+      "amountCents": 728,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_cb453beaeea5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-11-13T17:16:00.000Z",
+      "amountCents": 1560,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4e2cb1f54b41",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-11-13T18:21:00.000Z",
+      "amountCents": 957,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1bf7e88be789",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-11-14T14:17:00.000Z",
+      "amountCents": 552,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_e431aa44a1fc",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2025-11-15T17:11:00.000Z",
+      "amountCents": 1212,
+      "category": "dining"
+    },
+    {
+      "id": "persona_909a1a1e809a",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2025-11-15T21:16:00.000Z",
+      "amountCents": 5145,
+      "category": "retail"
+    },
+    {
+      "id": "persona_fe531b391be0",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-11-17T14:18:00.000Z",
+      "amountCents": 734,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_90ca50451d77",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-11-17T17:20:00.000Z",
+      "amountCents": 1490,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7701a4b73d63",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-11-18T17:14:00.000Z",
+      "amountCents": 1467,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b7c1b968e68a",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-11-19T14:24:00.000Z",
+      "amountCents": 611,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_a0658fd7b6ca",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-11-20T18:25:00.000Z",
+      "amountCents": 1207,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f6d6f35f843c",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-11-22T03:43:00.000Z",
+      "amountCents": 1058,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d5bc4d68da79",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-11-24T14:21:00.000Z",
+      "amountCents": 729,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_b5a4f5a9dc54",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-11-24T17:12:00.000Z",
+      "amountCents": 1336,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2983f96f8e2c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-11-25T17:10:00.000Z",
+      "amountCents": 1522,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1b4bde90b24a",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-11-25T18:29:00.000Z",
+      "amountCents": 1030,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b217f715cb65",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-11-26T17:14:00.000Z",
+      "amountCents": 1514,
+      "category": "dining"
+    },
+    {
+      "id": "persona_50fa60e33f66",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-11-27T17:04:00.000Z",
+      "amountCents": 1358,
+      "category": "dining"
+    },
+    {
+      "id": "persona_770a4d82015f",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-11-27T18:25:00.000Z",
+      "amountCents": 896,
+      "category": "dining"
+    },
+    {
+      "id": "persona_cfa3fcbfa5b4",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-11-28T14:17:00.000Z",
+      "amountCents": 705,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_57fe924bafe1",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-11-29T03:31:00.000Z",
+      "amountCents": 948,
+      "category": "dining"
+    },
+    {
+      "id": "persona_32ebaef1057b",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-12-01T14:15:00.000Z",
+      "amountCents": 628,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_b9d35071d84b",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-12-01T17:06:00.000Z",
+      "amountCents": 1289,
+      "category": "dining"
+    },
+    {
+      "id": "persona_bbc11ca971a7",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-12-03T14:24:00.000Z",
+      "amountCents": 532,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_71d3562dbf7f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-12-03T17:09:00.000Z",
+      "amountCents": 1576,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f6d3dabf8add",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-12-04T17:17:00.000Z",
+      "amountCents": 1476,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9b53301d4089",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-12-05T14:20:00.000Z",
+      "amountCents": 710,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_a818a015d7cc",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-12-05T17:09:00.000Z",
+      "amountCents": 1220,
+      "category": "dining"
+    },
+    {
+      "id": "persona_23f1de96b0ef",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-12-06T03:48:00.000Z",
+      "amountCents": 1235,
+      "category": "dining"
+    },
+    {
+      "id": "persona_75eb8e811bf8",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2025-12-06T20:00:00.000Z",
+      "amountCents": 5303,
+      "category": "retail"
+    },
+    {
+      "id": "persona_c55387fa8fc1",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-12-08T14:21:00.000Z",
+      "amountCents": 600,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_93c8e1afdb0d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-12-08T17:10:00.000Z",
+      "amountCents": 1235,
+      "category": "dining"
+    },
+    {
+      "id": "persona_bd8d4fe37e1d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-12-09T17:14:00.000Z",
+      "amountCents": 1303,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5b2b47bab931",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-12-10T14:18:00.000Z",
+      "amountCents": 640,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_1c32b2425412",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-12-10T17:07:00.000Z",
+      "amountCents": 1365,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e1d9b27d8fe3",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-12-11T17:17:00.000Z",
+      "amountCents": 1271,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8e9c88ab674c",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2025-12-11T18:26:00.000Z",
+      "amountCents": 982,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c75856e9113f",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-12-12T14:11:00.000Z",
+      "amountCents": 552,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_a357c9c19e98",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-12-13T04:00:00.000Z",
+      "amountCents": 1264,
+      "category": "dining"
+    },
+    {
+      "id": "persona_40b05cd609f2",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2025-12-13T17:17:00.000Z",
+      "amountCents": 1293,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c0d620fd9127",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2025-12-20T03:51:00.000Z",
+      "amountCents": 992,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2f752917c3a8",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2025-12-27T21:15:00.000Z",
+      "amountCents": 7654,
+      "category": "retail"
+    },
+    {
+      "id": "persona_0d42a2b31705",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-12-29T14:12:00.000Z",
+      "amountCents": 726,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_be5832bcb0c0",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-12-29T17:07:00.000Z",
+      "amountCents": 1216,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2f6a969c4403",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-12-30T17:15:00.000Z",
+      "amountCents": 1328,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1b53a4dc427c",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2025-12-31T14:20:00.000Z",
+      "amountCents": 587,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_f18328abae2a",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2025-12-31T17:18:00.000Z",
+      "amountCents": 1377,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9cff45497aea",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2026-01-03T20:13:00.000Z",
+      "amountCents": 4971,
+      "category": "retail"
+    },
+    {
+      "id": "persona_609698feb1bd",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-01-08T17:12:00.000Z",
+      "amountCents": 1224,
+      "category": "dining"
+    },
+    {
+      "id": "persona_aea4ab990cce",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-01-08T18:16:00.000Z",
+      "amountCents": 1089,
+      "category": "dining"
+    },
+    {
+      "id": "persona_67757c48d025",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-01-09T14:26:00.000Z",
+      "amountCents": 724,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_20e04de96d4d",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-01-10T04:01:00.000Z",
+      "amountCents": 1229,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8b1a9e086417",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-01-12T14:09:00.000Z",
+      "amountCents": 539,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d927e0e99fe7",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-01-12T17:12:00.000Z",
+      "amountCents": 1546,
+      "category": "dining"
+    },
+    {
+      "id": "persona_cd1e74f922b3",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-01-13T17:15:00.000Z",
+      "amountCents": 1411,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3d92dc722fe4",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-01-14T14:17:00.000Z",
+      "amountCents": 630,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_9f29dc13edcf",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-01-17T03:34:00.000Z",
+      "amountCents": 1172,
+      "category": "dining"
+    },
+    {
+      "id": "persona_fb76729bc1ac",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-01-19T14:21:00.000Z",
+      "amountCents": 708,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_c3c478a5254c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-01-20T17:16:00.000Z",
+      "amountCents": 1362,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1fd310d7c7f0",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-01-21T17:15:00.000Z",
+      "amountCents": 1591,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8ab696aef20b",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-01-22T18:27:00.000Z",
+      "amountCents": 1166,
+      "category": "dining"
+    },
+    {
+      "id": "persona_436bb00c4aa1",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-01-23T14:20:00.000Z",
+      "amountCents": 568,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_57b85e99a47a",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-01-24T03:28:00.000Z",
+      "amountCents": 1358,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b10f76dbc0e3",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2026-01-24T17:00:00.000Z",
+      "amountCents": 1601,
+      "category": "dining"
+    },
+    {
+      "id": "persona_08db274be667",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-01-26T17:08:00.000Z",
+      "amountCents": 1274,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e93ddd3e8858",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-01-27T17:18:00.000Z",
+      "amountCents": 1265,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a5d6a643d56d",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-01-27T18:26:00.000Z",
+      "amountCents": 1051,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e2ba83a475be",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-01-28T14:08:00.000Z",
+      "amountCents": 571,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_91d0c0af4740",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-01-28T17:21:00.000Z",
+      "amountCents": 1258,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c46add9ad4c1",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-01-29T18:23:00.000Z",
+      "amountCents": 979,
+      "category": "dining"
+    },
+    {
+      "id": "persona_35de2bab0d68",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-01-30T14:12:00.000Z",
+      "amountCents": 555,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_eddd1002c947",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-01-30T17:15:00.000Z",
+      "amountCents": 1293,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8b23fa9f0df1",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-01-31T03:45:00.000Z",
+      "amountCents": 891,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b280c925ba65",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-03T17:14:00.000Z",
+      "amountCents": 1522,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c928c64e0a27",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-02-04T14:06:00.000Z",
+      "amountCents": 622,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_a62f4f6cc16e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-04T17:14:00.000Z",
+      "amountCents": 1414,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3762eac02fb7",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-05T17:17:00.000Z",
+      "amountCents": 1429,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3efe70af306f",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-02-06T14:15:00.000Z",
+      "amountCents": 700,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_7f15afb81d5e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-06T17:12:00.000Z",
+      "amountCents": 1370,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5d9c8bc5b00d",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-02-07T03:28:00.000Z",
+      "amountCents": 1198,
+      "category": "dining"
+    },
+    {
+      "id": "persona_fde58901ea03",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2026-02-07T17:26:00.000Z",
+      "amountCents": 1242,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8d1596f8dee1",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2026-02-07T21:22:00.000Z",
+      "amountCents": 4167,
+      "category": "retail"
+    },
+    {
+      "id": "persona_7b4f8d5c4b47",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-02-09T14:23:00.000Z",
+      "amountCents": 588,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d4e8af192969",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-09T17:20:00.000Z",
+      "amountCents": 1344,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7b7a5cb11d56",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-10T17:04:00.000Z",
+      "amountCents": 1589,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c5cc891fa38a",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-02-10T18:17:00.000Z",
+      "amountCents": 1008,
+      "category": "dining"
+    },
+    {
+      "id": "persona_946aeb36c9e8",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-02-11T14:21:00.000Z",
+      "amountCents": 725,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_837ac661f053",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-11T17:13:00.000Z",
+      "amountCents": 1451,
+      "category": "dining"
+    },
+    {
+      "id": "persona_64ba80aa48de",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-12T17:13:00.000Z",
+      "amountCents": 1402,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0381895e1832",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-02-12T18:29:00.000Z",
+      "amountCents": 860,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3beb918c02b0",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-02-13T14:17:00.000Z",
+      "amountCents": 663,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_5a4533e679d1",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-13T17:08:00.000Z",
+      "amountCents": 1348,
+      "category": "dining"
+    },
+    {
+      "id": "persona_70f07f484666",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-02-14T03:53:00.000Z",
+      "amountCents": 940,
+      "category": "dining"
+    },
+    {
+      "id": "persona_03e32a0fdc32",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-02-16T14:18:00.000Z",
+      "amountCents": 631,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_029e5346c233",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-16T17:14:00.000Z",
+      "amountCents": 1444,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0fb3cce5e52f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-17T17:09:00.000Z",
+      "amountCents": 1309,
+      "category": "dining"
+    },
+    {
+      "id": "persona_49cc6b5bb5a5",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-02-18T14:22:00.000Z",
+      "amountCents": 639,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_7ed68c7a6219",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-19T17:11:00.000Z",
+      "amountCents": 1543,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f8d56f40b453",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-02-19T18:24:00.000Z",
+      "amountCents": 1121,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1ea8773ba0fd",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-02-20T14:18:00.000Z",
+      "amountCents": 533,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_11803db655b7",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-20T17:15:00.000Z",
+      "amountCents": 1552,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9fac51142563",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-23T17:17:00.000Z",
+      "amountCents": 1394,
+      "category": "dining"
+    },
+    {
+      "id": "persona_385c696f48ac",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-24T17:07:00.000Z",
+      "amountCents": 1467,
+      "category": "dining"
+    },
+    {
+      "id": "persona_621fb61f70bf",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-02-24T18:30:00.000Z",
+      "amountCents": 962,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6e288622ea18",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-02-25T14:21:00.000Z",
+      "amountCents": 736,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_77c715fc8dc7",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-25T17:13:00.000Z",
+      "amountCents": 1489,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7f3088140180",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-26T17:21:00.000Z",
+      "amountCents": 1581,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ef8d510df5db",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-02-27T14:14:00.000Z",
+      "amountCents": 605,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_ead272ff5190",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-02-27T17:12:00.000Z",
+      "amountCents": 1402,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c59dda67decc",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-02-28T03:20:00.000Z",
+      "amountCents": 888,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8b70b0698c76",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-02T14:15:00.000Z",
+      "amountCents": 675,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_479e83c428aa",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-02T17:05:00.000Z",
+      "amountCents": 1442,
+      "category": "dining"
+    },
+    {
+      "id": "persona_94e7cfffebed",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-03T17:14:00.000Z",
+      "amountCents": 1382,
+      "category": "dining"
+    },
+    {
+      "id": "persona_218c58c6deb5",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-03-03T18:24:00.000Z",
+      "amountCents": 1236,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ddfdebae8a92",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-04T14:17:00.000Z",
+      "amountCents": 702,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_9d1df2d27951",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-04T17:18:00.000Z",
+      "amountCents": 1235,
+      "category": "dining"
+    },
+    {
+      "id": "persona_863eeb757f2f",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-06T14:24:00.000Z",
+      "amountCents": 562,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_408ee5b01a7a",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2026-03-07T20:37:00.000Z",
+      "amountCents": 5743,
+      "category": "retail"
+    },
+    {
+      "id": "persona_4145a24afaab",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-09T13:16:00.000Z",
+      "amountCents": 552,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_e7c26f7904c5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-09T16:11:00.000Z",
+      "amountCents": 1478,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e16f897a0f05",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-10T16:21:00.000Z",
+      "amountCents": 1207,
+      "category": "dining"
+    },
+    {
+      "id": "persona_83252a77f7be",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-11T13:20:00.000Z",
+      "amountCents": 629,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_614bb882f59c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-11T16:15:00.000Z",
+      "amountCents": 1236,
+      "category": "dining"
+    },
+    {
+      "id": "persona_745c7d30da81",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-12T16:21:00.000Z",
+      "amountCents": 1197,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ea359c351d24",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-13T13:19:00.000Z",
+      "amountCents": 550,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d9b5681ecf37",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-03-14T02:51:00.000Z",
+      "amountCents": 918,
+      "category": "dining"
+    },
+    {
+      "id": "persona_be2f94a4be10",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-16T13:13:00.000Z",
+      "amountCents": 584,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_a54afb0ecb3f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-16T16:11:00.000Z",
+      "amountCents": 1217,
+      "category": "dining"
+    },
+    {
+      "id": "persona_de7ec9c58c5a",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-18T13:23:00.000Z",
+      "amountCents": 653,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_29c19d703ad1",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-20T13:24:00.000Z",
+      "amountCents": 668,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_0f4462de69a1",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-20T16:10:00.000Z",
+      "amountCents": 1454,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5bdf1d19fb06",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-03-21T02:44:00.000Z",
+      "amountCents": 1002,
+      "category": "dining"
+    },
+    {
+      "id": "persona_eb6ff8d26f92",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2026-03-21T20:14:00.000Z",
+      "amountCents": 4233,
+      "category": "retail"
+    },
+    {
+      "id": "persona_8cf8c66dc6e2",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-23T13:18:00.000Z",
+      "amountCents": 624,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_ecb9a97fb6c1",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-24T16:07:00.000Z",
+      "amountCents": 1208,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d60b2782a0fc",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-03-24T17:27:00.000Z",
+      "amountCents": 1182,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1eb45f6b2942",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-25T13:19:00.000Z",
+      "amountCents": 537,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_0122e9db4852",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-25T16:13:00.000Z",
+      "amountCents": 1278,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2fd0f5f035f1",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-27T13:20:00.000Z",
+      "amountCents": 683,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_8ac8e62bb515",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-27T16:14:00.000Z",
+      "amountCents": 1577,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d83302decb7e",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-03-30T13:20:00.000Z",
+      "amountCents": 689,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_6fd1e5370e37",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-30T16:20:00.000Z",
+      "amountCents": 1214,
+      "category": "dining"
+    },
+    {
+      "id": "persona_930a49a5d741",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-03-31T16:24:00.000Z",
+      "amountCents": 1565,
+      "category": "dining"
+    },
+    {
+      "id": "persona_50de00cb0116",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-04-01T13:12:00.000Z",
+      "amountCents": 660,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_9196556a5bb3",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-01T16:13:00.000Z",
+      "amountCents": 1159,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c3b12b9725af",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-02T16:08:00.000Z",
+      "amountCents": 1213,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5441a9ca529b",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-04-02T17:24:00.000Z",
+      "amountCents": 1048,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7ff401d4e25f",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-04-03T13:09:00.000Z",
+      "amountCents": 611,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_a45b83ceb4ed",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-03T16:07:00.000Z",
+      "amountCents": 1530,
+      "category": "dining"
+    },
+    {
+      "id": "persona_730b88b5eb74",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2026-04-04T16:24:00.000Z",
+      "amountCents": 1727,
+      "category": "dining"
+    },
+    {
+      "id": "persona_80914bb97f9b",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2026-04-04T18:56:00.000Z",
+      "amountCents": 4646,
+      "category": "retail"
+    },
+    {
+      "id": "persona_9f54881fdbb2",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-04-06T13:19:00.000Z",
+      "amountCents": 728,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_253182a1de96",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-06T16:21:00.000Z",
+      "amountCents": 1411,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b07c604387bf",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-07T16:06:00.000Z",
+      "amountCents": 1432,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c34b568da48e",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-04-07T17:33:00.000Z",
+      "amountCents": 1176,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6197fc2f0ebb",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-04-08T13:18:00.000Z",
+      "amountCents": 548,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_c12e3a7a7d9d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-09T16:11:00.000Z",
+      "amountCents": 1420,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c5ad83947cf9",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-04-09T17:25:00.000Z",
+      "amountCents": 1003,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5287d03ae9dc",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-10T16:10:00.000Z",
+      "amountCents": 1485,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3df779761230",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-04-11T02:54:00.000Z",
+      "amountCents": 1034,
+      "category": "dining"
+    },
+    {
+      "id": "persona_15b7dbc39201",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-04-13T13:09:00.000Z",
+      "amountCents": 533,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_3f9a6a0771e2",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-13T16:12:00.000Z",
+      "amountCents": 1278,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0c4f05f6318d",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-04-15T13:11:00.000Z",
+      "amountCents": 741,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_3246402cd177",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-15T16:11:00.000Z",
+      "amountCents": 1231,
+      "category": "dining"
+    },
+    {
+      "id": "persona_46bf760d8458",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-16T16:15:00.000Z",
+      "amountCents": 1183,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9ea5d6a631b9",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-04-17T13:23:00.000Z",
+      "amountCents": 715,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_7039eb50bbfc",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-17T16:09:00.000Z",
+      "amountCents": 1326,
+      "category": "dining"
+    },
+    {
+      "id": "persona_aba2887d09e5",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-04-20T13:23:00.000Z",
+      "amountCents": 583,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_e697b42d35dc",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-20T16:17:00.000Z",
+      "amountCents": 1452,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e31a412be393",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-21T16:16:00.000Z",
+      "amountCents": 1511,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f2e3f705ebee",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-04-21T17:30:00.000Z",
+      "amountCents": 1059,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d13876e536b1",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-04-22T13:09:00.000Z",
+      "amountCents": 731,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_25f662a7dc70",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-22T16:02:00.000Z",
+      "amountCents": 1460,
+      "category": "dining"
+    },
+    {
+      "id": "persona_64a7f89ba94f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-23T16:22:00.000Z",
+      "amountCents": 1344,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b57c2d58dfdc",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-04-23T17:28:00.000Z",
+      "amountCents": 874,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b5948e323ef1",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-04-24T13:25:00.000Z",
+      "amountCents": 617,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_620715a15a23",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-04-27T13:22:00.000Z",
+      "amountCents": 699,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_5b511eb907ab",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-28T16:14:00.000Z",
+      "amountCents": 1407,
+      "category": "dining"
+    },
+    {
+      "id": "persona_bee7e5df84b9",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-04-29T13:18:00.000Z",
+      "amountCents": 591,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_572e31f2382e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-29T16:13:00.000Z",
+      "amountCents": 1462,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1ba9c6ece112",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-04-30T16:12:00.000Z",
+      "amountCents": 1357,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e3a5bf7f5c79",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-04-30T17:18:00.000Z",
+      "amountCents": 948,
+      "category": "dining"
+    },
+    {
+      "id": "persona_81ca8334232a",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-05-01T13:14:00.000Z",
+      "amountCents": 712,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_b514fa11c618",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-05-01T16:07:00.000Z",
+      "amountCents": 1156,
+      "category": "dining"
+    },
+    {
+      "id": "persona_84c1537fba56",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2026-05-02T15:59:00.000Z",
+      "amountCents": 1607,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b7f1c2584e9e",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2026-05-02T19:18:00.000Z",
+      "amountCents": 6318,
+      "category": "retail"
+    },
+    {
+      "id": "persona_d609cc601c9e",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-05-04T13:16:00.000Z",
+      "amountCents": 590,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_3f890cb7c32d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-05-04T16:17:00.000Z",
+      "amountCents": 1270,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3a73eb1c4330",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-05-05T16:15:00.000Z",
+      "amountCents": 1432,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4738ec556183",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-05-05T17:26:00.000Z",
+      "amountCents": 1079,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b0e492edf4ae",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-05-06T13:16:00.000Z",
+      "amountCents": 741,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_f87fec2a9f38",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-05-06T16:15:00.000Z",
+      "amountCents": 1406,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f3d5e8c378e7",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-05-07T16:19:00.000Z",
+      "amountCents": 1476,
+      "category": "dining"
+    },
+    {
+      "id": "persona_18f434c45ecc",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-05-08T13:17:00.000Z",
+      "amountCents": 692,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_463f7f0cf063",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-05-08T16:18:00.000Z",
+      "amountCents": 1343,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6ae9b1bede6f",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-05-11T13:20:00.000Z",
+      "amountCents": 585,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_60e1c2249db9",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-05-11T16:18:00.000Z",
+      "amountCents": 1575,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e62780833c94",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-05-13T13:23:00.000Z",
+      "amountCents": 712,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_dcc57c346cf4",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-05-13T16:06:00.000Z",
+      "amountCents": 1452,
+      "category": "dining"
+    },
+    {
+      "id": "persona_52a4589fa31d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-05-14T16:17:00.000Z",
+      "amountCents": 1540,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7f984dfa5b86",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-05-15T13:20:00.000Z",
+      "amountCents": 583,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_62748f7e6074",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-05-15T16:05:00.000Z",
+      "amountCents": 1500,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9ba701a5e93d",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2026-05-23T15:54:00.000Z",
+      "amountCents": 1251,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6cec531531a5",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-05-30T02:34:00.000Z",
+      "amountCents": 1386,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b83981aa3499",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-06-01T13:18:00.000Z",
+      "amountCents": 691,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_20149fb46e8c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-02T16:16:00.000Z",
+      "amountCents": 1400,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4f13e7079cdf",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-06-03T13:18:00.000Z",
+      "amountCents": 586,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_dcb71204b985",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-04T16:05:00.000Z",
+      "amountCents": 1269,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1a6a934e65e6",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-06-04T17:23:00.000Z",
+      "amountCents": 1205,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e131a0c509fb",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-06-05T13:17:00.000Z",
+      "amountCents": 744,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_97bb381784d4",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-05T16:14:00.000Z",
+      "amountCents": 1273,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c13dbcd1dcee",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2026-06-06T19:59:00.000Z",
+      "amountCents": 6039,
+      "category": "retail"
+    },
+    {
+      "id": "persona_2b215dd6dc31",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-09T16:15:00.000Z",
+      "amountCents": 1341,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1bcbd6945211",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-10T16:11:00.000Z",
+      "amountCents": 1386,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3548f2a4fda6",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-11T16:08:00.000Z",
+      "amountCents": 1411,
+      "category": "dining"
+    },
+    {
+      "id": "persona_37cf26c9f3f4",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-06-11T17:26:00.000Z",
+      "amountCents": 1031,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8788580ba368",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-06-12T13:23:00.000Z",
+      "amountCents": 651,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_24a47d0c4d4e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-12T16:19:00.000Z",
+      "amountCents": 1586,
+      "category": "dining"
+    },
+    {
+      "id": "persona_eead4f8eafff",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2026-06-13T20:26:00.000Z",
+      "amountCents": 11820,
+      "category": "retail"
+    },
+    {
+      "id": "persona_aaa0cc1a6360",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-06-15T13:11:00.000Z",
+      "amountCents": 645,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_479030494428",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-15T16:12:00.000Z",
+      "amountCents": 1431,
+      "category": "dining"
+    },
+    {
+      "id": "persona_205e14b2e056",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-06-16T17:26:00.000Z",
+      "amountCents": 859,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e4367f415afa",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-06-17T13:14:00.000Z",
+      "amountCents": 577,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_96a177cd2058",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-17T16:10:00.000Z",
+      "amountCents": 1598,
+      "category": "dining"
+    },
+    {
+      "id": "persona_20aec86ff063",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-06-19T13:21:00.000Z",
+      "amountCents": 686,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_f2f4d8143d6b",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-19T16:11:00.000Z",
+      "amountCents": 1287,
+      "category": "dining"
+    },
+    {
+      "id": "persona_61ddf518d649",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-06-20T02:43:00.000Z",
+      "amountCents": 844,
+      "category": "dining"
+    },
+    {
+      "id": "persona_66c26a90f5db",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-22T16:07:00.000Z",
+      "amountCents": 1599,
+      "category": "dining"
+    },
+    {
+      "id": "persona_83e30032655e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-23T16:14:00.000Z",
+      "amountCents": 1271,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0b02c10e5e5c",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-06-23T17:23:00.000Z",
+      "amountCents": 954,
+      "category": "dining"
+    },
+    {
+      "id": "persona_590c46973651",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-06-24T13:20:00.000Z",
+      "amountCents": 573,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_ec87355c8ba3",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-24T16:12:00.000Z",
+      "amountCents": 1179,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4c18a6373d8e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-25T16:12:00.000Z",
+      "amountCents": 1402,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9f619961e5c7",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-06-25T17:25:00.000Z",
+      "amountCents": 924,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5ff6203b4a85",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-06-26T13:25:00.000Z",
+      "amountCents": 652,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_b32125879279",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-26T16:16:00.000Z",
+      "amountCents": 1355,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0211207b5d2a",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-06-29T13:21:00.000Z",
+      "amountCents": 741,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_bf8474995d8a",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-06-29T16:15:00.000Z",
+      "amountCents": 1439,
+      "category": "dining"
+    },
+    {
+      "id": "persona_104614dccb3d",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-01T16:10:00.000Z",
+      "amountCents": 1516,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5eedb6b314f8",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-02T16:04:00.000Z",
+      "amountCents": 1575,
+      "category": "dining"
+    },
+    {
+      "id": "persona_608641fbc779",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-07-02T17:26:00.000Z",
+      "amountCents": 1052,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5bc22a59c020",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-07-03T13:16:00.000Z",
+      "amountCents": 695,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_131aaa61ac6e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-03T16:22:00.000Z",
+      "amountCents": 1502,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e5781752ff96",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2026-07-04T19:53:00.000Z",
+      "amountCents": 4561,
+      "category": "retail"
+    },
+    {
+      "id": "persona_6c841dffcafc",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-07-06T13:17:00.000Z",
+      "amountCents": 664,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_8cd0074765e2",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-06T16:16:00.000Z",
+      "amountCents": 1434,
+      "category": "dining"
+    },
+    {
+      "id": "persona_89bae43b8eb7",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-07T16:17:00.000Z",
+      "amountCents": 1463,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5a94390f15cb",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-07-07T17:20:00.000Z",
+      "amountCents": 880,
+      "category": "dining"
+    },
+    {
+      "id": "persona_79ded57e9b57",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-07-08T13:23:00.000Z",
+      "amountCents": 690,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_71dac80f3409",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-08T16:23:00.000Z",
+      "amountCents": 1463,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2a9deee9e613",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-09T16:13:00.000Z",
+      "amountCents": 1459,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ad08b392da1d",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-07-10T13:17:00.000Z",
+      "amountCents": 657,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_1a19de2096b8",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-10T16:13:00.000Z",
+      "amountCents": 1537,
+      "category": "dining"
+    },
+    {
+      "id": "persona_11678b16f269",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-07-11T02:21:00.000Z",
+      "amountCents": 924,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e64759afe3c0",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-13T16:16:00.000Z",
+      "amountCents": 1353,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0a7084e6497f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-14T16:10:00.000Z",
+      "amountCents": 1393,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ff69a438acf8",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-07-14T17:21:00.000Z",
+      "amountCents": 1032,
+      "category": "dining"
+    },
+    {
+      "id": "persona_91b98656154e",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-07-15T13:17:00.000Z",
+      "amountCents": 641,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_90dbe5a3f93e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-15T16:11:00.000Z",
+      "amountCents": 1170,
+      "category": "dining"
+    },
+    {
+      "id": "persona_43664c4c0ec8",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-16T16:16:00.000Z",
+      "amountCents": 1295,
+      "category": "dining"
+    },
+    {
+      "id": "persona_dc4513dd8703",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-07-17T13:22:00.000Z",
+      "amountCents": 565,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_bb87a555b96c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-17T16:18:00.000Z",
+      "amountCents": 1215,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8394e7ff5543",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2026-07-18T16:23:00.000Z",
+      "amountCents": 1417,
+      "category": "dining"
+    },
+    {
+      "id": "persona_22df46c72d43",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-07-20T13:18:00.000Z",
+      "amountCents": 732,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_81a00cf2f1f5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-20T16:19:00.000Z",
+      "amountCents": 1328,
+      "category": "dining"
+    },
+    {
+      "id": "persona_70848a437535",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-21T16:13:00.000Z",
+      "amountCents": 1168,
+      "category": "dining"
+    },
+    {
+      "id": "persona_78c0a58385b6",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-07-21T17:27:00.000Z",
+      "amountCents": 882,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6feed8cee0f7",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-07-22T13:16:00.000Z",
+      "amountCents": 659,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_451f3b90f6bb",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-22T16:12:00.000Z",
+      "amountCents": 1241,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f6c8cbe70f25",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-23T16:12:00.000Z",
+      "amountCents": 1416,
+      "category": "dining"
+    },
+    {
+      "id": "persona_578f55a67a80",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-07-24T13:15:00.000Z",
+      "amountCents": 736,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_93d2272ad0ca",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-24T16:12:00.000Z",
+      "amountCents": 1344,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0234842a5c6c",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-07-25T02:51:00.000Z",
+      "amountCents": 1336,
+      "category": "dining"
+    },
+    {
+      "id": "persona_41912752781b",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2026-07-25T20:31:00.000Z",
+      "amountCents": 5964,
+      "category": "retail"
+    },
+    {
+      "id": "persona_af4bd10b1d6c",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-07-27T13:11:00.000Z",
+      "amountCents": 683,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_8013c5ac1117",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-27T16:12:00.000Z",
+      "amountCents": 1182,
+      "category": "dining"
+    },
+    {
+      "id": "persona_fae66a940cbb",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-28T16:11:00.000Z",
+      "amountCents": 1313,
+      "category": "dining"
+    },
+    {
+      "id": "persona_17c7a175e035",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-07-29T13:24:00.000Z",
+      "amountCents": 698,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_df657568e821",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-29T16:10:00.000Z",
+      "amountCents": 1370,
+      "category": "dining"
+    },
+    {
+      "id": "persona_eca351eee932",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-30T16:16:00.000Z",
+      "amountCents": 1377,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f7dbffef2075",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-07-30T17:19:00.000Z",
+      "amountCents": 1242,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1fd49aa61da0",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-07-31T13:17:00.000Z",
+      "amountCents": 580,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_11abc124ad9b",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-07-31T16:16:00.000Z",
+      "amountCents": 1478,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6d0c61963b43",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2026-08-01T19:27:00.000Z",
+      "amountCents": 5683,
+      "category": "retail"
+    },
+    {
+      "id": "persona_3b755e405ba3",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-03T16:15:00.000Z",
+      "amountCents": 1395,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d9fd11f0dc5f",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-08-05T13:18:00.000Z",
+      "amountCents": 646,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_168ecc443d2f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-05T16:09:00.000Z",
+      "amountCents": 1268,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8593d42d6de2",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-06T16:08:00.000Z",
+      "amountCents": 1548,
+      "category": "dining"
+    },
+    {
+      "id": "persona_57248539425b",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-08-06T17:24:00.000Z",
+      "amountCents": 1128,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7e7882ef5983",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-07T16:14:00.000Z",
+      "amountCents": 1196,
+      "category": "dining"
+    },
+    {
+      "id": "persona_64462aee8ed9",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-08-08T02:42:00.000Z",
+      "amountCents": 828,
+      "category": "dining"
+    },
+    {
+      "id": "persona_11d9c185510d",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2026-08-08T15:56:00.000Z",
+      "amountCents": 1504,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8e5e20e067fa",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-08-10T13:23:00.000Z",
+      "amountCents": 690,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_6e5ba88e38a4",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-10T16:14:00.000Z",
+      "amountCents": 1463,
+      "category": "dining"
+    },
+    {
+      "id": "persona_da4edd8c6697",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-11T16:13:00.000Z",
+      "amountCents": 1524,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2b9a7efe0d9a",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-08-11T17:27:00.000Z",
+      "amountCents": 895,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2234464682e2",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-08-12T13:08:00.000Z",
+      "amountCents": 645,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_9642c6707bc9",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-12T16:15:00.000Z",
+      "amountCents": 1525,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4a80f3502dc9",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-13T16:10:00.000Z",
+      "amountCents": 1379,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7eeb07d123a3",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-08-14T13:13:00.000Z",
+      "amountCents": 694,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_5208360626eb",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-14T16:13:00.000Z",
+      "amountCents": 1525,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9e935cbdcb06",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2026-08-15T16:20:00.000Z",
+      "amountCents": 1653,
+      "category": "dining"
+    },
+    {
+      "id": "persona_208fea6ad500",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-08-17T13:19:00.000Z",
+      "amountCents": 653,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_e95cecefb090",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-17T16:09:00.000Z",
+      "amountCents": 1580,
+      "category": "dining"
+    },
+    {
+      "id": "persona_cfd8b9eef3b9",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-18T16:07:00.000Z",
+      "amountCents": 1354,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5a7fc44d761e",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-08-18T17:30:00.000Z",
+      "amountCents": 857,
+      "category": "dining"
+    },
+    {
+      "id": "persona_45ae378087ba",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-08-19T13:15:00.000Z",
+      "amountCents": 666,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_2adf5b310044",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-19T16:15:00.000Z",
+      "amountCents": 1515,
+      "category": "dining"
+    },
+    {
+      "id": "persona_cd0bd59de0d5",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-20T16:12:00.000Z",
+      "amountCents": 1342,
+      "category": "dining"
+    },
+    {
+      "id": "persona_24c64c7a6309",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-21T16:17:00.000Z",
+      "amountCents": 1165,
+      "category": "dining"
+    },
+    {
+      "id": "persona_9565d3cead64",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-08-22T02:56:00.000Z",
+      "amountCents": 1073,
+      "category": "dining"
+    },
+    {
+      "id": "persona_449621c06819",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-08-24T13:19:00.000Z",
+      "amountCents": 605,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_a7c84f821d6f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-24T16:17:00.000Z",
+      "amountCents": 1394,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3738aad5bdd9",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-25T16:14:00.000Z",
+      "amountCents": 1375,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3d7bb3532692",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-08-25T17:20:00.000Z",
+      "amountCents": 1250,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7d02a6a897be",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-08-26T13:09:00.000Z",
+      "amountCents": 591,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_91b02aab0d40",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-26T16:13:00.000Z",
+      "amountCents": 1575,
+      "category": "dining"
+    },
+    {
+      "id": "persona_04c842a47f21",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-08-28T13:23:00.000Z",
+      "amountCents": 674,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_3059d68de6cc",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-28T16:12:00.000Z",
+      "amountCents": 1271,
+      "category": "dining"
+    },
+    {
+      "id": "persona_702d84a64787",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-08-31T13:11:00.000Z",
+      "amountCents": 647,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_5630ce6ba109",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-08-31T16:25:00.000Z",
+      "amountCents": 1516,
+      "category": "dining"
+    },
+    {
+      "id": "persona_feac5b36681e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-01T16:15:00.000Z",
+      "amountCents": 1184,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a4016128e7ee",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-09-01T17:18:00.000Z",
+      "amountCents": 1143,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3212c022f8ef",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-09-02T13:18:00.000Z",
+      "amountCents": 633,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_c5a6c0309e92",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-03T16:14:00.000Z",
+      "amountCents": 1283,
+      "category": "dining"
+    },
+    {
+      "id": "persona_fe8f94092b58",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-09-03T17:25:00.000Z",
+      "amountCents": 856,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b07f8f11b012",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-09-04T13:15:00.000Z",
+      "amountCents": 551,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_7caff825d9e6",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-04T16:16:00.000Z",
+      "amountCents": 1309,
+      "category": "dining"
+    },
+    {
+      "id": "persona_98f10ff0ae9a",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2026-09-05T19:40:00.000Z",
+      "amountCents": 4621,
+      "category": "retail"
+    },
+    {
+      "id": "persona_9b5679d1c83b",
+      "brand": "macys",
+      "merchantId": null,
+      "occurredAt": "2026-09-05T20:52:00.000Z",
+      "amountCents": 4368,
+      "category": "retail"
+    },
+    {
+      "id": "persona_bb08fc32bcd0",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-07T16:14:00.000Z",
+      "amountCents": 1513,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b9e5c0b5d175",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-08T16:17:00.000Z",
+      "amountCents": 1511,
+      "category": "dining"
+    },
+    {
+      "id": "persona_bf6c51e689a1",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-09-09T13:24:00.000Z",
+      "amountCents": 689,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_3f35274a5c35",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-10T16:10:00.000Z",
+      "amountCents": 1421,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d08ae2705803",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-09-11T13:17:00.000Z",
+      "amountCents": 724,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_efbdc0ecf780",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-11T16:05:00.000Z",
+      "amountCents": 1289,
+      "category": "dining"
+    },
+    {
+      "id": "persona_55ebb06bbdc8",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2026-09-12T16:09:00.000Z",
+      "amountCents": 1573,
+      "category": "dining"
+    },
+    {
+      "id": "persona_43cb91524e53",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-09-14T13:22:00.000Z",
+      "amountCents": 594,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_529b7633b1e8",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-14T16:11:00.000Z",
+      "amountCents": 1382,
+      "category": "dining"
+    },
+    {
+      "id": "persona_42a267cefa0e",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-09-15T17:29:00.000Z",
+      "amountCents": 908,
+      "category": "dining"
+    },
+    {
+      "id": "persona_a6d4817909e0",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-09-16T13:14:00.000Z",
+      "amountCents": 538,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_060a094e6e34",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-16T16:13:00.000Z",
+      "amountCents": 1238,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7cad986bd085",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-17T16:13:00.000Z",
+      "amountCents": 1533,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6de3d427aaef",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-09-17T17:29:00.000Z",
+      "amountCents": 959,
+      "category": "dining"
+    },
+    {
+      "id": "persona_79d8b5a22517",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-09-18T13:13:00.000Z",
+      "amountCents": 651,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_9776de97f09f",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-18T16:17:00.000Z",
+      "amountCents": 1377,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e3f5bb5eb97c",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-09-21T13:24:00.000Z",
+      "amountCents": 731,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_88e5590df8ab",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-22T16:11:00.000Z",
+      "amountCents": 1176,
+      "category": "dining"
+    },
+    {
+      "id": "persona_eb83ad0243a8",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-09-23T13:15:00.000Z",
+      "amountCents": 736,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_bd13d509df48",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-23T16:09:00.000Z",
+      "amountCents": 1210,
+      "category": "dining"
+    },
+    {
+      "id": "persona_33b0c80f733f",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-09-24T17:24:00.000Z",
+      "amountCents": 1113,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5d8888ba5c71",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-09-25T13:20:00.000Z",
+      "amountCents": 586,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_4406fb8d0a2c",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-25T16:14:00.000Z",
+      "amountCents": 1489,
+      "category": "dining"
+    },
+    {
+      "id": "persona_fe2d5409baf1",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2026-09-26T16:12:00.000Z",
+      "amountCents": 1714,
+      "category": "dining"
+    },
+    {
+      "id": "persona_b280a0d7c200",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-09-28T13:16:00.000Z",
+      "amountCents": 717,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_572616938aba",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-28T16:15:00.000Z",
+      "amountCents": 1409,
+      "category": "dining"
+    },
+    {
+      "id": "persona_faa8fb45b0c1",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-09-30T13:17:00.000Z",
+      "amountCents": 568,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d36d76e6eab6",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-09-30T16:12:00.000Z",
+      "amountCents": 1458,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3e96acbb87d2",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-01T16:09:00.000Z",
+      "amountCents": 1443,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e556ea976d51",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-10-01T17:23:00.000Z",
+      "amountCents": 1177,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e2a0b6787b10",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-02T13:10:00.000Z",
+      "amountCents": 731,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_f1eaac042a6b",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-02T16:08:00.000Z",
+      "amountCents": 1440,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7162fc5d9efe",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-10-03T02:46:00.000Z",
+      "amountCents": 958,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d22d87b59141",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2026-10-03T18:04:00.000Z",
+      "amountCents": 4888,
+      "category": "retail"
+    },
+    {
+      "id": "persona_0bd56694c1ac",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-05T13:21:00.000Z",
+      "amountCents": 656,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_34a5d4c143c0",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-05T16:10:00.000Z",
+      "amountCents": 1436,
+      "category": "dining"
+    },
+    {
+      "id": "persona_3b45cce1ac0e",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-07T13:18:00.000Z",
+      "amountCents": 568,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_edadc3dc33cf",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-07T16:20:00.000Z",
+      "amountCents": 1239,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1f199a2c1708",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-08T16:14:00.000Z",
+      "amountCents": 1577,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6fb4801150a5",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-10-08T17:14:00.000Z",
+      "amountCents": 1226,
+      "category": "dining"
+    },
+    {
+      "id": "persona_6e649ce1b009",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-09T13:22:00.000Z",
+      "amountCents": 628,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_543fc7033eca",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-09T16:07:00.000Z",
+      "amountCents": 1590,
+      "category": "dining"
+    },
+    {
+      "id": "persona_94d887836341",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2026-10-10T16:14:00.000Z",
+      "amountCents": 1567,
+      "category": "dining"
+    },
+    {
+      "id": "persona_695df59d6d5f",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-12T13:20:00.000Z",
+      "amountCents": 567,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_64283ba58ca6",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-12T16:11:00.000Z",
+      "amountCents": 1401,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d41a9a802682",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-13T16:06:00.000Z",
+      "amountCents": 1203,
+      "category": "dining"
+    },
+    {
+      "id": "persona_96001eb916b8",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-10-13T17:24:00.000Z",
+      "amountCents": 1213,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e48814ac9230",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-14T13:18:00.000Z",
+      "amountCents": 743,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d8463bd3f5db",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-14T16:16:00.000Z",
+      "amountCents": 1192,
+      "category": "dining"
+    },
+    {
+      "id": "persona_78b541c159b2",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-15T16:13:00.000Z",
+      "amountCents": 1332,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f9ebd956d2e4",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-10-15T17:19:00.000Z",
+      "amountCents": 942,
+      "category": "dining"
+    },
+    {
+      "id": "persona_7aad20dda57d",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-16T13:20:00.000Z",
+      "amountCents": 558,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_dc8e2f0d2822",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-16T16:09:00.000Z",
+      "amountCents": 1270,
+      "category": "dining"
+    },
+    {
+      "id": "persona_2796d07bb1a7",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-10-17T02:59:00.000Z",
+      "amountCents": 890,
+      "category": "dining"
+    },
+    {
+      "id": "persona_8fef8e41533d",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-19T13:23:00.000Z",
+      "amountCents": 697,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_9f620e33b4af",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-19T16:14:00.000Z",
+      "amountCents": 1452,
+      "category": "dining"
+    },
+    {
+      "id": "persona_0a59bdb6ab17",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-20T16:19:00.000Z",
+      "amountCents": 1593,
+      "category": "dining"
+    },
+    {
+      "id": "persona_cb93db7abbc8",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-21T13:25:00.000Z",
+      "amountCents": 637,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_1919abfc9f71",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-21T16:06:00.000Z",
+      "amountCents": 1582,
+      "category": "dining"
+    },
+    {
+      "id": "persona_ff08dfa965a6",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-10-22T17:25:00.000Z",
+      "amountCents": 995,
+      "category": "dining"
+    },
+    {
+      "id": "persona_164d2d79984e",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-23T13:11:00.000Z",
+      "amountCents": 623,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_c6af5431b12e",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-23T16:14:00.000Z",
+      "amountCents": 1341,
+      "category": "dining"
+    },
+    {
+      "id": "persona_d4808061faa9",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-10-24T02:52:00.000Z",
+      "amountCents": 840,
+      "category": "dining"
+    },
+    {
+      "id": "persona_301d6af2a0bf",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-26T13:22:00.000Z",
+      "amountCents": 542,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_f08eb040cb77",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-26T16:18:00.000Z",
+      "amountCents": 1384,
+      "category": "dining"
+    },
+    {
+      "id": "persona_138ab86a4334",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-28T13:12:00.000Z",
+      "amountCents": 664,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_d02027a69476",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-29T16:10:00.000Z",
+      "amountCents": 1501,
+      "category": "dining"
+    },
+    {
+      "id": "persona_e3fb96197f23",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-10-29T17:28:00.000Z",
+      "amountCents": 1228,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5a5afc1f4c77",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-10-30T13:19:00.000Z",
+      "amountCents": 725,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_98935a1377a1",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-10-30T16:14:00.000Z",
+      "amountCents": 1529,
+      "category": "dining"
+    },
+    {
+      "id": "persona_5d126756063c",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-10-31T02:50:00.000Z",
+      "amountCents": 985,
+      "category": "dining"
+    },
+    {
+      "id": "persona_c726962ab248",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-11-02T14:23:00.000Z",
+      "amountCents": 586,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_ba4121a846f6",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-11-03T17:11:00.000Z",
+      "amountCents": 1164,
+      "category": "dining"
+    },
+    {
+      "id": "persona_acf6ec58ed09",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-11-04T14:17:00.000Z",
+      "amountCents": 649,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_04a06e8d7347",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-11-04T17:15:00.000Z",
+      "amountCents": 1150,
+      "category": "dining"
+    },
+    {
+      "id": "persona_1178e06ddaa0",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-11-05T17:08:00.000Z",
+      "amountCents": 1313,
+      "category": "dining"
+    },
+    {
+      "id": "persona_963ea5808963",
+      "brand": "chick_fil_a",
+      "merchantId": null,
+      "occurredAt": "2026-11-05T18:25:00.000Z",
+      "amountCents": 856,
+      "category": "dining"
+    },
+    {
+      "id": "persona_4613c774ad7a",
+      "brand": "starbucks",
+      "merchantId": null,
+      "occurredAt": "2026-11-06T14:07:00.000Z",
+      "amountCents": 634,
+      "category": "coffee"
+    },
+    {
+      "id": "persona_526d49147082",
+      "brand": "chipotle",
+      "merchantId": null,
+      "occurredAt": "2026-11-06T17:05:00.000Z",
+      "amountCents": 1493,
+      "category": "dining"
+    },
+    {
+      "id": "persona_32c485eb2fd5",
+      "brand": "taco_bell",
+      "merchantId": null,
+      "occurredAt": "2026-11-07T03:11:00.000Z",
+      "amountCents": 998,
+      "category": "dining"
+    },
+    {
+      "id": "persona_00f3147847ad",
+      "brand": "panera",
+      "merchantId": null,
+      "occurredAt": "2026-11-07T17:16:00.000Z",
+      "amountCents": 1599,
+      "category": "dining"
+    },
+    {
+      "id": "persona_f0aa0cc1cc25",
+      "brand": "jcpenney",
+      "merchantId": null,
+      "occurredAt": "2026-11-07T21:16:00.000Z",
+      "amountCents": 5519,
+      "category": "retail"
+    }
+  ]
+}

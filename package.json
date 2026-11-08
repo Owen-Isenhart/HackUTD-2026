@@ -13,7 +13,13 @@
     "finance:migrate": "node --env-file-if-exists=.env scripts/finance-profile.js --migrate",
     "texts:sync": "node --env-file-if-exists=.env scripts/finance-profile.js --texts-sync",
     "gmail:code": "node --env-file-if-exists=.env scripts/finance-profile.js --gmail-code",
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "lint": "expo lint",
+    "finance:probe": "node --env-file-if-exists=.env scripts/nessie-v2-probe.js",
+    "finance:persona": "node scripts/generate-persona-history.mjs",
+    "finance:backtest": "node --env-file-if-exists=.env scripts/backtest-forecast.js",
+    "finance:rehearse": "node --env-file-if-exists=.env scripts/rehearse-pipeline.js",
+    "finance:merchants": "node --env-file-if-exists=.env scripts/nessie-v2-add-merchants.js"
   },
   "dependencies": {
     "expo": "~58.0.23",
@@ -30,5 +36,8 @@
     "react": "19.3.0",
     "react-native": "0.88.1",
     "react-native-safe-area-context": "~5.11.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.15"
   }
 }

@@ -104,7 +104,7 @@ class Breakdown:
         return self.payable_now - self.verified_cashback
 
 
-def compute_breakdown(price: int, method: PaymentMethod, chosen: list[Offer]) -> Breakdown:
+def compute_breakdown(price: int, method: PaymentMethod, chosen: list[Offer], category: str = "") -> Breakdown:
     instant = sum(instant_discount_of(o, price) for o in chosen)
     payable = max(price - instant, 0)
     offer_cb = 0
@@ -119,7 +119,7 @@ def compute_breakdown(price: int, method: PaymentMethod, chosen: list[Offer]) ->
         elif o.kind is OfferKind.POINTS_PER_DOLLAR:
             key = o.points_program or o.source
             points[key] = points.get(key, 0) + o.value * (payable // 100)
-    card_cb = payable * method.base_cashback_bps // BPS
+    card_cb = payable * method.category_cashback_bps.get(category, method.base_cashback_bps) // BPS
     if method.points_program and method.points_per_dollar:
         points[method.points_program] = points.get(method.points_program, 0) + method.points_per_dollar * (payable // 100)
     return Breakdown(instant, payable, offer_cb, card_cb, points)
@@ -137,7 +137,7 @@ class Selection:
     breakdown: Breakdown
 
 
-def _build(price: int, methods: list[PaymentMethod], offers: list[Offer], limit: int | None):
+def _build(price: int, methods: list[PaymentMethod], offers: list[Offer], limit: int | None, category: str = ""):
     m = cp_model.CpModel()
     pay = [m.new_bool_var(f"pay_{i}") for i in range(len(methods))]
     use = [m.new_bool_var(f"use_{k}") for k in range(len(offers))]
@@ -162,6 +162,16 @@ def _build(price: int, methods: list[PaymentMethod], offers: list[Offer], limit:
                 if j != k:
                     m.add_bool_or([use[k].Not(), use[j].Not()])
 
+    # Membership earnings need no redemption action. Show compatible earnings
+    # without assigning points a cash value or using them as a ranking objective.
+    for k, o in enumerate(offers):
+        if o.kind is not OfferKind.POINTS_PER_DOLLAR or not o.source.startswith("store_loyalty"):
+            continue
+        allowed = [pay[i] for i, pm in enumerate(methods) if not o.required_payment_method_ids or pm.id in o.required_payment_method_ids]
+        conflicts = [use[j] for j, other in enumerate(offers) if j != k and (
+            not o.stackable or not other.stackable or (o.stack_group is not None and o.stack_group == other.stack_group))]
+        m.add(use[k] >= sum(allowed) - sum(conflicts))
+
     disc = [instant_discount_of(o, price) for o in offers]
     # Discounts adding up past the price make the item free, not impossible:
     # payable = max(price - discounts, 0), matching compute_breakdown.
@@ -182,9 +192,10 @@ def _build(price: int, methods: list[PaymentMethod], offers: list[Offer], limit:
             m.add(cb == 0).only_enforce_if(use[k].Not())
             cashback_terms.append(cb)
     for i, pm in enumerate(methods):
-        if pm.base_cashback_bps:
+        rate = pm.category_cashback_bps.get(category, pm.base_cashback_bps)
+        if rate:
             cc = m.new_int_var(0, price, f"cc_{i}")
-            m.add(BPS * cc <= pm.base_cashback_bps * payable).only_enforce_if(pay[i])
+            m.add(BPS * cc <= rate * payable).only_enforce_if(pay[i])
             m.add(cc == 0).only_enforce_if(pay[i].Not())
             cashback_terms.append(cc)
 
@@ -230,7 +241,7 @@ def select(
     lim = None if limit is None else limit.minor
     if lim is not None and lim < 0:
         return None
-    m, pay, use, payable, effective, tiebreak = _build(price, methods, offers, lim)
+    m, pay, use, payable, effective, tiebreak = _build(price, methods, offers, lim, item.category)
     s = _solver(time_limit_s)
 
     # Lexicographic objectives, each phase pinning the previous optimum.
@@ -246,7 +257,7 @@ def select(
 
     method = next(pm for pm, v in zip(methods, pay) if s.boolean_value(v))
     chosen = [o for o, v in zip(offers, use) if s.boolean_value(v)]
-    bd = compute_breakdown(price, method, chosen)
+    bd = compute_breakdown(price, method, chosen, item.category)
     if bd.effective_cost != s.value(effective) or bd.payable_now != s.value(payable):
         raise AssertionError(f"solver and arithmetic disagree for {item.id}")
     return Selection(method, chosen, bd)
@@ -256,7 +267,7 @@ def min_payable(item: Item, methods: list[PaymentMethod], offers: list[Offer], t
     """Lowest amount payable now with no limit applied. Used to explain rejections."""
     if not methods:
         return None
-    m, _, _, payable, _, _ = _build(item.price.minor, methods, offers, None)
+    m, _, _, payable, _, _ = _build(item.price.minor, methods, offers, None, item.category)
     m.minimize(payable)
     s = _solver(time_limit_s)
     status = s.solve(m)

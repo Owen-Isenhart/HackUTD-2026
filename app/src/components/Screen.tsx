@@ -13,7 +13,7 @@ export function Screen({ title, children }: { title: string; children: React.Rea
         <Row style={{ height: 64, paddingHorizontal: 12, justifyContent: 'space-between' }}>
           <View>
             <T v="labelSm" style={{ color: c.secondary, textTransform: 'uppercase', letterSpacing: 1.6 }}>
-              Stillwater Bank
+              Nessential
             </T>
             <T v="headlineSm" style={{ color: c.primary }}>{title}</T>
           </View>

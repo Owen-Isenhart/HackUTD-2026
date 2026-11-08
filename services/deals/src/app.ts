@@ -23,6 +23,7 @@ import { routeAndIngest, verifyEvent } from "./photon.js";
 import { seedCapitalOneOffers } from "./capital_one.js";
 import {
   assertConsent,
+  bootstrapOwner,
   candidates,
   confirmEnrollment,
   confirmUnsubscribe,
@@ -88,6 +89,31 @@ export async function buildApp(pool: pg.Pool, cfg: Config, logging = false) {
     return reply
       .code(503)
       .send({ error: "service_unavailable", requestId: req.id });
+  });
+  app.post("/internal/v1/owners", async (req, reply) => {
+    const subject = await authenticate(
+      req.headers.authorization,
+      cfg,
+      "deals:provision",
+    );
+    const body = z
+      .object({
+        id: z.uuid(),
+        timezone: z.string(),
+        syntheticPerson: z.boolean(),
+        firstName: z.string().max(60).optional(),
+      })
+      .strict()
+      .parse(req.body);
+    if (body.id !== subject) throw new DomainError("owner_mismatch", 403);
+    await bootstrapOwner(
+      pool,
+      body.id,
+      body.timezone,
+      body.syntheticPerson,
+      body.firstName,
+    );
+    return reply.code(201).send({ id: body.id });
   });
   app.get("/health", async () => ({ service: "deals", status: "ok" }));
   app.get("/ready", async (_req, reply) => {
@@ -166,10 +192,18 @@ export async function buildApp(pool: pg.Pool, cfg: Config, logging = false) {
         return {
           profile,
           identity,
-          sources: cfg.DEALS_ALLOW_TEST_FIXTURES ? sources : sources.map((source) =>
-            source.product.startsWith("capital_one")
-              ? { ...source, status: "unavailable", reason: "capital_one_live_source_unavailable", last_success_at: null }
-              : source),
+          sources: cfg.DEALS_ALLOW_TEST_FIXTURES
+            ? sources
+            : sources.map((source) =>
+                source.product.startsWith("capital_one")
+                  ? {
+                      ...source,
+                      status: "unavailable",
+                      reason: "capital_one_live_source_unavailable",
+                      last_success_at: null,
+                    }
+                  : source,
+              ),
           jobs,
           providerDeletion:
             "Photon message deletion is not documented in the pinned API; local erasure cannot prove provider erasure.",
@@ -227,7 +261,7 @@ export async function buildApp(pool: pg.Pool, cfg: Config, logging = false) {
             await tx.query(
               `SELECT t.merchant_id,max(t.occurred_at) AS last_purchase_at,
       CASE WHEN p.id IS NULL THEN 'unsupported_program' WHEN bool_and(t.provenance<>'verified_import') THEN 'test_only_no_external_signup' ELSE 'supported' END AS status
-      FROM deals.purchase_observation t LEFT JOIN deals.program p ON p.merchant_id=t.merchant_id WHERE t.owner_id=$1 GROUP BY t.merchant_id,p.id`,
+      FROM deals.purchase_observation t LEFT JOIN deals.program p ON p.merchant_id=t.merchant_id AND p.kind='store_loyalty' WHERE t.owner_id=$1 GROUP BY t.merchant_id,p.id`,
               [owner],
             )
           ).rows,
@@ -386,9 +420,9 @@ export async function buildApp(pool: pg.Pool, cfg: Config, logging = false) {
         async (tx, owner) =>
           (
             await tx.query(
-              `SELECT o.*,p.name AS merchant_name FROM deals.offer o
+              `SELECT o.*,p.name AS merchant_name,p.provenance,p.kind FROM deals.offer o
       JOIN deals.program p ON p.id=o.program_id LEFT JOIN deals.message m ON m.id=o.message_id AND m.owner_id=o.owner_id
-      WHERE o.owner_id=$1 AND ($2 OR m.project_id IS DISTINCT FROM 'capital_one') ORDER BY o.created_at DESC LIMIT 100`,
+      WHERE o.owner_id=$1 AND ($2 OR p.provenance <> 'synthetic_fixture') ORDER BY o.created_at DESC LIMIT 100`,
               [owner, cfg.DEALS_ALLOW_TEST_FIXTURES],
             )
           ).rows,
@@ -427,7 +461,13 @@ export async function buildApp(pool: pg.Pool, cfg: Config, logging = false) {
     api.post("/v1/deals/candidates", async (req) => {
       const context = purchaseContextSchema.parse(req.body);
       return scoped(req, async (tx, owner) => ({
-        candidates: await candidates(tx, owner, context, new Date(), cfg.DEALS_ALLOW_TEST_FIXTURES),
+        candidates: await candidates(
+          tx,
+          owner,
+          context,
+          new Date(),
+          cfg.DEALS_ALLOW_TEST_FIXTURES,
+        ),
         affordability: "optimizer_must_enforce_budget_liquidity_and_price",
       }));
     });
@@ -444,7 +484,8 @@ export async function buildApp(pool: pg.Pool, cfg: Config, logging = false) {
       return scoped(req, async (tx, owner) => {
         await assertConsent(tx, owner, true);
         if (product.startsWith("capital_one")) {
-          if (!cfg.DEALS_ALLOW_TEST_FIXTURES) throw new DomainError("capital_one_live_source_unavailable", 503);
+          if (!cfg.DEALS_ALLOW_TEST_FIXTURES)
+            throw new DomainError("capital_one_live_source_unavailable", 503);
           const count = await seedCapitalOneOffers(tx, owner);
           await tx.query(
             "UPDATE deals.source SET status='ready',reason=NULL,last_success_at=now() WHERE owner_id=$1 AND product=$2",
@@ -463,7 +504,8 @@ export async function buildApp(pool: pg.Pool, cfg: Config, logging = false) {
     api.post("/v1/deals/sources/capital-one/sync", async (req) => {
       return scoped(req, async (tx, owner) => {
         await assertConsent(tx, owner, true);
-        if (!cfg.DEALS_ALLOW_TEST_FIXTURES) throw new DomainError("capital_one_live_source_unavailable", 503);
+        if (!cfg.DEALS_ALLOW_TEST_FIXTURES)
+          throw new DomainError("capital_one_live_source_unavailable", 503);
         const count = await seedCapitalOneOffers(tx, owner);
         return { status: "ready", offersImported: count };
       });

@@ -14,3 +14,8 @@ dist/
 *.mobileprovision
 *.p12
 *.ipa
+
+# Local pipeline validation outputs
+/app/dist-pipeline-web/
+/optimizer/.pytest-pipeline-tmp/
+/optimizer/.pytest-category-tmp/

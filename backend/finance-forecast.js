@@ -198,4 +198,4 @@ function financeForecast(profile, now = new Date(), days = 30, { includeEstimate
   };
 }
 
-module.exports = { financeForecast };
+module.exports = { financeForecast, uniqueMatches };

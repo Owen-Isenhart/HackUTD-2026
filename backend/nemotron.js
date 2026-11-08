@@ -109,3 +109,5 @@ async function explainRecommendation({ routine, payableCents, cashbackCents }, o
 }
 
 module.exports = { interpretRoutines, explainRecommendation, requestInsight };
+
+module.exports.requestInsight = requestInsight;

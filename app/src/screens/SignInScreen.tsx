@@ -1,3 +1,4 @@
+import {identifySandbox} from '../finance/financeApi';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -142,19 +143,9 @@ export default function SignInScreen({ onContinue }: { onContinue: () => void })
   const avail = Math.max(box.height - reserved, 0);
   const nessieWidth = Math.max(Math.min(box.width * 0.55, 260, (avail * NESSIE_ASPECT) / 0.94), 72);
 
-  // There is no account server yet. Sign in / Sign up only validate input and say they are not
-  // connected (same as the prototype). "Continue in demo mode" is the only way into the app and
-  // does NOT authenticate. Replace signIn/signUp when the authed server layer exists.
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [notice, setNotice] = useState('');
-
-  function signIn() {
-    setNotice(!username.trim() || !password ? 'Enter a username and password.' : 'Sign-in isn’t connected to a server yet.');
-  }
-  function signUp() {
-    setNotice('Sign-up isn’t connected to a server yet.');
-  }
+  const [firstName,setFirstName]=useState('');const [lastName,setLastName]=useState('');const [last4,setLast4]=useState('');const [busy,setBusy]=useState(false);
+  const [notice,setNotice]=useState('This finds a record in the Nessie sandbox bank. It is not bank sign-in.');
+  async function signIn(){if(busy)return;if(!firstName.trim()||!lastName.trim()||!/^\d{4}$/.test(last4)){setNotice('Enter your name and exactly four digits.');return;}setBusy(true);try{await identifySandbox({firstName,lastName,last4});onContinue();}catch(e){setNotice(e instanceof Error?e.message:'Could not find the sandbox account.');}finally{setBusy(false);}}
 
   return (
     <View style={styles.root} onLayout={onLayout}>
@@ -168,9 +159,7 @@ export default function SignInScreen({ onContinue }: { onContinue: () => void })
           >
             <View style={styles.logoRow}>
               <Text accessibilityRole="header" style={[styles.logo, { fontSize: logoSize }]}>Nessential</Text>
-              <Pressable accessibilityRole="button" onPress={signUp} style={styles.signUpPill}>
-                <Text style={styles.signUpPillText}>Sign up</Text>
-              </Pressable>
+
             </View>
 
             <View style={styles.mascot}>
@@ -184,38 +173,10 @@ export default function SignInScreen({ onContinue }: { onContinue: () => void })
             </View>
 
             <View style={styles.signIn}>
-              <TextInput
-                accessibilityLabel="Username"
-                placeholder="Username"
-                placeholderTextColor="#6B7F86"
-                autoCapitalize="none"
-                autoCorrect={false}
-                autoComplete="username"
-                textContentType="username"
-                value={username}
-                onChangeText={setUsername}
-                style={styles.authInput}
-              />
-              <TextInput
-                accessibilityLabel="Password"
-                placeholder="Password"
-                placeholderTextColor="#6B7F86"
-                autoCapitalize="none"
-                autoCorrect={false}
-                autoComplete="current-password"
-                textContentType="password"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-                onSubmitEditing={signIn}
-                style={styles.authInput}
-              />
-              <Pressable accessibilityRole="button" onPress={signIn} style={styles.signInButton}>
-                <Text style={styles.signInButtonText}>Sign in</Text>
-              </Pressable>
-              <Pressable accessibilityRole="button" onPress={onContinue} style={styles.demoButton}>
-                <Text style={styles.demoButtonText}>Continue in demo mode</Text>
-              </Pressable>
+              <TextInput accessibilityLabel="First name" placeholder="First name" autoComplete="given-name" value={firstName} onChangeText={setFirstName} style={styles.authInput}/>
+              <TextInput accessibilityLabel="Last name" placeholder="Last name" autoComplete="family-name" value={lastName} onChangeText={setLastName} style={styles.authInput}/>
+              <TextInput accessibilityLabel="Last four digits" placeholder="Last four digits" keyboardType="number-pad" maxLength={4} value={last4} onChangeText={v=>setLast4(v.replace(/\D/g,''))} style={styles.authInput} onSubmitEditing={signIn}/>
+              <Pressable accessibilityRole="button" disabled={busy} onPress={signIn} style={styles.signInButton}><Text style={styles.signInButtonText}>{busy?'Finding account…':'Find my sandbox account'}</Text></Pressable>
               <Text accessibilityLiveRegion="polite" style={styles.authNotice}>{notice}</Text>
             </View>
           </ScrollView>
@@ -226,7 +187,7 @@ export default function SignInScreen({ onContinue }: { onContinue: () => void })
 }
 
 // 3 x 44 controls + 36 demo link + 4 x 8 gaps + 36 notice (two lines).
-const FORM_HEIGHT = 44 * 3 + 36 + 8 * 4 + 36;
+const FORM_HEIGHT = 44 * 4 + 8 * 4 + 54;
 
 const styles = StyleSheet.create({
   root: { flex: 1, overflow: 'hidden' },

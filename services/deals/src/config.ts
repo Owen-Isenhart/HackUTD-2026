@@ -18,7 +18,14 @@ const schema = z.object({
   DEALS_AUTH_SECRET: optional,
   DEALS_AUTH_ISSUER: z.string().default("nessiessential"),
   DEALS_AUTH_AUDIENCE: z.string().default("nessiessential-api"),
-  DEALS_ALLOW_TEST_FIXTURES: z.string().optional().transform((v) => v === "1"),
+  DEALS_DEMO_SIMULATED_SIGNUP: z
+    .string()
+    .optional()
+    .transform((v) => v === "1"),
+  DEALS_ALLOW_TEST_FIXTURES: z
+    .string()
+    .optional()
+    .transform((v) => v === "1"),
   PORT: z.coerce.number().int().min(1).max(65535).default(3001),
   HOST: z.string().default("127.0.0.1"),
   PHOTON_API_BASE_URL: z.url().default("https://api.photon.codes"),

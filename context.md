@@ -343,6 +343,9 @@ Compute merchant/time frequencies deterministically. Use Nemotron only when inte
 
 ### Recommendation and forecast semantics
 
+The derived pipeline sets a default monthly budget per category from income, fixed costs and spending history and enforces it immediately (Arjun, 2026-11-08). A user edit creates a version that derivation never overwrites. Recompute defaults monthly or after material income/fixed-cost changes, never because spending increased. The monthly default supplies the period for derived budgets; ask for a period on other ambiguous user-entered budgets.
+
+
 A candidate is an intended purchase at a merchant/location with supported price information, eligible offers and payment conditions. Alternatives must match the actual need, restrictions and feasible travel. Missing critical suitability evidence means unverified; low price alone is insufficient.
 
 Filter against hard budgets and forecast liquidity before ranking. Proposed baseline ranking: lowest verified effective cost, then preference fit, then travel effort. Research must compare suitable approaches before selecting the final objective. Immediate payable cost must fit available funds; delayed cashback cannot fund today's purchase. Do not invent cash values for points; show unvalued points separately.
@@ -380,6 +383,9 @@ Required screens: onboarding and connection status; home/forecast and pending cl
 
 ### Rewards and inactivity defaults
 
+Select stores by frequency (at least two visits in 180 days) or an active routine, with at most ten automatic selections. Preserve explicit user choices. A synthetic sandbox owner receives simulated, labeled signups only; real owners receive assisted signup steps and complete identity/verification themselves. Paid memberships are never enrolled automatically.
+
+
 Use a per-user promotional identity where supported. Historical and new merchants trigger an idempotent user/program enrollment process. Support the merchant's actual rewards enrollment and promotional subscriptions as applicable; record which succeeded. Existing memberships, unsupported programs and verification challenges are explicit states. Do not bypass CAPTCHA or fabricate identity data.
 
 Default enrollment states: discovered, queued, in progress, needs user input, enrolled, unsupported, retryable failure, inactive, unsubscribe pending, unsubscribed.
@@ -407,6 +413,9 @@ Measure one calendar year of inactivity from the later of enrollment activation 
 Choose physical schema and indexes after TigerData verification. Minimize raw message/location retention and document justified retention windows.
 
 ### Demo and failure behavior
+
+Generated persona purchases may supplement routines, store selection and spending baselines only when labeled synthetic in storage, API and UI. They never change bank balances. Capital One fixture offers are samples, not acquired or verified live offers.
+
 
 Provide a restricted draggable map marker as the stationary demo default. Live GPS and simulated movement emit the same event contract and use the same downstream pipeline. Label the active source and prevent accidental mixing. Never substitute canned offers, financial inputs, messages, calls or recommendation results. Disclose provider sandbox data accurately.
 
@@ -726,3 +735,9 @@ New code in `app/src/finance/` and `app/src/screens/DealsScreen.tsx`:
   - `Calls.md` still says the recommendation endpoint is a dummy.
   - The root `README.md` describes only the root `App.js` app.
   - Section 1 says to keep work inside `projects/hackutd-2026`, a folder that does not exist in this repo.
+
+## 20. Derived pipeline implementation — November 8, 2026
+
+The implementation plan in docs/derived-data-pipeline-plan.md is now implemented across backend/, app/, services/deals/ and optimizer/. See docs/derived-data-pipeline-runbook.md for the routes, migration order, defaults, evidence and remaining gates. This supersedes the old app sign-in/demo-marker limitations for the new session-backed pipeline; legacy demo tests and CLI compatibility code remain.
+
+The user explicitly deferred live-service testing. No production migration, sandbox merchant creation, provider signup, email operation, live model call, commit or push was performed. The new forecast remains experimental until its backtest passes; the existing deterministic forecast supplies recommendation liquidity in the meantime. Real signup, welcome mail, network PostgreSQL concurrency and device acceptance remain unverified.
