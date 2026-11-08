@@ -1,13 +1,28 @@
 import React, { useRef, useState } from 'react';
-import { Animated, Pressable, ScrollView, StyleSheet, TextInput, View, useWindowDimensions } from 'react-native';
-import Svg, { Circle, Defs, Ellipse, G, LinearGradient, Path, Polygon, Rect, Stop } from 'react-native-svg';
+import { Animated, Linking, PanResponder, Platform, Pressable, ScrollView, StyleSheet, TextInput, View, useWindowDimensions } from 'react-native';
+import Svg, { Defs, Ellipse, G, LinearGradient, Path, Polygon, Rect, Stop } from 'react-native-svg';
 import { Screen } from '../components/Screen';
 import { Button, Card, Icon, IconCircle, Pill, Row, T } from '../components/ui';
 import { c, radius, shadow, space } from '../theme';
 import { PressScale, useTimed } from '../motion';
 import { dealCategories, deals } from '../mock/sample';
+import { useUserLocation } from '../location/useUserLocation';
+import { DEMO_AREA, coordsToMapFraction, distanceInMeters, mapFractionToCoords } from '../location/geo';
+import { useNearbyStores } from '../location/useNearbyStores';
+import { NearbyStore } from '../location/nearbyStores';
+
+// Search radius choices, in metres. The spec leaves the "GPS bubble" size open.
+const RADIUS_OPTIONS = [250, 500, 1000, 2000];
+const STORES_SHOWN = 15; // rows listed on screen; the full list is in `nearby.stores`
 
 const MAP_H = 380;
+const DOT = 14; // diameter of the user marker, in screen points
+
+// Width of the map area in metres, used to draw the GPS accuracy ring to scale.
+const MAP_WIDTH_M = distanceInMeters(
+  { latitude: (DEMO_AREA.north + DEMO_AREA.south) / 2, longitude: DEMO_AREA.west },
+  { latitude: (DEMO_AREA.north + DEMO_AREA.south) / 2, longitude: DEMO_AREA.east },
+);
 
 function Pin({ d, on, onPress }: { d: (typeof deals)[number]; on: boolean; onPress: () => void }) {
   const scale = useTimed(on ? 1.05 : 1, 200);
@@ -33,6 +48,38 @@ export default function DealsScreen() {
   const [sel, setSel] = useState(1);
   const [cat, setCat] = useState('All');
   const { width } = useWindowDimensions();
+  const loc = useUserLocation();
+  const [radiusM, setRadiusM] = useState(500);
+  // Every store within radiusM of the user. `nearby.result` is the data to hand to the
+  // recommendation algorithm once it exists.
+  const nearby = useNearbyStores(loc.event, radiusM);
+  const [mapW, setMapW] = useState(0);
+  const here = loc.event ? coordsToMapFraction(loc.event) : null;
+
+  // Dragging the marker in demo mode. The handlers live in a ref, so they read the latest
+  // values through these refs instead of the values from the first render.
+  const latest = useRef({ mapW, here, moveDemo: loc.moveDemo, demo: loc.source === 'demo' });
+  latest.current = { mapW, here, moveDemo: loc.moveDemo, demo: loc.source === 'demo' };
+  const dragStart = useRef({ fx: 0, fy: 0 });
+  const drag = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => latest.current.demo,
+      onMoveShouldSetPanResponder: () => latest.current.demo,
+      onPanResponderGrant: () => {
+        dragStart.current = latest.current.here ?? { fx: 0.5, fy: 0.5 };
+      },
+      onPanResponderMove: (_, g) => {
+        const { mapW: w, moveDemo } = latest.current;
+        if (!w) return;
+        moveDemo(mapFractionToCoords(dragStart.current.fx + g.dx / w, dragStart.current.fy + g.dy / MAP_H));
+      },
+    }),
+  ).current;
+
+  const ringPx =
+    loc.event?.source === 'live' && loc.event.accuracyM && mapW
+      ? Math.min(MAP_H, (loc.event.accuracyM / MAP_WIDTH_M) * mapW * 2)
+      : 0;
   const cardW = Math.min(width * 0.84, 320);
   const scroller = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const shown = deals.filter((d) => cat === 'All' || d.cat === cat);
@@ -73,7 +120,7 @@ export default function DealsScreen() {
         </ScrollView>
       </View>
 
-      <View style={s.map}>
+      <View style={s.map} onLayout={(e) => setMapW(e.nativeEvent.layout.width)}>
         <Svg width="100%" height="100%" viewBox="0 0 400 480" preserveAspectRatio="xMidYMid slice" style={StyleSheet.absoluteFill}>
           <Defs>
             <LinearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
@@ -101,26 +148,74 @@ export default function DealsScreen() {
             <Polygon points="175,172 179,182 171,182" />
             <Polygon points="350,375 354,385 346,385" />
           </G>
-          <Circle cx={155} cy={280} r={14} fill="#206774" opacity={0.2} />
-          <Circle cx={155} cy={280} r={7} fill="#206774" stroke="#fff" strokeWidth={2} />
         </Svg>
 
         {shown.map((d) => (
           <Pin key={d.id} d={d} on={sel === d.id} onPress={() => select(d.id)} />
         ))}
 
+        {mapW > 0
+          ? nearby.stores.map((st) => {
+              const p = coordsToMapFraction(st);
+              if (!p) return null;
+              return <View key={st.id} pointerEvents="none" style={[s.store, { left: p.fx * mapW - 4, top: p.fy * MAP_H - 4 }]} />;
+            })
+          : null}
+
+        {here && mapW > 0 ? (
+          <>
+            {ringPx > DOT ? (
+              <View
+                pointerEvents="none"
+                style={[s.ring, { width: ringPx, height: ringPx, borderRadius: ringPx / 2, left: here.fx * mapW - ringPx / 2, top: here.fy * MAP_H - ringPx / 2 }]}
+              />
+            ) : null}
+            <View
+              {...drag.panHandlers}
+              accessibilityLabel={loc.source === 'demo' ? 'Demo position. Drag to move.' : 'Your live position'}
+              hitSlop={16}
+              style={[
+                s.me,
+                loc.source === 'demo' && { backgroundColor: c.tertiaryContainer },
+                loc.stale && { opacity: 0.45 },
+                { left: here.fx * mapW - DOT / 2, top: here.fy * MAP_H - DOT / 2 },
+              ]}
+            />
+          </>
+        ) : null}
+
         <View style={s.tools}>
-          {(['crosshairs-gps', 'format-list-bulleted', 'tune-variant'] as const).map((n) => (
-            <Pressable key={n} style={s.tool} onPress={n === 'crosshairs-gps' ? () => select(1) : undefined}>
+          <Pressable
+            accessibilityLabel={loc.source === 'live' ? 'Stop live GPS' : 'Use live GPS'}
+            style={[s.tool, loc.source === 'live' && { backgroundColor: c.secondary }]}
+            onPress={loc.source === 'live' ? loc.stop : loc.startLive}
+          >
+            <Icon name="crosshairs-gps" size={19} color={loc.source === 'live' ? c.onSecondary : c.primary} />
+          </Pressable>
+          <Pressable
+            accessibilityLabel={loc.source === 'demo' ? 'Stop demo position' : 'Use demo position'}
+            style={[s.tool, loc.source === 'demo' && { backgroundColor: c.tertiaryContainer }]}
+            onPress={loc.source === 'demo' ? loc.stop : loc.startDemo}
+          >
+            <Icon name="cursor-move" size={19} color={loc.source === 'demo' ? c.tertiaryFixed : c.primary} />
+          </Pressable>
+          {(['format-list-bulleted', 'tune-variant'] as const).map((n) => (
+            <Pressable key={n} style={s.tool}>
               <Icon name={n} size={19} color={c.primary} />
             </Pressable>
           ))}
         </View>
         <Row style={s.badge}>
-          <Icon name="waves" size={14} />
-          <T v="labelSm" style={{ color: c.onSurfaceVariant, textTransform: 'uppercase', letterSpacing: 1 }}>Lake Basin Area</T>
+          <Icon name={loc.source === 'live' ? 'crosshairs-gps' : loc.source === 'demo' ? 'cursor-move' : 'map-marker-off-outline'} size={14} />
+          <T v="labelSm" style={{ color: c.onSurfaceVariant, textTransform: 'uppercase', letterSpacing: 1 }}>
+            {loc.source === 'live' ? 'Live GPS' : loc.source === 'demo' ? 'Demo position' : 'Location off'}
+          </T>
         </Row>
       </View>
+
+      <LocationStatusLine loc={loc} onMap={!!here} />
+
+      <NearbyStoresSection nearby={nearby} radiusM={radiusM} onRadius={setRadiusM} hasLocation={!!loc.event} />
 
       <View style={{ gap: space.xs }}>
         <Row style={{ justifyContent: 'space-between' }}>
@@ -184,7 +279,130 @@ export default function DealsScreen() {
   );
 }
 
+// One line under the map saying where the position comes from and anything wrong with it.
+// The spec asks for denied permission and stale readings to be shown, not hidden.
+function LocationStatusLine({ loc, onMap }: { loc: ReturnType<typeof useUserLocation>; onMap: boolean }) {
+  const { status, event, source, stale, ageMs } = loc;
+  let text: string;
+  let warn = false;
+  let settings = false;
+  if (status.kind === 'off') {
+    text = 'Location is off. Tap the GPS button for your live position, or the move button to drag a demo position.';
+  } else if (status.kind === 'requesting') {
+    text = 'Getting your location…';
+  } else if (status.kind === 'denied') {
+    warn = true;
+    settings = !status.canAskAgain && Platform.OS !== 'web';
+    text = 'Location permission was denied. Allow location while using the app to see where you are.';
+  } else if (status.kind === 'error') {
+    warn = true;
+    text = status.message;
+  } else if (source === 'demo' && event) {
+    text = `Demo mode: only your position is simulated. Drag the dark marker. ${event.latitude.toFixed(5)}, ${event.longitude.toFixed(5)}`;
+  } else if (event) {
+    const acc = event.accuracyM === null ? 'accuracy unknown' : `±${Math.round(event.accuracyM)} m`;
+    const age = ageMs === null ? '' : ` · updated ${Math.round(ageMs / 1000)} s ago`;
+    text = `Live GPS · ${acc}${age}`;
+    if (stale) {
+      warn = true;
+      text += ' · this reading may be out of date';
+    }
+    if (!onMap) {
+      warn = true;
+      text += ' · you are outside the map area (Richardson / UT Dallas)';
+    }
+  } else {
+    text = 'Waiting for the first GPS reading…';
+  }
+  return (
+    <Row style={{ gap: space.sm, alignItems: 'flex-start' }}>
+      <Icon name={warn ? 'alert-circle-outline' : 'information-outline'} size={16} color={warn ? c.error : c.secondary} />
+      <View style={{ flexShrink: 1, gap: space.xs }}>
+        <T v="bodySm" style={{ color: warn ? c.error : c.onSurfaceVariant }}>{text}</T>
+        {settings ? <Button label="Open location settings" small onPress={() => Linking.openSettings()} /> : null}
+      </View>
+    </Row>
+  );
+}
+
+const formatDistance = (m: number) => (m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1)} km`);
+
+// Radius picker plus the list of real stores found around the user (OpenStreetMap data).
+function NearbyStoresSection({
+  nearby,
+  radiusM,
+  onRadius,
+  hasLocation,
+}: {
+  nearby: ReturnType<typeof useNearbyStores>;
+  radiusM: number;
+  onRadius: (m: number) => void;
+  hasLocation: boolean;
+}) {
+  const { status, stores } = nearby;
+  let message: string | null = null;
+  let warn = false;
+  if (!hasLocation) message = 'Turn on live GPS or the demo position to find stores around you.';
+  else if (status.kind === 'too-approximate') {
+    warn = true;
+    message = `Your GPS is only accurate to ±${Math.round(status.accuracyM)} m, wider than the ${formatDistance(radiusM)} radius. Pick a larger radius or wait for a better signal.`;
+  } else if (status.kind === 'error') {
+    warn = true;
+    message = `Couldn’t load nearby stores. ${status.message}`;
+  } else if (status.kind === 'searching' && stores.length === 0) message = 'Searching for stores…';
+  else if (status.kind === 'ready' && stores.length === 0) message = `No stores found within ${formatDistance(radiusM)}.`;
+
+  return (
+    <View style={{ gap: space.sm }}>
+      <Row style={{ justifyContent: 'space-between' }}>
+        <T v="headlineSm" style={{ color: c.primary }}>Stores within {formatDistance(radiusM)}</T>
+        {stores.length > 0 ? <Pill label={`${stores.length}${status.kind === 'searching' ? ' · updating' : ''}`} bg={c.secondaryContainer} color={c.onSecondaryContainer} /> : null}
+      </Row>
+      <Row style={{ gap: 4 }}>
+        {RADIUS_OPTIONS.map((m) => {
+          const on = m === radiusM;
+          return (
+            <Pressable key={m} onPress={() => onRadius(m)} style={[s.chip, on && { backgroundColor: c.secondary }]}>
+              <T v="labelMd" style={{ color: on ? c.onSecondary : c.onSurfaceVariant }}>{formatDistance(m)}</T>
+            </Pressable>
+          );
+        })}
+      </Row>
+      {message ? <T v="bodySm" style={{ color: warn ? c.error : c.onSurfaceVariant }}>{message}</T> : null}
+      {stores.slice(0, STORES_SHOWN).map((st: NearbyStore) => (
+        <Row key={st.id} style={s.storeRow}>
+          <View style={{ flexShrink: 1 }}>
+            <T v="labelMd" numberOfLines={1} style={{ color: c.primary, fontFamily: 'Manrope_600SemiBold' }}>{st.name}</T>
+            <T v="labelSm" numberOfLines={1} style={{ color: c.onSurfaceVariant }}>
+              {st.category.value.replace(/_/g, ' ')}
+              {st.brand && st.brand !== st.name ? ` · ${st.brand}` : ''}
+            </T>
+          </View>
+          <T v="labelMd" style={{ color: c.secondary }}>{formatDistance(st.distanceM)}</T>
+        </Row>
+      ))}
+      {stores.length > STORES_SHOWN ? (
+        <T v="labelSm" style={{ color: c.onSurfaceVariant }}>and {stores.length - STORES_SHOWN} more</T>
+      ) : null}
+      {hasLocation ? <T v="labelSm" style={{ color: c.outline }}>Store data © OpenStreetMap contributors</T> : null}
+    </View>
+  );
+}
+
 const s = StyleSheet.create({
+  store: {
+    position: 'absolute', width: 8, height: 8, borderRadius: 4, zIndex: 12,
+    backgroundColor: c.onTertiaryContainer, borderWidth: 1, borderColor: '#fff',
+  },
+  storeRow: {
+    justifyContent: 'space-between', gap: space.sm, backgroundColor: c.surfaceLowest,
+    borderRadius: radius.md, paddingHorizontal: space.md, paddingVertical: 10,
+  },
+  me: {
+    position: 'absolute', width: DOT, height: DOT, borderRadius: DOT / 2, zIndex: 35,
+    backgroundColor: c.secondary, borderWidth: 2, borderColor: '#fff', ...shadow.sm,
+  },
+  ring: { position: 'absolute', zIndex: 15, backgroundColor: 'rgba(32,103,116,0.18)' },
   searchWrap: { flexDirection: 'row', alignItems: 'center' },
   search: {
     flex: 1, height: 44, paddingLeft: 40, paddingRight: 40, backgroundColor: c.surfaceLowest,
