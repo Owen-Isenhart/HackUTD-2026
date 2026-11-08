@@ -71,14 +71,14 @@ Each unchecked item is future work and may be marked complete only with its stat
 ### Location and optimization
 
 - [ ] OPT-01 — Implement live location events with accuracy/source/time; show denied permissions and stale fixes explicitly.
-- [ ] OPT-02 — Retrieve geographically feasible candidates within a configurable bubble; verify boundary distances and units.
-- [ ] OPT-03 — Enforce purchase-intent and suitability constraints; cheaper mismatched alternatives must be rejected.
-- [ ] OPT-04 — Compute payable cost, cashback and reward treatment; verify exclusions, minimum spend and stacking restrictions.
-- [ ] OPT-05 — Filter by hard budgets and forecast liquidity before ranking; every returned candidate must satisfy active constraints.
+- [x] OPT-02 — Retrieve geographically feasible candidates within a configurable bubble; verify boundary distances and units. Evidence: `optimizer/tests/test_core.py::test_distance_known_value_and_inclusive_boundary`, `optimizer/tests/test_optimality.py::test_every_ranked_option_obeys_every_rule`.
+- [x] OPT-03 — Enforce purchase-intent and suitability constraints; cheaper mismatched alternatives must be rejected. Evidence: `optimizer/tests/test_engine.py::test_cheaper_mismatched_alternative_is_rejected`, and live on `nemotron-bolt` (2026-11-08) `optimizer/tests/test_live_nemotron.py::test_live_judge_rejects_cookie_for_lunch`.
+- [x] OPT-04 — Compute payable cost, cashback and reward treatment; verify exclusions, minimum spend and stacking restrictions. Evidence: `optimizer/tests/test_pricing.py`, `optimizer/tests/test_optimality.py::test_engine_matches_brute_force_oracle`.
+- [x] OPT-05 — Filter by hard budgets and forecast liquidity before ranking; every returned candidate must satisfy active constraints. Evidence: `optimizer/tests/test_optimality.py::test_every_ranked_option_obeys_every_rule`. The forecast itself is still a stand-in (FORECAST-05).
 - [ ] OPT-06 — Implement the researched ranking method with reproducible ties and retained rejection reasons.
-- [ ] OPT-07 — Search suitable affordable alternatives before recommending skipping; communicate incomplete evidence accurately.
-- [ ] OPT-08 — Explain costs, eligibility and budget impact; generated wording must match deterministic results.
-- [ ] OPT-09 — Invalidate recommendations when material input versions change or expire.
+- [x] OPT-07 — Search suitable affordable alternatives before recommending skipping; communicate incomplete evidence accurately. Evidence: `optimizer/tests/test_optimality.py::test_hand_budget_forces_alternative_then_skip`, `optimizer/tests/test_engine.py::test_unverified_alternatives_are_reported_honestly`.
+- [x] OPT-08 — Explain costs, eligibility and budget impact; generated wording must match deterministic results. Evidence: `optimizer/tests/test_nemotron.py::test_explanation_with_wrong_number_falls_back_to_template`, and live on `nemotron-bolt` (2026-11-08) `optimizer/tests/test_live_nemotron.py::test_live_pipeline_end_to_end`.
+- [x] OPT-09 — Invalidate recommendations when material input versions change or expire. Evidence: `optimizer/tests/test_engine.py::test_recommendation_invalidated_by_change_or_expiry`.
 
 ### Notifications and calls
 

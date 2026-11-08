@@ -2,7 +2,7 @@ Exact data sources and sandbox usage; movement simulation is confirmed, other si
 
 # HackUTD 2026 — Living Project Context
 
-Status: clarification closed at the user’s request. Final product context and design; implementation has not started. Provider feasibility and research gates remain unverified.
+Status: clarification closed at the user’s request. Implementation has started: the optimizer is built on branch `arjun` (see section 15). Provider feasibility and most research gates remain unverified.
 
 This file is the cumulative specification for the project. User-confirmed requirements, proposed approaches, unresolved questions, and verified research must remain distinguishable. No implementation choice becomes a confirmed requirement merely because it appears here.
 
@@ -412,3 +412,97 @@ Outages must expose degraded status rather than fabricated success. Retry side e
 ### Security baseline
 
 Use authenticated ownership checks on every API, job and tool. Keep secrets out of mobile bundles and logs. Verify encryption in transit, database/provider storage protection and key handling. Scope tokens minimally and support revocation. Enforce allowlisted agent tools with typed arguments; external content cannot grant permissions. Redact lock-screen previews and logs. Record minimal audit metadata for sensitive changes. Implement consent withdrawal, retention and deletion with explicit provider limitations. Threat-model and evaluate these controls before describing the system as secure.
+
+## 15. Implementation status
+
+Last updated: 2026-11-08. Owner: Arjun. Branch: `arjun` in this repo, draft pull request #2. This section replaces the earlier `optimizer/STATUS.md`. Ticked boxes in [spec-checklist.md](spec-checklist.md) name the test that is their evidence.
+
+### Working on now
+
+Nothing in progress. The optimizer runs end to end against the team's live Nemotron (see "Live Nemotron results" below). Next steps depend on the open questions at the end of this section.
+
+### Live Nemotron results (2026-11-08)
+
+The live tests ran **on the Brev machine itself**, so no tunnel was needed:
+- Machine: `following-copper-silkworm`, NVIDIA L40S 48 GB.
+- Model: Tom's vLLM 0.31.0 container `nemotron`, serving `nemotron-bolt` (Nemotron 3.5 Bolt E4B, about 4 billion parameters) at `http://127.0.0.1:8000/v1`, with an 8,192-token limit.
+- Checkout: a copy of this branch in `~/hackutd-arjun` on the box.
+- Access: over SSH as `shadeform`. Arjun's laptop key (`arjun-hackutd-brev`) was added to `~/.ssh/authorized_keys` on the box. Remove that line to revoke it.
+
+To rerun the live tests, run this on the box:
+
+```bash
+cd ~/hackutd-arjun/optimizer
+NEMOTRON_BASE_URL=http://127.0.0.1:8000/v1 uv run pytest tests/test_live_nemotron.py -v -s
+```
+
+**What passed.** All 3 live tests pass, and two consecutive runs gave the same results:
+
+| Test | What it shows | Time |
+| --- | --- | --- |
+| `test_live_compile_extracts_quoted_budget` | Bolt reads the profile text into a $60/week lunch budget, a peanut allergy and a commute entry, each with a quote that code checked. | about 11 s |
+| `test_live_judge_rejects_cookie_for_lunch` | It rejects a cookie as lunch and accepts a vegetable wrap. The time includes a fresh profile compile. | about 17 s |
+| `test_live_pipeline_end_to_end` | Routine to judge to optimizer to explanation. It recommends black bean tacos over the usual burrito bowl, and the explanation's dollar figures match the optimizer's: "Save $3.68 at Taco Shop! Get tacos veg for $8.82, saving $3.68 vs Chipotle's $12.50. You have $60.00 remaining in your budget." | about 16 s |
+
+**What the live runs found and fixed.**
+- **Context limit.** The profile compile asked for 10,240 output tokens, more than Bolt's 8,192-token limit, and vLLM rejected it. The client now reads the server's limit and fits every request inside it (`fit_tokens` in `nemotron/client.py`).
+- **Thinking off for Bolt.** Thinking (step-by-step reasoning) is now off by default for Bolt. On a 5-item suitability check, run twice each way:
+  - thinking on took about 20 s and hedged with "unverified" on a cookie and a latte
+  - thinking off took 4.7 s and judged all five items correctly
+
+  The setting `NEMOTRON_THINKING=on|off` overrides this. Bigger models keep thinking on until they are measured.
+- **Judge too literal.** It was answering "is this a burrito bowl at Chipotle?" instead of "is this a lunch?". It now receives the kind of purchase, and the usual item only as context.
+- **Single amounts.** An expense with one stated amount, such as "Rent $1,200", lost its amount, which made affordability unknown. One stated amount is now used as both the low and the high estimate.
+
+### Done: the recommendation optimizer (`optimizer/`, Python)
+
+- Decision logic is plain code with no model calls:
+  - distance and the search-radius filter
+  - budgets counted in the user's time zone
+  - offer eligibility
+  - choice of card and offers by a constraint solver (OR-Tools CP-SAT)
+  - ranking
+  - the recommend / skip / not-enough-data decision
+  - expiry when inputs change
+- Nemotron does four jobs, and code checks each reply before it is used:
+  - turning the routine and financial-profile files into rules
+  - guessing intent when the routine has no match
+  - judging whether a cheaper item meets the same need
+  - writing the notification text
+- Defaults point at the team's model: `nemotron-bolt` at `http://127.0.0.1:8000/v1`. That address answers on the Brev machine itself, or on a laptop through `brev port-forward`.
+- 77 offline tests pass. The 3 live-model tests skip unless `NEMOTRON_BASE_URL` is set, and they pass on the Brev machine.
+
+### How optimality is tested
+
+- **Brute-force reference.** `optimizer/tests/oracle.py` is a second implementation of the whole recommendation. It shares no code with the optimizer and tries every card with every subset of offers for every item.
+  - On random worlds, the optimizer's full ranked list must equal the reference's exactly.
+  - The random worlds include budgets, transactions across the November daylight-saving change, offers with every rule, several cards, judgements, preferences and restrictions.
+- **Rule audit.** Every ranked option is re-checked against every hard rule, and every candidate must be either ranked or rejected with a reason.
+- **Metamorphic tests.** These change the input in ways whose effect is known in advance:
+  - shuffling the input never changes the answer
+  - more money never gives a worse answer
+  - an extra offer never raises the cost
+  - unverified offers change nothing
+  - irrelevant items change nothing
+  - removing the winner promotes the runner-up
+- **Long run.** A run at 3,000 random worlds per test passed every oracle, audit and metamorphic test on 2026-11-08. It took 15 minutes.
+- **Coverage guard.** A deterministic test (it draws the same worlds every run) fails if the random worlds stop reaching recommendations, skips, applied and stacked offers, card switches, and every kind of rejection. Without it, the tests above could pass while testing nothing. Before this guard was added, 314 of 400 random worlds stopped at an early refusal.
+- **Bug found and fixed.** When instant discounts add up to more than the price, the solver used to forbid the combination instead of charging $0.
+
+### Not verified yet
+
+- **Small test set.** The live tests use a handful of synthetic items. Bolt's accuracy on real menus and real profile files has not been measured.
+- **Speed.** A live recommendation takes about 15 seconds, most of it the profile compile, which is cached between runs in normal use. Per-request latency without the compile has not been measured. The phone agent's budget is about 1.5 s.
+- **Structured output.** It is not confirmed whether vLLM enforced the JSON reply format, or whether the client fell back to describing the format in the prompt. Either way, replies are validated.
+- **Laptop access.** The `brev port-forward` route from a laptop has not been tested. Brev is not signed in on Arjun's laptop.
+- **`optimizer/serve/brev-vllm.sh` is unused.** It was written before the team VM existed, and the team serves the model differently.
+
+### Open questions for the team
+
+- **How the Node backend calls the optimizer.** The backend is Node and the optimizer is Python. One option is a small HTTP endpoint that the backend calls. This is not decided.
+- **Line 10 of this file looks stale.** It says "Do not commit or push anything yet", but progress is now pushed to a fork and a draft pull request at Arjun's request. Line 10 has been left unchanged until the team decides.
+- **Assumptions the spec does not settle.** These are listed in `optimizer/README.md`:
+  - whether a percentage discount applies before or after other discounts
+  - what the baseline for "savings" is
+  - the default search radius
+- **Waiting on the partner's real profile files.** `profile/initial-routine.md` and `profile/financial-profile.md` are placeholders.
