@@ -5,6 +5,7 @@ from types import SimpleNamespace
 import pytest
 
 from src.agent import NessiAgent, is_end_phrase, opening_line, parse_metadata, wait_until_answered
+from src.profiles import CallContext
 from src.livekit_dialer import LiveKitDialer
 from src.settings import load_settings
 
@@ -37,11 +38,11 @@ def test_respond_to_caller_stub_and_user_binding(tmp_path, monkeypatch):
 
 
 def test_parse_metadata():
-    assert parse_metadata(json.dumps({"user_id": "alex", "scenario": "s", "call_id": CALL_ID})) == ("s", "alex", CALL_ID)
-    assert parse_metadata('{"call_id": "../bad"}') == (None, "demo-user", None)
-    assert parse_metadata("plain string") == (None, "demo-user", None)
-    assert parse_metadata(None) == (None, "demo-user", None)
-    assert parse_metadata("[1]") == (None, "demo-user", None)
+    assert parse_metadata(json.dumps({"user_id": "alex", "scenario": "s", "call_id": CALL_ID})) == CallContext(scenario="s", user_id="alex", call_id=CALL_ID)
+    assert parse_metadata('{"call_id": "../bad"}') == CallContext()
+    assert parse_metadata("plain string") == CallContext()
+    assert parse_metadata(None) == CallContext()
+    assert parse_metadata("[1]") == CallContext()
 
 
 def test_bound_turn_forwards_the_actual_transcript_and_speaks_api_output(monkeypatch):
@@ -54,7 +55,7 @@ def test_bound_turn_forwards_the_actual_transcript_and_speaks_api_output(monkeyp
     monkeypatch.setenv("RECOMMENDATION_API_URL", "http://127.0.0.1:8787/api/recommendations/evaluate")
     monkeypatch.setattr(NessiAgent, "session", property(lambda _: SimpleNamespace(say=spoken.append)))
 
-    def evaluate(user, scenario, text, url, *, call_id):
+    def evaluate(user, scenario, text, url, *, call_id, session_id, profile, phone_number):
         seen.append((user, scenario, text, url, call_id))
         return {"ok": True, "result": {"status": "recommendation", "message": message}}
 
@@ -101,7 +102,7 @@ def test_dialer_dispatches_before_sip(monkeypatch):
     monkeypatch.setattr("src.livekit_dialer.api.LiveKitAPI", FakeLK)
     run(LiveKitDialer(load_settings(ENV)).dial("r1", "+19725550100", "scn", call_id=CALL_ID))
     assert order[0][:3] == ("dispatch", "r1", "nessi-agent")
-    assert json.loads(order[0][3]) == {"user_id": "demo-user", "scenario": "scn", "call_id": CALL_ID}
+    assert json.loads(order[0][3]) == {"user_id": "demo-user", "scenario": "scn", "call_id": CALL_ID, "profile": "phone_details", "identity_verified": False, "phone_number": "+19725550100"}
     assert order[1] == ("sip", "r1", "ST_QwVKCdLTwF7b", "+19725550100")
     assert order[2] == ("close",)
 

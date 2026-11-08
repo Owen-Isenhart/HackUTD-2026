@@ -3,11 +3,11 @@ import hmac
 import logging
 import time
 import uuid
-from typing import Optional, Protocol
+from typing import Literal, Optional, Protocol
 
 from fastapi import Depends, FastAPI, Header, HTTPException
 from livekit.api import SipCallError
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StrictBool
 
 from src.call_state import CallStatus, CallStore
 from src.numbers import OWN_NUMBER, is_allowed, normalize_e164
@@ -22,11 +22,14 @@ SIP_OUTCOME = {408: CallStatus.no_answer, 480: CallStatus.no_answer, 486: CallSt
 
 class Dialer(Protocol):
     async def dial(self, room_name: str, to_number: str, scenario: Optional[str] = None,
-                   user_id: str = "demo-user", *, call_id: Optional[str] = None) -> None: ...
+                   user_id: str = "demo-user", *, call_id: Optional[str] = None,
+                   profile: str = "phone_details", identity_verified: bool = False) -> None: ...
 
 
 class CallRequest(BaseModel):
     to_number: str
+    profile: Literal["onboarding", "phone_details"] = "phone_details"
+    identity_verified: StrictBool = False
     scenario: Optional[str] = Field(default=None, max_length=500)
     user_id: str = Field(default="demo-user", min_length=1, max_length=64, pattern=r"^[A-Za-z0-9_.-]+$")
     idempotency_key: Optional[str] = Field(default=None, max_length=128)
@@ -46,6 +49,12 @@ def create_app(settings: Settings, dialer: Dialer, store: CallStore) -> FastAPI:
 
     @app.post("/calls", dependencies=[Depends(require_key)])
     async def create_call(req: CallRequest) -> dict:
+        """Trusted server-to-server only: identity_verified requires the backend to have
+        checked that to_number is registered to user_id. The allowlist alone is not identity.
+        Onboarding always establishes identity itself.
+        """
+        if req.profile == 'onboarding' and (req.identity_verified or req.user_id == 'demo-user'):
+            raise HTTPException(status_code=422, detail='Onboarding requires an explicit user and unverified identity')
         try:
             number = normalize_e164(req.to_number)
         except ValueError as e:
@@ -71,7 +80,9 @@ def create_app(settings: Settings, dialer: Dialer, store: CallStore) -> FastAPI:
             return {"call_id": rec.call_id, "room_name": rec.room_name,
                     "status": rec.status.value}
         try:
-            metadata = {"call_id": call_id} if call_id else {}
+            metadata = {"profile": req.profile, "identity_verified": req.identity_verified}
+            if call_id:
+                metadata["call_id"] = call_id
             await dialer.dial(rec.room_name, number, req.scenario, req.user_id, **metadata)
         except Exception as e:
             outcome = SIP_OUTCOME.get(e.sip_status_code) if isinstance(e, SipCallError) else None

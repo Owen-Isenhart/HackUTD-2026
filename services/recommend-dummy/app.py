@@ -20,7 +20,9 @@ app = FastAPI(title="recommend-dummy")
 
 
 class EvaluateRequest(BaseModel):
-    user_id: str = Field(min_length=1, max_length=64)
+    user_id: Optional[str] = Field(default=None, max_length=64)
+    session_id: Optional[str] = Field(default=None, max_length=128)
+    profile: str = Field(default="phone_details", max_length=32)
     scenario: str = Field(default="", max_length=500)
     user_text: str = Field(min_length=1, max_length=1000)
 
