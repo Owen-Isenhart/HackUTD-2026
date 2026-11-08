@@ -31,7 +31,8 @@
       "expo-secure-store",
       "@livekit/react-native-expo-plugin",
       "@config-plugins/react-native-webrtc",
-      "expo-dev-client"
+      "expo-dev-client",
+      "expo-audio"
     ]
   }
 }

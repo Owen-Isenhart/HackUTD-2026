@@ -4,8 +4,16 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { c } from '../theme';
-import { useVoiceAssistant } from './useVoiceAssistant';
 import { captureScreenFacts, isPopped, routeForTab, statusCaption, type ScreenFacts, type VoiceStatus } from './voiceSession';
+import { isExpoGo } from './runtime';
+
+// Expo Go cannot load LiveKit's native WebRTC, so it uses one-shot HTTP turns instead. Only the
+// chosen module is evaluated, so Expo Go never touches the LiveKit native code.
+/* eslint-disable @typescript-eslint/no-require-imports */
+const useAssistant: typeof import('./useVoiceAssistant').useVoiceAssistant = isExpoGo
+  ? require('./useExpoVoice').useExpoVoice
+  : require('./useVoiceAssistant').useVoiceAssistant;
+/* eslint-enable @typescript-eslint/no-require-imports */
 
 declare const process: { env: Record<string, string | undefined> };
 const VOICE_API_URL = (process.env.EXPO_PUBLIC_VOICE_API_URL ?? '').replace(/\/+$/, '');
@@ -36,7 +44,7 @@ export function VoiceProvider({ currentTab, onNavigate, children }: Props) {
     if (facts.length) setScreenFacts((previous) => captureScreenFacts(previous, tab, facts));
   }, []);
   const route = currentTab ? routeForTab(currentTab) : null;
-  const { status, error, needsKey, toggle, reply } = useVoiceAssistant({
+  const { status, error, needsKey, toggle, reply } = useAssistant({
     baseUrl: VOICE_API_URL, userId: VOICE_USER_ID, getKey: () => DEMO_KEY, currentTab, onNavigate,
     currentFacts: route ? screenFacts[route] : undefined,
   });

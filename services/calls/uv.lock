@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.10"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -1978,6 +1978,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi" },
+    { name = "httpx" },
     { name = "livekit-agents", extra = ["nvidia", "openai"] },
     { name = "livekit-api" },
     { name = "python-dotenv" },
@@ -1993,6 +1994,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.162.2" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "livekit-agents", extras = ["nvidia", "openai"], specifier = "~=1.8" },
     { name = "livekit-api", specifier = ">=1.2.2" },
     { name = "python-dotenv", specifier = ">=1.2.4" },

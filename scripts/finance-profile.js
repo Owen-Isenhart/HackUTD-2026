@@ -157,6 +157,22 @@ function serveProfile({ env = process.env, pool, memory, texts, calls, locations
 
   const server = createServer(async (req, res) => {
     if (req.method === 'GET' && req.url === '/health') return sendJson(res, 200, { status: 'ok' });
+    // Expo Go voice turns go to the calls service on this host's loopback, so the phone reaches
+    // it through the same HTTPS origin. That service checks the user's finance session itself.
+    if (req.method === 'POST' && req.url === '/api/v1/voice/turn') {
+      if (!env.VOICE_TURN_URL) return sendJson(res, 404, { error: 'Not found.' });
+      try {
+        const body = await readBody(req, 8_000_000, null);
+        const upstream = await fetchImpl(env.VOICE_TURN_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body, redirect: 'error', signal: AbortSignal.timeout(45_000),
+        });
+        res.writeHead(upstream.status, { 'Content-Type': upstream.headers.get('content-type') ?? 'application/json', 'Cache-Control': 'no-store' });
+        return res.end(await upstream.text());
+      } catch (error) {
+        if (res.headersSent) return res.end();
+        return sendJson(res, error.message === 'Request too large.' ? 413 : 502, { error: 'Voice service unavailable.' });
+      }
+    }
     if (req.method === 'GET' && req.url === '/ready') {
       let ready = false;
       try { ready = Boolean(await readiness?.()); } catch { /* report generic unavailability */ }
