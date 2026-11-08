@@ -1,5 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
+from livekit.api import SipCallError
 
 from src.call_state import CallStatus, CallStore
 from src.calls_api import create_app
@@ -80,6 +81,19 @@ def test_dialer_error_sets_failed_and_502():
     r = post(c, {"to_number": "+19725550100", "idempotency_key": "k"})
     assert r.status_code == 502
     assert store._by_id[next(iter(store._by_id))].status == CallStatus.failed
+
+
+@pytest.mark.parametrize(("sip_code", "outcome"), [(486, "busy"), (603, "declined"), (480, "no_answer")])
+def test_provider_outcome_is_reported(sip_code, outcome):
+    class RejectDialer:
+        async def dial(self, *_):
+            raise SipCallError("unknown", "test error", status=502, metadata={"sip_status_code": str(sip_code)})
+
+    c = TestClient(create_app(load_settings(ENV), RejectDialer(), CallStore()))
+    result = post(c, {"to_number": "+19725550100"})
+    assert result.status_code == 200
+    assert result.json()["status"] == outcome
+    assert c.get(f"/calls/{result.json()['call_id']}", headers=H).json()["status"] == outcome
 
 
 def test_rate_limit_429(ctx):

@@ -1,0 +1,13 @@
+
+# Local provider credentials for deals-session handoff
+.env.deals.local
+
+# Backend secrets, local identities, build products and test databases
+.env*
+!.env.example
+node_modules/
+dist/
+coverage/
+.expo/
+*.tsbuildinfo
+.local/

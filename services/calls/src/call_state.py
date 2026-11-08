@@ -14,11 +14,12 @@ class CallStatus(str, Enum):
     ended = "ended"
     busy = "busy"
     no_answer = "no_answer"
+    declined = "declined"
     failed = "failed"
     canceled = "canceled"
 
 
-TERMINAL = {CallStatus.ended, CallStatus.busy, CallStatus.no_answer, CallStatus.failed, CallStatus.canceled}
+TERMINAL = {CallStatus.ended, CallStatus.busy, CallStatus.no_answer, CallStatus.declined, CallStatus.failed, CallStatus.canceled}
 
 
 @dataclass
@@ -31,6 +32,7 @@ class CallRecord:
     created_at: float = field(default_factory=time.time)
     scenario: Optional[str] = None
     decision: Optional[str] = None  # "accepted" | "declined"
+    user_id: str = "demo-user"
 
 
 class CallStore:
@@ -40,13 +42,19 @@ class CallStore:
         self._by_key = {}
 
     def create(self, idempotency_key: str, to_number: str, room_name: str,
-               scenario: Optional[str] = None):
+               scenario: Optional[str] = None, *, call_id: Optional[str] = None,
+               user_id: str = "demo-user"):
         with self._lock:
             existing = self._by_key.get(idempotency_key)
             if existing:
-                return self._by_id[existing], False
-            rec = CallRecord(uuid.uuid4().hex, room_name, to_number,
-                             CallStatus.dial_requested, idempotency_key, scenario=scenario)
+                record = self._by_id[existing]
+                if call_id and (record.call_id, record.user_id, record.to_number) != (call_id, user_id, to_number):
+                    raise ValueError("call identity conflicts with previous request")
+                return record, False
+            if call_id and call_id in self._by_id:
+                raise ValueError("call ID already exists")
+            rec = CallRecord(call_id or uuid.uuid4().hex, room_name, to_number,
+                             CallStatus.dial_requested, idempotency_key, scenario=scenario, user_id=user_id)
             self._by_id[rec.call_id] = rec
             self._by_key[idempotency_key] = rec.call_id
             return rec, True

@@ -1,0 +1,372 @@
+{
+  "timestamp": "2026-11-08T07:29:03.005Z",
+  "ownerId": "64b0ef0f-cd28-4af3-b192-8243ccc8e1ce",
+  "architecture": "assisted_merchant_handoff_with_inbound_auto_confirmation",
+  "identity": {
+    "address": "redacted-alias@deals.getcompfy.com",
+    "project_id": "pho_prj_01m6wh04gseh78gcs73agt2kj6"
+  },
+  "sources": [
+    {
+      "product": "capital_one_offers",
+      "status": "ready",
+      "reason": null,
+      "last_success_at": "2026-11-08T06:38:11.526Z"
+    },
+    {
+      "product": "capital_one_shopping",
+      "status": "ready",
+      "reason": null,
+      "last_success_at": "2026-11-08T06:38:11.526Z"
+    },
+    {
+      "product": "photon_email",
+      "status": "ready",
+      "reason": null,
+      "last_success_at": "2026-11-08T07:23:36.703Z"
+    }
+  ],
+  "assistedMerchantPrograms": [
+    {
+      "enrollmentId": "330aef10-b0ab-42fa-bb3e-eba4ebf926fa",
+      "programId": "chipotle_rewards",
+      "merchant": "Chipotle Rewards",
+      "mode": "assisted",
+      "state": "needs_user_input",
+      "signupStatus": "awaiting_user",
+      "loyaltyStatus": "unknown",
+      "promotionStatus": "unknown",
+      "url": "https://www.chipotle.com/order/create-account",
+      "requiredInputs": [
+        "existing_membership_check",
+        "name",
+        "email",
+        "phone",
+        "user_verification"
+      ],
+      "nextAction": "complete_signup",
+      "safeToCreateAccount": true,
+      "instructions": [
+        "1. Open merchant signup: https://www.chipotle.com/order/create-account",
+        "2. Use your private alias for email: redacted-alias@deals.getcompfy.com",
+        "3. Enter your name and mobile number, and enter the SMS verification code sent to your phone.",
+        "4. Once submitted, our background worker will automatically detect your confirmation email and activate your deals."
+      ]
+    },
+    {
+      "enrollmentId": "71718978-4143-422b-a408-a46fddd17f78",
+      "programId": "mypanera",
+      "merchant": "MyPanera",
+      "mode": "assisted",
+      "state": "needs_user_input",
+      "signupStatus": "awaiting_user",
+      "loyaltyStatus": "unknown",
+      "promotionStatus": "unknown",
+      "url": "https://www.panerabread.com/en-us/mypanera/meet-mypanera.html",
+      "requiredInputs": [
+        "existing_membership_check",
+        "name",
+        "email",
+        "phone",
+        "otp"
+      ],
+      "nextAction": "complete_signup",
+      "safeToCreateAccount": true,
+      "instructions": [
+        "1. Open merchant signup: https://www.panerabread.com/en-us/mypanera/meet-mypanera.html",
+        "2. Use your private alias for email: redacted-alias@deals.getcompfy.com",
+        "3. Enter your name and mobile number, and enter the SMS verification code sent to your phone.",
+        "4. Once submitted, our background worker will automatically detect your confirmation email and activate your deals."
+      ]
+    }
+  ],
+  "automaticCardholderPrograms": [
+    {
+      "enrollmentId": "17dd35b9-913f-4622-ad80-fae51bc12c93",
+      "programId": "capital_one_bestbuy",
+      "merchant": "Best Buy",
+      "mode": "automatic",
+      "state": "enrolled",
+      "signupStatus": "confirmed",
+      "loyaltyStatus": "enrolled",
+      "promotionStatus": "subscribed",
+      "url": "https://www.capitalone.com/offers",
+      "requiredInputs": [],
+      "nextAction": "manage_membership",
+      "safeToCreateAccount": false,
+      "instructions": null
+    },
+    {
+      "enrollmentId": "d71e82a6-bc5a-4513-bf33-e744a4c4c77d",
+      "programId": "capital_one_booking",
+      "merchant": "Booking.com",
+      "mode": "automatic",
+      "state": "enrolled",
+      "signupStatus": "confirmed",
+      "loyaltyStatus": "enrolled",
+      "promotionStatus": "subscribed",
+      "url": "https://www.capitalone.com/offers",
+      "requiredInputs": [],
+      "nextAction": "manage_membership",
+      "safeToCreateAccount": false,
+      "instructions": null
+    },
+    {
+      "enrollmentId": "00344d06-53d0-4c69-bc31-30a96654d1d6",
+      "programId": "capital_one_lululemon",
+      "merchant": "Lululemon",
+      "mode": "automatic",
+      "state": "enrolled",
+      "signupStatus": "confirmed",
+      "loyaltyStatus": "enrolled",
+      "promotionStatus": "subscribed",
+      "url": "https://www.capitalone.com/offers",
+      "requiredInputs": [],
+      "nextAction": "manage_membership",
+      "safeToCreateAccount": false,
+      "instructions": null
+    },
+    {
+      "enrollmentId": "d873a275-784c-4baf-b718-db642406525d",
+      "programId": "capital_one_macys",
+      "merchant": "Macy's",
+      "mode": "automatic",
+      "state": "enrolled",
+      "signupStatus": "confirmed",
+      "loyaltyStatus": "enrolled",
+      "promotionStatus": "subscribed",
+      "url": "https://www.capitalone.com/offers",
+      "requiredInputs": [],
+      "nextAction": "manage_membership",
+      "safeToCreateAccount": false,
+      "instructions": null
+    },
+    {
+      "enrollmentId": "f9500e7f-7da3-4e89-8176-057f42aa5f7b",
+      "programId": "capital_one_nike",
+      "merchant": "Nike",
+      "mode": "automatic",
+      "state": "enrolled",
+      "signupStatus": "confirmed",
+      "loyaltyStatus": "enrolled",
+      "promotionStatus": "subscribed",
+      "url": "https://www.capitalone.com/offers",
+      "requiredInputs": [],
+      "nextAction": "manage_membership",
+      "safeToCreateAccount": false,
+      "instructions": null
+    },
+    {
+      "enrollmentId": "16e18d8f-64ab-4a49-9935-545d47b318f4",
+      "programId": "capital_one_sephora",
+      "merchant": "Sephora",
+      "mode": "automatic",
+      "state": "enrolled",
+      "signupStatus": "confirmed",
+      "loyaltyStatus": "enrolled",
+      "promotionStatus": "subscribed",
+      "url": "https://www.capitalone.com/offers",
+      "requiredInputs": [],
+      "nextAction": "manage_membership",
+      "safeToCreateAccount": false,
+      "instructions": null
+    },
+    {
+      "enrollmentId": "cb40a7e9-bb35-4339-8b3f-d857c1357314",
+      "programId": "capital_one_target",
+      "merchant": "Target",
+      "mode": "automatic",
+      "state": "enrolled",
+      "signupStatus": "confirmed",
+      "loyaltyStatus": "enrolled",
+      "promotionStatus": "subscribed",
+      "url": "https://www.capitalone.com/offers",
+      "requiredInputs": [],
+      "nextAction": "manage_membership",
+      "safeToCreateAccount": false,
+      "instructions": null
+    },
+    {
+      "enrollmentId": "2aed233d-cb3d-44e5-ba7c-8d3ce52ddfc2",
+      "programId": "capital_one_homedepot",
+      "merchant": "The Home Depot",
+      "mode": "automatic",
+      "state": "enrolled",
+      "signupStatus": "confirmed",
+      "loyaltyStatus": "enrolled",
+      "promotionStatus": "subscribed",
+      "url": "https://www.capitalone.com/offers",
+      "requiredInputs": [],
+      "nextAction": "manage_membership",
+      "safeToCreateAccount": false,
+      "instructions": null
+    },
+    {
+      "enrollmentId": "ad3331f2-0ad7-47a3-9e58-a05b631394e1",
+      "programId": "capital_one_uber_eats",
+      "merchant": "Uber Eats",
+      "mode": "automatic",
+      "state": "enrolled",
+      "signupStatus": "confirmed",
+      "loyaltyStatus": "enrolled",
+      "promotionStatus": "subscribed",
+      "url": "https://www.capitalone.com/offers",
+      "requiredInputs": [],
+      "nextAction": "manage_membership",
+      "safeToCreateAccount": false,
+      "instructions": null
+    },
+    {
+      "enrollmentId": "80e2439a-f1a4-444f-9d6a-8b47c0b2338a",
+      "programId": "capital_one_walmart",
+      "merchant": "Walmart",
+      "mode": "automatic",
+      "state": "enrolled",
+      "signupStatus": "confirmed",
+      "loyaltyStatus": "enrolled",
+      "promotionStatus": "subscribed",
+      "url": "https://www.capitalone.com/offers",
+      "requiredInputs": [],
+      "nextAction": "manage_membership",
+      "safeToCreateAccount": false,
+      "instructions": null
+    }
+  ],
+  "activeOffers": [
+    {
+      "id": "90e5897a-0180-4ab0-9232-b3638483d5a4",
+      "merchant": "Best Buy",
+      "campaign_key": "c1-bestbuy-3pct-2026",
+      "status": "active",
+      "benefit_type": "cashback",
+      "value": "300",
+      "title": "3% Cash Back on Best Buy Purchases Over $50",
+      "channels": [
+        "online",
+        "in_store",
+        "pickup"
+      ]
+    },
+    {
+      "id": "8e1545f5-2546-4ecc-b742-61324981da42",
+      "merchant": "Booking.com",
+      "campaign_key": "c1-booking-6pct-2026",
+      "status": "active",
+      "benefit_type": "cashback",
+      "value": "600",
+      "title": "6% Cash Back on Prepaid Stays at Booking.com",
+      "channels": [
+        "online"
+      ]
+    },
+    {
+      "id": "16bf6f62-e28d-4d01-882a-a36d109088c6",
+      "merchant": "Lululemon",
+      "campaign_key": "c1-lululemon-4pct-2026",
+      "status": "active",
+      "benefit_type": "cashback",
+      "value": "400",
+      "title": "4% Cash Back on Lululemon Orders Over $50",
+      "channels": [
+        "online",
+        "in_store"
+      ]
+    },
+    {
+      "id": "2f592337-991f-4e5f-a376-fc840803f884",
+      "merchant": "Macy's",
+      "campaign_key": "c1-macys-6pct-2026",
+      "status": "active",
+      "benefit_type": "cashback",
+      "value": "600",
+      "title": "6% Cash Back on Macy's Purchases",
+      "channels": [
+        "online",
+        "in_store"
+      ]
+    },
+    {
+      "id": "ce1669fd-bce7-4012-b464-ae57097aed05",
+      "merchant": "Nike",
+      "campaign_key": "c1-nike-5pct-2026",
+      "status": "active",
+      "benefit_type": "cashback",
+      "value": "500",
+      "title": "5% Cash Back on Nike with Capital One Offers",
+      "channels": [
+        "online",
+        "in_store"
+      ]
+    },
+    {
+      "id": "4f81babe-2d56-48a0-8341-ea4735eade81",
+      "merchant": "Sephora",
+      "campaign_key": "c1-sephora-4pct-2026",
+      "status": "active",
+      "benefit_type": "cashback",
+      "value": "400",
+      "title": "4% Cash Back on Sephora Orders Over $25",
+      "channels": [
+        "online",
+        "in_store"
+      ]
+    },
+    {
+      "id": "b40e4dc0-7205-40d1-9078-155af4cc7603",
+      "merchant": "Target",
+      "campaign_key": "c1-target-2pct-2026",
+      "status": "active",
+      "benefit_type": "cashback",
+      "value": "200",
+      "title": "2% Cash Back on Target Online & Pickup Orders",
+      "channels": [
+        "online",
+        "pickup"
+      ]
+    },
+    {
+      "id": "35db9ba8-a292-4e01-bdba-e64f01206605",
+      "merchant": "The Home Depot",
+      "campaign_key": "c1-homedepot-4pct-2026",
+      "status": "active",
+      "benefit_type": "cashback",
+      "value": "400",
+      "title": "4% Cash Back on The Home Depot Orders Over $100",
+      "channels": [
+        "online",
+        "pickup"
+      ]
+    },
+    {
+      "id": "69f44163-9f48-4705-931b-cd181eed5302",
+      "merchant": "Uber Eats",
+      "campaign_key": "c1-ubereats-5pct-2026",
+      "status": "active",
+      "benefit_type": "cashback",
+      "value": "500",
+      "title": "5% Cash Back on Uber Eats Delivery & Pickup",
+      "channels": [
+        "in_app",
+        "online"
+      ]
+    },
+    {
+      "id": "592ba1d0-e5a3-46a0-8677-d2e4c74a0408",
+      "merchant": "Walmart",
+      "campaign_key": "c1-walmart-2pct-2026",
+      "status": "active",
+      "benefit_type": "cashback",
+      "value": "200",
+      "title": "2% Cash Back on Walmart Online Orders Over $35",
+      "channels": [
+        "online",
+        "pickup"
+      ]
+    }
+  ],
+  "simulatedWelcomeEmailConfirmation": {
+    "observed": true,
+    "confirmedState": "enrolled",
+    "confirmedSignupStatus": "confirmed"
+  }
+}

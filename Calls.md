@@ -1,5 +1,7 @@
 # Calls: voice calling subsystem (context and evidence)
 
+The integration checkout adds a call-bound recommendation API and direct transcript handling. Use the [current backend runbook](docs/backend-runbook.md) to test the integrated stack. The observations below describe the original voice-only smoke tests.
+
 Context file for the phone-calling work. It summarises the build session, what was decided, what was verified on real calls, and what is still open. The checklist ([spec-checklist.md](spec-checklist.md)) points here for evidence. Code lives in `services/calls/` and `services/recommend-dummy/`; plan in `docs/superpowers/plans/2026-11-07-calling-subsystem.md`; per-test log in `services/calls/docs/smoke-test.md`.
 
 **Status (2026-11-08):** outbound phone calls work end to end on live calls. An authenticated `POST /calls` dials a consenting test number, the agent greets, listens, calls a recommendation endpoint, speaks the answer, and hangs up. The recommendation endpoint is a **dummy**; the real one is a teammate's job. Inbound calls are **not yet tested**.

@@ -1,0 +1,2 @@
+export const BEACON_UUID = 'F3A04781-EE0C-4CB6-9B7F-8FCD0F06A593';
+export const BEACON_MAJOR = 1;

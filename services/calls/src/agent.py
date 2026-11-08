@@ -9,6 +9,7 @@ import logging
 import os
 import re
 import time
+from uuid import UUID
 from urllib.parse import urlparse
 from typing import Optional
 
@@ -44,6 +45,7 @@ END_PHRASE = re.compile(
     r"i'm done|goodbye|bye|never ?mind)$|^(no|nope|stop)$"
 )
 DECLINE_PHRASE = re.compile(r"^(no|nope|no thanks|no thank you|never ?mind)$")
+ACCEPT_PHRASE = re.compile(r"^(yes|yes please|sounds good|i'll take it)$")
 
 
 def _norm(text: str) -> str:
@@ -90,7 +92,8 @@ async def enforce_max_duration(ctx, seconds: int) -> None:
 
 
 class NessiAgent(Agent):
-    def __init__(self, scenario: Optional[str], room_name: str, user_id: str = DEFAULT_USER_ID) -> None:
+    def __init__(self, scenario: Optional[str], room_name: str, user_id: str = DEFAULT_USER_ID,
+                 call_id: Optional[str] = None) -> None:
         super().__init__(instructions=INSTRUCTIONS + (f"\nScenario: {scenario}" if scenario else ""))
         self._offered = False  # a real suggestion was spoken, so a plain 'no' means decline
         self._hanging_up = False
@@ -99,6 +102,8 @@ class NessiAgent(Agent):
         self._room = room_name
         self._db = os.getenv("DEMO_NOTES_DB", "demo_call_notes.sqlite3")
         self._user_id = user_id  # set by the backend at dial time; never supplied by the LLM
+        self._call_id = call_id
+        self._answered = False
         self._api_url = os.getenv("RECOMMENDATION_API_URL") or None
         self.decision: Optional[str] = None
 
@@ -119,14 +124,17 @@ class NessiAgent(Agent):
     @function_tool
     async def respond_to_caller(self, context: RunContext, caller_words: str) -> dict:
         """Send the caller's exact words to the recommendation service and get JSON suggestions back."""
+        return await self._evaluate(caller_words)
+
+    async def _evaluate(self, caller_words: str) -> dict:
         t0 = time.monotonic()
         res = await asyncio.to_thread(  # blocking HTTP must not stall the audio loop
-            recommend.evaluate_reply, self._user_id, self._scenario, caller_words, self._api_url)
+            recommend.evaluate_reply, self._user_id, self._scenario, caller_words, self._api_url, call_id=self._call_id)
         ms = int((time.monotonic() - t0) * 1000)
         log.info("tool respond_to_caller room=%s ok=%s source=%s endpoint_ms=%d", self._room,
                  res.get("ok"), res.get("source"), ms)
         result = res.get("result") if isinstance(res, dict) else None
-        self._offered = bool(res.get("ok") and isinstance(result, dict) and result.get("status") != "unavailable")
+        self._offered = bool(res.get("ok") and isinstance(result, dict) and result.get("status") == "recommendation")
         return res
 
     @function_tool
@@ -138,7 +146,7 @@ class NessiAgent(Agent):
         raise StopResponse()  # no model reply: the fixed goodbye above is the last thing said
 
     async def on_user_turn_completed(self, turn_ctx, new_message) -> None:
-        """Deterministic hang-up: a short 'no / that's all / goodbye' ends the call without the model."""
+        """Bound calls send the actual speech transcript and speak the validated API message."""
         text = getattr(new_message, "text_content", "") or ""
         if is_end_phrase(text):
             log.info("end phrase detected room=%s chars=%d", self._room, len(text))
@@ -147,6 +155,23 @@ class NessiAgent(Agent):
                 log.info("decision room=%s decision=declined (plain no after a suggestion)", self._room)
             self._start_hang_up("Okay, thanks for your time. Goodbye!")
             raise StopResponse()
+        if self._call_id and text.strip():
+            if self._offered and ACCEPT_PHRASE.match(_norm(text)):
+                self.decision = "accepted"
+                self._start_hang_up("Got it, thank you. Goodbye!")
+                raise StopResponse()
+            response = await self._evaluate(text)
+            result = response.get("result", {})
+            message = result.get("message") or "I can’t check a new option right now."
+            self.session.say(message)
+            raise StopResponse()
+
+    async def close_call_context(self) -> None:
+        if self._answered and self._call_id and self._api_url:
+            try:
+                await asyncio.to_thread(recommend.end_call, self._api_url, self._call_id, self._user_id, self.decision)
+            except Exception:
+                log.warning("could not close recommendation context room=%s", self._room)
 
     def _start_hang_up(self, goodbye: str) -> None:
         if self._hanging_up:
@@ -182,14 +207,18 @@ def opening_line(scenario: Optional[str]) -> str:
 
 
 def parse_metadata(raw: Optional[str]):
-    """Dispatch metadata is JSON {"user_id", "scenario"} set by the backend; tolerate absence/garbage."""
+    """Dispatch metadata binds an outbound call to its saved recommendation."""
     try:
         data = json.loads(raw) if raw else {}
     except (ValueError, TypeError):
         data = {}
     if not isinstance(data, dict):
         data = {}
-    return data.get("scenario") or None, data.get("user_id") or DEFAULT_USER_ID
+    try:
+        call_id = str(UUID(data.get("call_id"))) if isinstance(data.get("call_id"), str) else None
+    except ValueError:
+        call_id = None
+    return data.get("scenario") or None, data.get("user_id") or DEFAULT_USER_ID, call_id
 
 
 def attach_call_logging(session: AgentSession, room_name: str) -> None:
@@ -257,18 +286,29 @@ async def entrypoint(ctx: agents.JobContext) -> None:
         session_close_transcript_timeout=0.1,  # default 2.0 s delayed hang-up after goodbye
     )
     attach_call_logging(session, ctx.room.name)
-    scenario, user_id = parse_metadata(ctx.job.metadata)
-    await session.start(room=ctx.room, agent=NessiAgent(scenario, ctx.room.name, user_id))
-    participant = await ctx.wait_for_participant()
+    scenario, user_id, call_id = parse_metadata(ctx.job.metadata)
+    agent = NessiAgent(scenario, ctx.room.name, user_id, call_id)
+    if call_id:
+        ctx.add_shutdown_callback(agent.close_call_context)
+    await session.start(room=ctx.room, agent=agent)
+    try:
+        participant = await asyncio.wait_for(ctx.wait_for_participant(), timeout=70)
+    except asyncio.TimeoutError:
+        log.warning("no participant joined room=%s", ctx.room.name)
+        await ctx.delete_room()
+        return
     if participant.kind == rtc.ParticipantKind.PARTICIPANT_KIND_SIP:
         # Outbound: the SIP participant joins while the phone still rings. Speak only once it is answered.
         if not await wait_until_answered(ctx.room, participant):
             log.warning("call not answered within timeout room=%s", ctx.room.name)
             await ctx.delete_room()
             return
-    # Opening as in the first working calls: model-written greeting, default interruption settings.
-    await session.generate_reply(
-        instructions="Greet the caller as an AI assistant and open with the scenario if there is one.")
+    agent._answered = True
+    if call_id:
+        session.say(opening_line(scenario))
+    else:
+        await session.generate_reply(
+            instructions="Greet the caller as an AI assistant and open with the scenario if there is one.")
     asyncio.create_task(enforce_max_duration(ctx, MAX_CALL_SECONDS))  # a call can never hang open
 
 
