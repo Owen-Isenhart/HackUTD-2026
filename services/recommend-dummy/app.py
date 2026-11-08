@@ -2,7 +2,7 @@
 
 The real service (teammate's `services/recommend`) must keep this contract:
   POST /api/recommendations/evaluate
-  header  x-api-key: <RECOMMEND_API_KEY>      (only enforced if that env var is set)
+  header  x-api-key: <RECOMMENDATION_API_KEY>  (required; server returns 503 if the env var is unset)
   body    {"user_id": str, "scenario": str, "user_text": str}
   returns any non-empty JSON object; the voice agent's Nemotron turns it into speech.
 Every response says "source": "dummy" and "status": "unavailable", so it can never be mistaken for a real recommendation
@@ -32,8 +32,11 @@ def health() -> dict:
 
 @app.post("/api/recommendations/evaluate")
 def evaluate(req: EvaluateRequest, x_api_key: Optional[str] = Header(default=None)) -> dict:
-    expected = os.getenv("RECOMMEND_API_KEY")
-    if expected and not (x_api_key and hmac.compare_digest(x_api_key, expected)):
+    # Same variable name as the calls-service client (RECOMMENDATION_API_KEY). Fail closed if unset.
+    expected = os.getenv("RECOMMENDATION_API_KEY")
+    if not expected:
+        raise HTTPException(status_code=503, detail="server API key not configured")
+    if not (x_api_key and hmac.compare_digest(x_api_key, expected)):
         raise HTTPException(status_code=401, detail="invalid or missing API key")
     return {
         "source": "dummy",

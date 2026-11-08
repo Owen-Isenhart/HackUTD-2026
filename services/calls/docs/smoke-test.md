@@ -12,7 +12,7 @@ Statuses: NOT RUN / CONFIGURED / VERIFIED / BLOCKED. Nothing below is VERIFIED u
 | T06 | Inbound live call | NOT RUN | |
 | T07 | Outbound live call (CLI) | NOT RUN | |
 | T08 | Outbound live call (API) | VERIFIED (log) | Call 4: POST /calls -> answered -> 2-turn conversation -> tool called twice (endpoint_ms 66, 7; dummy endpoint). Latency end of speech -> first agent audio: 4.7 s (turn 1), 2.7 s (turn 2). Earlier notes: POST /calls -> 200 dial_requested; LiveKit job received for room nessi-out-555396b4ef5f; phone_user participant linked (call answered); tool ran. Awaiting user report of what was heard (audio quality, latency) |
-| T09 | Hangup / no-answer states | NOT RUN | Status updates from LiveKit events not implemented yet |
+| T09 | Hangup / no-answer states | PARTIAL | Agent hang-up VERIFIED on live call (goodbye then room deleted 0.25 s later; decision recorded). No-answer shows as `failed` (SIP 408); LiveKit event tracking not implemented |
 | T10 | Auth + allowlist rejection | VERIFIED (unit) | tests/test_call_authorization.py |
 | T11 | Provider call logs | NOT RUN | |
 | T12 | Reproducible setup | NOT RUN | |
@@ -23,3 +23,5 @@ Open items: recommendation API (RECOMMENDATION_API_URL blank, tool returns label
 and TigerData preference store are interfaces/stand-ins only; Photon docs version used: not yet checked.
 
 Call 3 (live-test-3) timed out with SIP 408 (no pickup); API marks it `failed`, not `no_answer` (status mapping not implemented).
+
+2026-11-08 final: outbound flow works end to end (greeting, question, tool call, canned reply, decline, goodbye, hang-up). Inbound untested. Photon inbound toggle unconfirmed. See ../../Calls.md.

@@ -81,4 +81,5 @@ class CallStore:
         cutoff = time.time() - window_s
         with self._lock:
             return sum(1 for r in self._by_id.values()
-                       if r.to_number == to_number and r.created_at >= cutoff)
+                       if r.to_number == to_number and r.created_at >= cutoff
+                       and r.status != CallStatus.failed)  # a dial that never rang is not spam

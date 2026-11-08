@@ -1,6 +1,6 @@
 import asyncio
 
-from src.agent import NessiAgent, opening_line, parse_metadata
+from src.agent import NessiAgent, is_end_phrase, opening_line, parse_metadata, wait_until_answered
 from src.livekit_dialer import LiveKitDialer
 from src.settings import load_settings
 
@@ -38,10 +38,16 @@ def test_parse_metadata():
     assert parse_metadata("[1]") == (None, "demo-user")
 
 
-def test_record_decision(tmp_path, monkeypatch):
+def test_record_decision_sets_decision_and_hangs_up_without_model_reply(tmp_path, monkeypatch):
+    import pytest
+    from livekit.agents import StopResponse
     monkeypatch.setenv("DEMO_NOTES_DB", str(tmp_path / "d.sqlite3"))
     agent = NessiAgent(None, "room1")
-    assert run(agent.record_decision(None, False))["decision"] == "declined"
+    started = []
+    agent._start_hang_up = lambda text: started.append(text)
+    with pytest.raises(StopResponse):
+        run(agent.record_decision(None, False))
+    assert agent.decision == "declined" and started == ["Got it, thank you. Goodbye!"]
 
 
 def test_dialer_dispatches_before_sip(monkeypatch):
@@ -74,3 +80,136 @@ def test_dialer_dispatches_before_sip(monkeypatch):
 def test_opening_line_discloses_ai_and_speaks_scenario_verbatim():
     assert opening_line(None) == "Hi, I'm Nessiessential's AI assistant."
     assert opening_line("  Chick-fil-A is nearby. ") == "Hi, I'm Nessiessential's AI assistant. Chick-fil-A is nearby."
+
+
+def test_llm_credentials_never_leak_to_other_hosts(monkeypatch):
+    import pytest
+    from src.agent import resolve_llm_credentials
+    monkeypatch.setenv("NVIDIA_API_KEY", "nvkey")
+    monkeypatch.delenv("NEMOTRON_API_KEY", raising=False)
+    monkeypatch.delenv("NEMOTRON_BASE_URL", raising=False)
+    assert resolve_llm_credentials()[1] == "nvkey"
+    monkeypatch.setenv("NEMOTRON_BASE_URL", "https://evil.example.com/v1")
+    with pytest.raises(ValueError):
+        resolve_llm_credentials()
+    monkeypatch.setenv("NEMOTRON_BASE_URL", "http://evil.example.com/v1")
+    with pytest.raises(ValueError):
+        resolve_llm_credentials()
+    monkeypatch.setenv("NEMOTRON_API_KEY", "own")
+    monkeypatch.setenv("NEMOTRON_BASE_URL", "https://vllm.mine.example/v1")
+    assert resolve_llm_credentials() == ("https://vllm.mine.example/v1", "own")
+
+
+def test_end_phrases_match_whole_short_utterances_only():
+    for t in ["No.", "no thanks", "That's all", "No, that'll be all.", "nothing else", "Goodbye!", "never mind", "I'm good", "Bye"]:
+        assert is_end_phrase(t), t
+    for t in ["no wait, what about vegan?", "yes", "I want a salad", "Are you supposed to end the call?", ""]:
+        assert not is_end_phrase(t), t
+
+
+def test_plain_no_after_suggestion_records_decline_and_hangs_up():
+    import pytest
+    from livekit.agents import StopResponse
+
+    class Msg:
+        text_content = "No."
+
+    agent = NessiAgent(None, "room1")
+    agent._offered = True
+    started = []
+    agent._start_hang_up = lambda text: started.append(text)
+    with pytest.raises(StopResponse):
+        run(agent.on_user_turn_completed(None, Msg()))
+    assert agent.decision == "declined" and started
+
+
+def test_non_end_utterance_lets_model_respond():
+    class Msg:
+        text_content = "Are there vegan options?"
+
+    agent = NessiAgent(None, "room1")
+    started = []
+    agent._start_hang_up = lambda text: started.append(text)
+    run(agent.on_user_turn_completed(None, Msg()))  # must not raise
+    assert started == []
+
+
+def test_wait_until_answered_waits_for_active_status():
+    class P:
+        identity = "phone_user"
+        attributes = {"sip.callStatus": "ringing"}
+
+    class Room:
+        def __init__(self):
+            self.cb = None
+
+        def on(self, ev, cb):
+            self.cb = cb
+
+        def off(self, ev, cb):
+            self.cb = None
+
+    async def go():
+        room, p = Room(), P()
+        task = asyncio.create_task(wait_until_answered(room, p, timeout=2))
+        await asyncio.sleep(0.05)
+        assert not task.done()
+        p.attributes = {"sip.callStatus": "active"}
+        room.cb({}, p)
+        return await task
+
+    assert run(go()) is True
+
+
+def test_wait_until_answered_times_out():
+    class P:
+        identity = "x"
+        attributes = {"sip.callStatus": "ringing"}
+
+    class Room:
+        def on(self, *a): pass
+        def off(self, *a): pass
+
+    assert run(wait_until_answered(Room(), P(), timeout=0.05)) is False
+
+
+def test_hang_up_always_deletes_room_even_when_goodbye_fails(monkeypatch):
+    deleted = []
+
+    class Ctx:
+        async def delete_room(self):
+            deleted.append(True)
+
+    class Session:
+        def say(self, *a, **k):
+            raise RuntimeError("tts down")
+
+    monkeypatch.setattr("src.agent.get_job_context", lambda: Ctx())
+    agent = NessiAgent(None, "room1")
+    monkeypatch.setattr(NessiAgent, "session", property(lambda self: Session()))
+    run(agent._hang_up("bye"))
+    assert deleted == [True]
+
+
+def test_hang_up_deletes_room_when_goodbye_never_finishes(monkeypatch):
+    deleted = []
+
+    class Ctx:
+        async def delete_room(self):
+            deleted.append(True)
+
+    class Handle:
+        async def wait_for_playout(self):
+            await asyncio.sleep(3600)
+
+    class Session:
+        def say(self, *a, **k):
+            return Handle()
+
+    real_wait_for = asyncio.wait_for
+    monkeypatch.setattr("src.agent.asyncio.wait_for", lambda aw, timeout: real_wait_for(aw, 0.05))
+    monkeypatch.setattr("src.agent.get_job_context", lambda: Ctx())
+    agent = NessiAgent(None, "room1")
+    monkeypatch.setattr(NessiAgent, "session", property(lambda self: Session()))
+    run(agent._hang_up("bye"))
+    assert deleted == [True]

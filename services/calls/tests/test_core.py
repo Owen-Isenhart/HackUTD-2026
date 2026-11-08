@@ -137,3 +137,11 @@ def test_empty_text_rejected_and_long_text_truncated():
     seen = {}
     evaluate_reply("u", "s", "a" * 5000, "http://x", lambda u, p: seen.update(p) or {"ok": 1})
     assert len(seen["user_text"]) == 1000
+
+
+def test_failed_dials_do_not_count_toward_rate_limit():
+    s = CallStore()
+    a, _ = s.create("k1", "+19725550100", "r1")
+    s.update(a.call_id, CallStatus.failed)
+    s.create("k2", "+19725550100", "r2")
+    assert s.recent_count("+19725550100", 60) == 1
