@@ -416,14 +416,14 @@ Use authenticated ownership checks on every API, job and tool. Keep secrets out 
 
 Last updated: 2026-11-08. Owner: Arjun. Branch: `feat/optimizer-nemotron`, draft pull request #1. This section replaces the earlier `optimizer/STATUS.md`. Ticked boxes in [spec-checklist.md](spec-checklist.md) name the test that is their evidence.
 
-### Working on now: connecting to the team's Nemotron for the live tests
+### Working on now
 
-- The team serves Nemotron 3.5 Bolt E4B on the Brev machine `following-copper-silkworm`, under the name `nemotron-bolt`. Don't start a second copy.
-- On Arjun's laptop, WSL (Windows Subsystem for Linux) and the Brev command-line tool are installed. Brev is not signed in yet, because the browser sign-in timed out twice. Next, Arjun signs in using the token command from https://brev.nvidia.com/settings/cli.
-- Then:
-  1. Run `brev port-forward following-copper-silkworm --port 8000:8000`.
-  2. Check that the model answers.
-  3. Run `optimizer/tests/test_live_nemotron.py`.
+- Testing through the already signed-in Jupyter terminal on the team's Brev machine `following-copper-silkworm`. The running model is `nemotron-bolt`, Nemotron 3.5 Bolt E4B. Local Brev sign-in remains unavailable. The remote test route works.
+- Verified on Brev at revision `c78491d`: `/v1/models` lists Bolt and a chat request with `enable_thinking=false` returns `READY`.
+- Both live tests failed in 2.40 seconds before extraction. The client requested 10,240 output tokens against the server's 8,192-token context window. A second direct probe confirmed that the prompt's tokens must also fit inside that window.
+- The client now retries with a smaller output allowance taken from these server errors. Scripted tests cover the two limits together with schema fallback, and ensure unrelated errors and exhausted context still fail. Live verification of this fix is next.
+- Ran on Windows after the fix: `uv run pytest -q tests/test_nemotron.py`, 21 passed in 2.14 seconds.
+- The full suite on Brev before the fix reported 67 passed, 2 skipped, 1 failed in 40.79 seconds. The random-sample coverage guard saw 15 non-default-card choices against a floor of 20. That test passed alone on rerun in 3.79 seconds. No coverage threshold was changed.
 
 ### Done: the recommendation optimizer (`optimizer/`, Python)
 
@@ -461,7 +461,7 @@ Last updated: 2026-11-08. Owner: Arjun. Branch: `feat/optimizer-nemotron`, draft
 
 ### Not verified yet
 
-- **No call to a real Nemotron.** Arjun is setting up the Brev port-forward in a separate session.
+- **Extraction quality remains unmeasured.** The live tests reached the real server but were rejected for their token allowance. Dropped facts, downgraded verdicts and individual job timings remain pending until the fixed client runs.
 - **The model is small.** `nemotron-bolt` is Nemotron 3.5 Bolt E4B, a 4-billion-parameter model, and its suitability judgements have not been measured.
 - **`optimizer/serve/brev-vllm.sh` is unused.** It was written before the team VM existed, and the team serves the model differently.
 
