@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { c } from '../theme';
 import { useReducedMotion, useTimed } from '../motion';
 import { Icon, IconName, T } from './ui';
+import { useVoice } from '../voice/VoiceProvider';
 
 
 type BottomTabBarProps=Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
@@ -131,7 +132,9 @@ const popSize = 222;
 function SwimmingNessie() {
   const { width } = useWindowDimensions();
   const reduce = useReducedMotion();
-  const [up, setUp] = React.useState(false);
+  const [localUp, setLocalUp] = React.useState(false);
+  const voice = useVoice(); // tapping Nessie talks to the voice assistant when the app provides one
+  const up = voice ? voice.popped : localUp;
   const x = useRef(new Animated.Value(0)).current;
   const flip = useRef(new Animated.Value(1)).current;
   const bob = useRef(new Animated.Value(0)).current;
@@ -166,14 +169,18 @@ function SwimmingNessie() {
     };
   }, [reduce, x, flip, bob, native]);
 
-  function toggle() {
-    const next = !up;
-    setUp(next);
+  // She rises while the assistant is connecting, listening, thinking or speaking, and dives when it is done.
+  useEffect(() => {
     if (reduce) {
-      pop.setValue(next ? 1 : 0);
+      pop.setValue(up ? 1 : 0);
       return;
     }
-    Animated.spring(pop, { toValue: next ? 1 : 0, friction: 7, tension: 90, useNativeDriver: native }).start();
+    Animated.spring(pop, { toValue: up ? 1 : 0, friction: 7, tension: 90, useNativeDriver: native }).start();
+  }, [up, reduce, pop, native]);
+
+  function toggle() {
+    if (voice) voice.toggle();
+    else setLocalUp((v) => !v);
   }
 
   const NESSIE_W = swimSize;
@@ -194,7 +201,7 @@ function SwimmingNessie() {
         transformOrigin: '50% 0%',
       }}
     >
-      <Pressable accessibilityRole="button" accessibilityLabel={up ? 'Nessie, tap to dive' : 'Nessie, tap to pop up'} onPress={toggle}>
+      <Pressable accessibilityRole="button" accessibilityLabel={voice ? (voice.status === 'listening' ? 'Nessie is listening, tap to send' : 'Nessie, tap to talk') : up ? 'Nessie, tap to dive' : 'Nessie, tap to pop up'} onPress={toggle}>
         <Animated.Image
           source={require('../../assets/nessie.png')}
           resizeMode="contain"

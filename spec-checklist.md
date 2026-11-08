@@ -105,6 +105,8 @@ Each unchecked item is future work and may be marked complete only with its stat
 - [ ] CALLS-07 — Rotate credentials that were pasted into the working session (LiveKit secret, NVIDIA key, Nessie key, Photon SIP password).
 - [ ] CALLS-08 — Diagnose the intermittent first-dial `403 permission_denied` from the SIP provider.
 - [ ] CALLS-09 — Decide whether the voice LLM moves to the Brev vLLM instance; if so expose it with a key-protected endpoint and re-measure latency and tool-calling reliability.
+- [x] CALLS-10 — In-app voice server side: `POST /voice/session` token dispatches the agent with profile `app_voice` (and lets the app set its own attributes); identity-checked push-to-talk RPCs; spoken "open the budgets page" makes the app navigate; spoken "What am I looking at?" is answered from the real screen attributes. Evidence: live audio smoke runs (see [Calls.md](Calls.md)) and the unit tests under `services/calls/tests/`.
+- [ ] CALLS-11 — In-app voice on a device: the React Native client exists in `app/src/voice/` (type-checked, 8 unit tests) but has not run on a phone or simulator. Build a development build on a Mac (`npx expo run:ios`), then verify the talk button, spoken navigation, screen-aware answers and the key entry; plus a real data route for in-app questions.
 
 ### App and security
 

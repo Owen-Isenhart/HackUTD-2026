@@ -7,7 +7,11 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hackutd2026.nessiessential",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Talk to the Nessie voice assistant."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +28,10 @@
     "plugins": [
       "expo-font",
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      "@livekit/react-native-expo-plugin",
+      "@config-plugins/react-native-webrtc",
+      "expo-dev-client"
     ]
   }
 }

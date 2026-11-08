@@ -22,16 +22,20 @@ from livekit.agents import (Agent, AgentServer, AgentSession, RunContext, StopRe
                             get_job_context)
 from livekit.plugins import nvidia, openai
 
-from src import demo_tools, recommend, tone
+from src import demo_tools, navigation, recommend, tone
 from src.profiles import CallContext, Profile, get_profile, build_instructions
 from src.tools import build_tools
 from src.livekit_dialer import AGENT_NAME
 from src.numbers import normalize_e164
+from src.push_to_talk import PushToTalk
+from src.screen_context import apply_screen_context, attach_screen_context, format_screen_context
 from src.settings import DEFAULT_BASE_URL, DEFAULT_MODEL
 
 NVIDIA_HOST = "integrate.api.nvidia.com"
 
 log = logging.getLogger("nessi.agent")
+
+DEFAULT_TTS_VOICE = "Magpie-Multilingual.EN-US.Mia"
 
 END_PHRASE = re.compile(
     r"^(no )?(thanks|thank you|that's all|that is all|that'll be all|that will be all|that's it|nothing|nothing else|i'm good|i am good|"
@@ -155,6 +159,8 @@ class NessiAgent(Agent):
         scenario, user_id, call_id = ctx.scenario, ctx.user_id, ctx.call_id
         self._phone_number = ctx.phone_number
         super().__init__(instructions=build_instructions(self.profile, ctx), tools=build_tools(self.profile.tools, self))
+        self.app_room = None
+        self.app_identity = None
         self._offered = False  # a real suggestion was spoken, so a plain 'no' means decline
         self._hanging_up = False
         self._tasks: set = set()
@@ -176,7 +182,7 @@ class NessiAgent(Agent):
         elif self._returning:
             api_url = phone_details_url()
         else:
-            api_url = None
+            api_url = os.getenv(f"RECOMMENDATION_API_URL_{self.profile.name.upper()}")
         self._api_url = api_url or os.getenv("RECOMMENDATION_API_URL") or None
         self._log_room = room_tag(room_name)
         self.decision: Optional[str] = None
@@ -196,6 +202,10 @@ class NessiAgent(Agent):
     async def respond_to_caller(self, context: RunContext, caller_words: str) -> dict:
         """Send the caller's exact words to the recommendation service and get JSON suggestions back."""
         return await self._evaluate(caller_words)
+
+    def bind_app(self, room, app_identity: str) -> None:
+        """Remember the app participant so navigate_app can reach it."""
+        self.app_room, self.app_identity = room, app_identity
 
     async def _evaluate(self, caller_words: str) -> dict:
         if self.profile.name == 'onboarding':
@@ -252,9 +262,21 @@ class NessiAgent(Agent):
     async def on_user_turn_completed(self, turn_ctx, new_message) -> None:
         """Bound calls send the actual speech transcript and speak the validated API message."""
         text = getattr(new_message, "text_content", "") or ""
-        if (self.profile.name == 'onboarding' or self._returning) and sensitive_onboarding_input(text):
+        if (self.profile.name == "onboarding" or self._returning) and sensitive_onboarding_input(text):
             self.session.say("Please don't share that. I only need the last four digits.")
             raise StopResponse()
+        if self.profile.transport == "app" and not text.strip():
+            raise StopResponse()  # an accidental tap of the talk button gets no reply
+        if self.profile.transport == "app":
+            # A clear "open budgets" is handled by code: faster than a model round trip, and the model
+            # cannot claim a page opened when it never asked the app to open it.
+            dest = navigation.match_destination(text)
+            if dest:
+                res = (await navigation.navigate(self.app_room, self.app_identity, dest)
+                       if self.app_room else {"ok": False, "error": "app not connected"})
+                log.info("navigate room=%s dest=%s ok=%s error=%s", self._log_room, dest, res.get("ok"), res.get("error"))
+                self.session.say(f"Opening {dest.capitalize()}." if res.get("ok") else "I couldn't open that page.")
+                raise StopResponse()
         if self.profile.end_phrase_hangup and is_end_phrase(text):
             log.info("end phrase detected room=%s chars=%d", self._log_room, len(text))
             if self._offered and self.decision is None and DECLINE_PHRASE.match(_norm(text)):
@@ -354,6 +376,18 @@ def parse_metadata(raw: Optional[str]):
     )
 
 
+def tts_voice() -> str:
+    """The Magpie voice to speak with: TTS_VOICE from the environment, else Mia."""
+    return (os.getenv("TTS_VOICE") or "").strip() or DEFAULT_TTS_VOICE
+
+
+def session_options(profile: Profile) -> dict:
+    """AgentSession turn settings: push-to-talk is manual, phone calls use STT endpointing."""
+    if profile.transport == "app":
+        return {"turn_handling": {"turn_detection": "manual"}}
+    return {"turn_detection": "stt"}
+
+
 def attach_call_logging(session: AgentSession, room_name: str) -> None:
     """Log conversation metadata, state changes and per-turn metrics; text only if LOG_TRANSCRIPTS=1."""
 
@@ -418,24 +452,14 @@ server = AgentServer()
 async def entrypoint(ctx: agents.JobContext) -> None:
     llm_base_url, llm_api_key = resolve_llm_credentials()
     call_ctx = parse_metadata(ctx.job.metadata)
-    session = AgentSession(
-        stt=nvidia.STT(language_code="en-US"),
-        llm=openai.LLM(
-            model=os.getenv("NEMOTRON_MODEL") or DEFAULT_MODEL,
-            base_url=llm_base_url,
-            temperature=0.3,  # steadier tool calls than the model's default of 1.0
-            # Thinking off: first token ~0.3s instead of 4-6s after a tool result, and no empty replies.
-            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
-            api_key=llm_api_key,
-        ),
-        tts=nvidia.TTS(voice=await call_voice(call_ctx), language_code="en-US"),
-        turn_detection="stt",
-        session_close_transcript_timeout=0.1,  # default 2.0 s delayed hang-up after goodbye
-    )
+    profile = get_profile(call_ctx.profile)
+    if profile.transport == "app" and not call_ctx.user_id:
+        log.warning("in-app session without a user_id; refusing room=%s", ctx.room.name)
+        await ctx.delete_room()
+        return
     log_room = room_tag(ctx.room.name)
-    attach_call_logging(session, log_room)
     inbound_unavailable = False
-    if not call_ctx.user_id and os.getenv('INBOUND_CALL_PROFILE') == 'onboarding':
+    if profile.transport == "phone" and not call_ctx.user_id and os.getenv('INBOUND_CALL_PROFILE') == 'onboarding':
         # Inbound: the caller is already in the room. Look the number up in Tiger before choosing
         # the profile, so a registered caller gets the returning-caller sequence, not onboarding.
         await ctx.connect()
@@ -451,12 +475,30 @@ async def entrypoint(ctx: agents.JobContext) -> None:
         log.info("inbound route room=%s profile=%s", log_room, 'unavailable' if routed is None else routed.profile)
     profile = get_profile(call_ctx.profile)
     scenario, call_id = call_ctx.scenario, call_ctx.call_id
+    session = AgentSession(
+        stt=nvidia.STT(language_code="en-US"),
+        llm=openai.LLM(
+            model=os.getenv("NEMOTRON_MODEL") or DEFAULT_MODEL,
+            base_url=llm_base_url,
+            temperature=0.3,  # steadier tool calls than the model's default of 1.0
+            # Thinking off: first token ~0.3s instead of 4-6s after a tool result, and no empty replies.
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+            api_key=llm_api_key,
+        ),
+        # Phone calls pick a voice matching the suggestion's tone; the in-app assistant keeps its own voice.
+        tts=nvidia.TTS(voice=tts_voice() if profile.transport == "app" else await call_voice(call_ctx), language_code="en-US"),
+        session_close_transcript_timeout=0.1,  # default 2.0 s delayed hang-up after goodbye
+        **session_options(profile),
+    )
+    attach_call_logging(session, log_room)
     agent = NessiAgent(scenario, ctx.room.name, profile=profile, ctx=call_ctx)
     if call_id:
         ctx.add_shutdown_callback(agent.close_call_context)
     await session.start(room=ctx.room, agent=agent)
     try:
-        participant = await asyncio.wait_for(ctx.wait_for_participant(), timeout=70)
+        # The in-app session only listens to its own authenticated app participant.
+        wanted = f"app-{call_ctx.user_id}" if profile.transport == "app" else None
+        participant = await asyncio.wait_for(ctx.wait_for_participant(identity=wanted), timeout=70)
     except asyncio.TimeoutError:
         log.warning("no participant joined room=%s", log_room)
         await ctx.delete_room()
@@ -468,7 +510,21 @@ async def entrypoint(ctx: agents.JobContext) -> None:
             await ctx.delete_room()
             return
     agent._answered = True
-    asyncio.create_task(enforce_max_duration(ctx, profile.max_seconds))
+    if profile.transport == "app":
+        agent.bind_app(ctx.room, participant.identity)
+        ptt = PushToTalk(session, ctx.room, participant.identity, idle_seconds=120.0, on_idle=ctx.delete_room)
+        ptt.attach()
+        ptt.start_idle_watch()
+        detach_screen = attach_screen_context(ctx.room, agent, participant.identity)
+        # Attributes the app set before the agent joined do not trigger a change event.
+        await apply_screen_context(agent, format_screen_context(dict(participant.attributes)))
+
+        async def stop_app_helpers() -> None:
+            ptt.stop()
+            detach_screen()
+
+        ctx.add_shutdown_callback(stop_app_helpers)
+    asyncio.create_task(enforce_max_duration(ctx, int(os.getenv("MAX_CALL_SECONDS") or profile.max_seconds)))
     if inbound_unavailable:
         agent._start_hang_up(INBOUND_UNAVAILABLE)
         return

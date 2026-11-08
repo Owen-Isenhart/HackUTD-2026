@@ -21,6 +21,7 @@ class Settings:
     allowed_numbers: frozenset
     notes_db: str
     recommendation_api_url: Optional[str] = None
+    voice_allowed_origins: tuple = ()  # extra browser origins allowed to call /voice/session
 
 
 def _req(env: Mapping, name: str) -> str:
@@ -49,4 +50,5 @@ def load_settings(env: Mapping) -> Settings:
         allowed_numbers=allowed,
         notes_db=env.get("DEMO_NOTES_DB", "").strip() or "demo_call_notes.sqlite3",
         recommendation_api_url=env.get("RECOMMENDATION_API_URL", "").strip() or None,
+        voice_allowed_origins=tuple(o.strip().rstrip("/") for o in env.get("VOICE_ALLOWED_ORIGINS", "").split(",") if o.strip()),
     )

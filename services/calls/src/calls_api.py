@@ -7,12 +7,14 @@ import asyncio
 from typing import Callable, Literal, Optional, Protocol
 
 from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from livekit.api import SipCallError
 from pydantic import BaseModel, Field, StrictBool
 
 from src.call_state import CallStatus, CallStore
 from src.numbers import OWN_NUMBER, is_allowed, normalize_e164
 from src.settings import Settings
+from src.voice_routes import add_voice_routes
 
 log = logging.getLogger("nessi.calls")
 
@@ -38,6 +40,10 @@ class CallRequest(BaseModel):
     call_id: Optional[uuid.UUID] = None
 
 
+# Expo's web dev server. A browser build of the app calls /voice/session from one of these.
+DEV_WEB_ORIGINS = ("http://localhost:8081", "http://127.0.0.1:8081", "http://localhost:19006", "http://127.0.0.1:19006")
+
+
 SessionSeeder = Callable[[str, str, str], bool]
 
 
@@ -46,10 +52,16 @@ def create_app(settings: Settings, dialer: Dialer, store: CallStore,
     """seed_session(room, user_id, number) pre-verifies an outbound phone_details call in the lookup
     service; it only succeeds when the number is the user's own linked phone in Tiger."""
     app = FastAPI(title="nessi-calls")
+    # Explicit origins only, never "*". CORS does not replace the API key: every route still needs it.
+    app.add_middleware(
+        CORSMiddleware, allow_origins=[*DEV_WEB_ORIGINS, *settings.voice_allowed_origins],
+        allow_methods=["POST", "OPTIONS"], allow_headers=["x-api-key", "content-type"], allow_credentials=False)
 
     def require_key(x_api_key: Optional[str] = Header(default=None)) -> None:
         if not x_api_key or not hmac.compare_digest(x_api_key, settings.calls_api_key):
             raise HTTPException(status_code=401, detail="invalid or missing API key")
+
+    add_voice_routes(app, settings, require_key)  # in-app push-to-talk sessions (LiveKit only, no dialing)
 
     @app.get("/health")
     def health() -> dict:

@@ -5,6 +5,9 @@ from pathlib import Path
 from typing import Optional
 
 
+PROMPT_DIR = Path(__file__).resolve().parents[1] / "prompts"
+
+
 @dataclass(frozen=True)
 class Profile:
     name: str
@@ -15,6 +18,7 @@ class Profile:
     decision_hangs_up: bool
     max_seconds: int
     tools: tuple[str, ...]
+    knowledge_file: Optional[str] = None  # prompts/knowledge/<file>, appended to every session of this profile
 
 
 @dataclass(frozen=True)
@@ -39,7 +43,7 @@ PROFILES = {
         'Greet the caller as the Nessential agent, an AI assistant. If identity is verified, say why you are calling; otherwise ask for their first and last name.',
         True, True, 600, ('respond_to_caller', 'record_decision', 'save_call_note')),
     'app_voice': Profile('app_voice', 'app_voice.txt', 'app', None,
-        False, False, 1800, ('respond_to_caller', 'navigate_app')),
+        False, False, 1800, ('navigate_app',), 'alex.md'),
 }
 
 
@@ -49,11 +53,20 @@ def get_profile(name: Optional[str]) -> Profile:
 
 @lru_cache
 def load_prompt(profile: Profile) -> str:
-    prompt = (Path(__file__).resolve().parents[1] / 'prompts' / profile.prompt_file).read_text().strip()
+    prompt = (PROMPT_DIR / profile.prompt_file).read_text(encoding="utf-8").strip()
     if not prompt:
         raise ValueError(f'Empty prompt for {profile.name}')
     return prompt
 
 
+@lru_cache
+def load_knowledge(profile: Profile) -> str:
+    if not profile.knowledge_file:
+        return ''
+    return (PROMPT_DIR / 'knowledge' / profile.knowledge_file).read_text(encoding='utf-8').strip()
+
+
 def build_instructions(profile: Profile, ctx: CallContext) -> str:
-    return load_prompt(profile) + (f'\nScenario: {ctx.scenario}' if ctx.scenario else '') + ('\nIdentity verified.' if ctx.identity_verified else '')
+    knowledge = load_knowledge(profile)
+    section = f"\n\nKNOWLEDGE (frozen snapshot of the user's data)\n{knowledge}" if knowledge else ''
+    return load_prompt(profile) + section + (f'\nScenario: {ctx.scenario}' if ctx.scenario else '') + ('\nIdentity verified.' if ctx.identity_verified else '')
