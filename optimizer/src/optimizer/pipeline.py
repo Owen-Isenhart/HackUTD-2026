@@ -144,7 +144,8 @@ def run(
         if cands:
             by_place = {p.id: p for p in world.places}
             judgements, rep = judge_suitability(llm, intent, cs, [(i, by_place[i.place_id]) for i in cands])
-            trace.append(f"suitability: Nemotron (thinking on, 2k budget) judged {len(cands)} items; {len(rep.downgraded)} downgraded by checks")
+            mode = "thinking on" if any(rep.thinking_used) else "thinking off"
+            trace.append(f"suitability: Nemotron ({mode}) judged {len(cands)} items; {len(rep.downgraded)} downgraded by checks")
             trace += [f"  downgraded {d}" for d in rep.downgraded]
 
     # ---- optimisation (no model) ------------------------------------------- #

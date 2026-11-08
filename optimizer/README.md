@@ -20,6 +20,12 @@ The rule from spec section 7.1: anything that can be calculated exactly is done 
 
 **What makes this Nemotron-specific.** Nemotron can switch step-by-step reasoning ("thinking") on or off per request, and cap how long it thinks (the reasoning budget). One model therefore serves both the slow judgment jobs and the fast phone-notification jobs. The setting for each job is in [`nemotron/jobs.py`](src/optimizer/nemotron/jobs.py).
 
+**On the team's Bolt model, thinking is off for every job.** Measured on 2026-11-08 on the Brev machine, for a 5-item suitability check run twice each way:
+- thinking on took about 20 s and hedged on clear non-lunches
+- thinking off took 4.7 s and judged all five items correctly
+
+The client also fits every request inside the server's context limit, which is 8,192 tokens for Bolt. Set `NEMOTRON_THINKING=on|off` to override. Larger models keep the per-job settings above until they are measured.
+
 **How model output is kept honest.** The model gets no tools, so a reply can only ever be data. Every reply is checked against a fixed schema. Every fact must quote its source, and code confirms the quote really appears there. Code parses every dollar amount itself. A rule the model inferred, rather than one the user wrote, is held for the user to confirm and never enforced. If the model calls an item "suitable" without quoting the item's own description, the verdict is downgraded to "unverified".
 
 ## Which model

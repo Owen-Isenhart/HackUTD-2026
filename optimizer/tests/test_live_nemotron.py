@@ -36,3 +36,32 @@ def test_live_judge_rejects_cookie_for_lunch(llm):
     v = {j.item_id: j.verdict.value for j in js}
     assert v["cookie"] != "suitable"
     assert v["veg-wrap"] == "suitable"
+
+
+def test_live_pipeline_end_to_end(llm):
+    """TEST-ONLY data. Real model for judge and explanation; code for the rest."""
+    from optimizer import forecast as fc
+    from optimizer.models import Decision
+    from optimizer.pipeline import World, run
+
+    from .factories import CARD2, DEBIT, NOW, fix
+    from .test_nemotron import BOWL, CHIP
+
+    cp = jobs.compile_profile(llm, ROUTINE, PROFILE, version="live")
+    snap = fc.project(cp.facts, NOW, cp.constraints.timezone)
+    assert snap is not None
+    tacos = place("tacos", 0.003, name="Taco Shop")
+    world = World(
+        places=[CHIP, tacos],
+        items=[BOWL, item("tacos-veg", "tacos", 900, desc="three black bean tacos with salsa")],
+        offers=[],
+        payment_methods=[DEBIT, CARD2],
+        transactions=[],
+    )
+    res = run(llm, cp.constraints, snap, fix(), world, NOW)
+    assert res.recommendation is not None, res.trace
+    assert res.recommendation.decision is Decision.RECOMMEND, (res.recommendation.reasons, res.recommendation.rejections)
+    assert res.recommendation.chosen.item_id == "tacos-veg"
+    assert res.explanation is not None
+    print("\nTRACE:", *res.trace, sep="\n  ")
+    print("EXPLANATION:", res.explanation.source, "|", res.explanation.headline, "|", res.explanation.body, res.explanation.rejected_reason or "")

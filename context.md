@@ -416,14 +416,42 @@ Use authenticated ownership checks on every API, job and tool. Keep secrets out 
 
 Last updated: 2026-11-08. Owner: Arjun. Branch: `arjun` in this repo, draft pull request #2. This section replaces the earlier `optimizer/STATUS.md`. Ticked boxes in [spec-checklist.md](spec-checklist.md) name the test that is their evidence.
 
-### Working on now: connecting to the team's Nemotron for the live tests
+### Working on now
 
-- The team serves Nemotron 3.5 Bolt E4B on the Brev machine `following-copper-silkworm`, under the name `nemotron-bolt`. Don't start a second copy.
-- On Arjun's laptop, WSL (Windows Subsystem for Linux) and the Brev command-line tool are installed. Brev is not signed in yet, because the browser sign-in timed out twice. Next, Arjun signs in using the token command from https://brev.nvidia.com/settings/cli.
-- Then:
-  1. Run `brev port-forward following-copper-silkworm --port 8000:8000`.
-  2. Check that the model answers.
-  3. Run `optimizer/tests/test_live_nemotron.py`.
+Nothing in progress. The optimizer runs end to end against the team's live Nemotron (see "Live Nemotron results" below). Next steps depend on the open questions at the end of this section.
+
+### Live Nemotron results (2026-11-08)
+
+The live tests ran **on the Brev machine itself**, so no tunnel was needed:
+- Machine: `following-copper-silkworm`, NVIDIA L40S 48 GB.
+- Model: Tom's vLLM 0.31.0 container `nemotron`, serving `nemotron-bolt` (Nemotron 3.5 Bolt E4B, about 4 billion parameters) at `http://127.0.0.1:8000/v1`, with an 8,192-token limit.
+- Checkout: a copy of this branch in `~/hackutd-arjun` on the box.
+- Access: over SSH as `shadeform`. Arjun's laptop key (`arjun-hackutd-brev`) was added to `~/.ssh/authorized_keys` on the box. Remove that line to revoke it.
+
+To rerun the live tests, run this on the box:
+
+```bash
+cd ~/hackutd-arjun/optimizer
+NEMOTRON_BASE_URL=http://127.0.0.1:8000/v1 uv run pytest tests/test_live_nemotron.py -v -s
+```
+
+**What passed.** All 3 live tests pass, and two consecutive runs gave the same results:
+
+| Test | What it shows | Time |
+| --- | --- | --- |
+| `test_live_compile_extracts_quoted_budget` | Bolt reads the profile text into a $60/week lunch budget, a peanut allergy and a commute entry, each with a quote that code checked. | about 11 s |
+| `test_live_judge_rejects_cookie_for_lunch` | It rejects a cookie as lunch and accepts a vegetable wrap. The time includes a fresh profile compile. | about 17 s |
+| `test_live_pipeline_end_to_end` | Routine to judge to optimizer to explanation. It recommends black bean tacos over the usual burrito bowl, and the explanation's dollar figures match the optimizer's: "Save $3.68 at Taco Shop! Get tacos veg for $8.82, saving $3.68 vs Chipotle's $12.50. You have $60.00 remaining in your budget." | about 16 s |
+
+**What the live runs found and fixed.**
+- **Context limit.** The profile compile asked for 10,240 output tokens, more than Bolt's 8,192-token limit, and vLLM rejected it. The client now reads the server's limit and fits every request inside it (`fit_tokens` in `nemotron/client.py`).
+- **Thinking off for Bolt.** Thinking (step-by-step reasoning) is now off by default for Bolt. On a 5-item suitability check, run twice each way:
+  - thinking on took about 20 s and hedged with "unverified" on a cookie and a latte
+  - thinking off took 4.7 s and judged all five items correctly
+
+  The setting `NEMOTRON_THINKING=on|off` overrides this. Bigger models keep thinking on until they are measured.
+- **Judge too literal.** It was answering "is this a burrito bowl at Chipotle?" instead of "is this a lunch?". It now receives the kind of purchase, and the usual item only as context.
+- **Single amounts.** An expense with one stated amount, such as "Rent $1,200", lost its amount, which made affordability unknown. One stated amount is now used as both the low and the high estimate.
 
 ### Done: the recommendation optimizer (`optimizer/`, Python)
 
@@ -440,8 +468,8 @@ Last updated: 2026-11-08. Owner: Arjun. Branch: `arjun` in this repo, draft pull
   - guessing intent when the routine has no match
   - judging whether a cheaper item meets the same need
   - writing the notification text
-- Defaults point at the team's model: `nemotron-bolt` at `http://127.0.0.1:8000/v1`, reached through `brev port-forward`.
-- 68 tests pass. Two live-model tests skip until that address answers.
+- Defaults point at the team's model: `nemotron-bolt` at `http://127.0.0.1:8000/v1`. That address answers on the Brev machine itself, or on a laptop through `brev port-forward`.
+- 77 offline tests pass. The 3 live-model tests skip unless `NEMOTRON_BASE_URL` is set, and they pass on the Brev machine.
 
 ### How optimality is tested
 
@@ -462,8 +490,10 @@ Last updated: 2026-11-08. Owner: Arjun. Branch: `arjun` in this repo, draft pull
 
 ### Not verified yet
 
-- **No call to a real Nemotron.** Arjun is setting up the Brev port-forward in a separate session.
-- **The model is small.** `nemotron-bolt` is Nemotron 3.5 Bolt E4B, a 4-billion-parameter model, and its suitability judgements have not been measured.
+- **Small test set.** The live tests use a handful of synthetic items. Bolt's accuracy on real menus and real profile files has not been measured.
+- **Speed.** A live recommendation takes about 15 seconds, most of it the profile compile, which is cached between runs in normal use. Per-request latency without the compile has not been measured. The phone agent's budget is about 1.5 s.
+- **Structured output.** It is not confirmed whether vLLM enforced the JSON reply format, or whether the client fell back to describing the format in the prompt. Either way, replies are validated.
+- **Laptop access.** The `brev port-forward` route from a laptop has not been tested. Brev is not signed in on Arjun's laptop.
 - **`optimizer/serve/brev-vllm.sh` is unused.** It was written before the team VM existed, and the team serves the model differently.
 
 ### Open questions for the team

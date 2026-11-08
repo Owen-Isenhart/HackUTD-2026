@@ -118,8 +118,8 @@ class MoneyFlowDraft(BaseModel):
 
 class ObligationDraft(BaseModel):
     description: str
-    amount_low_text: str | None = None
-    amount_high_text: str | None = Field(default=None, description="Null if the amount is unknown.")
+    amount_low_text: str | None = Field(default=None, description="Lowest stated amount. If only one amount is stated, copy it here and into amount_high_text.")
+    amount_high_text: str | None = Field(default=None, description="Highest stated amount. Null only if no amount is stated at all.")
     due_date: str | None = Field(default=None, description="YYYY-MM-DD or null")
     evidence_quote: str
 
@@ -318,11 +318,15 @@ def compile_profile(
         if not quote_ok("obligation", o.evidence_quote):
             continue
         try:
+            low = amount("obligation", o.amount_low_text, o.evidence_quote)
+            high = amount("obligation", o.amount_high_text, o.evidence_quote)
+            # One stated amount is exact: use it as both bounds.
+            low, high = (low or high), (high or low)
             obligations.append(
                 Obligation(
                     description=o.description,
-                    low=amount("obligation", o.amount_low_text, o.evidence_quote),
-                    high=amount("obligation", o.amount_high_text, o.evidence_quote),
+                    low=low,
+                    high=high,
                     due=date.fromisoformat(o.due_date) if o.due_date else None,
                     evidence=o.evidence_quote,
                 )
@@ -446,7 +450,8 @@ For every candidate return exactly one judgement:
 - "unverified" if the data is not enough to tell.
 Quote the words from the item or place data you relied on in evidence_quotes.
 List which preference ids the item satisfies and which restriction ids it violates. A restriction is violated if the item plausibly breaks it (for example an allergy); when unsure, list it.
-Do not consider price, distance or budgets; other parts of the app handle those.
+The need is a kind of purchase (its categories). What the person usually buys, and where, is context only: a different item from a different place is suitable if it is the same kind of purchase and fits their preferences and restrictions.
+Judge only whether the item is the right kind of thing for the need. Ignore price, distance, budgets, opening hours, days and timing: other parts of the app check those, so missing information about them is never a reason for "unverified".
 """ + DATA_RULE
 
 
@@ -454,6 +459,7 @@ Do not consider price, distance or budgets; other parts of the app handle those.
 class JudgeReport:
     downgraded: list[str] = field(default_factory=list)
     reasoning: list[str] = field(default_factory=list)
+    thinking_used: list[bool] = field(default_factory=list)
 
 
 def judge_suitability(
@@ -467,7 +473,7 @@ def judge_suitability(
     pref_ids = {p.id for p in cs.preferences}
     restr_ids = {r.id for r in cs.restrictions}
     out: list[SuitabilityJudgement] = []
-    need = {"wants": intent.description, "categories": intent.categories}
+    need = {"kind_of_purchase": intent.categories, "usually_buys": intent.description}
     rules = {
         "preferences": [{"id": p.id, "text": p.description} for p in cs.preferences],
         "restrictions": [{"id": r.id, "text": r.description} for r in cs.restrictions],
@@ -481,6 +487,7 @@ def judge_suitability(
             f"<data name=\"candidates\">{json.dumps(data)}</data>"
         )
         reply = llm.structured(JUDGE_SYSTEM, user, JudgementBatch, Thinking.on(2048), max_answer_tokens=1024 + 256 * len(batch))
+        rep.thinking_used.append(reply.thinking_used)
         if reply.reasoning:
             rep.reasoning.append(reply.reasoning)
         drafts = {j.item_id: j for j in reply.data.judgements}  # type: ignore[attr-defined]

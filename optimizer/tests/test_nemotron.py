@@ -253,7 +253,8 @@ def _resp(content, finish="stop", reasoning=None):
 
 
 def test_client_retries_and_falls_back_from_overlong_reasoning(monkeypatch):
-    c = NemotronClient(base_url="http://unused/v1", api_key="x")
+    # A model that is allowed to think; Bolt never does (see thinking_allowed).
+    c = NemotronClient(base_url="http://unused/v1", api_key="x", model="nvidia/nemotron-3.5-lightning-30b-a3b")
     seen = []
     replies = iter([_resp("", finish="length"), _resp("not json"), _resp('{"headline": "h", "body": "b"}')])
 
@@ -323,3 +324,84 @@ def test_cli_recommend_runs_end_to_end(tmp_path, monkeypatch, capsys):
     n = sum(1 for c in fake.calls if c[0] == "ProfileDraft")
     cli.main(["recommend", "--routine", "r.md", "--profile", "p.md", "--world", "w.json", "--lat", str(CHIP.lat), "--lon", str(CHIP.lon), "--now", NOW.isoformat()])
     assert sum(1 for c in fake.calls if c[0] == "ProfileDraft") == n
+
+
+# --------------------------------------------------------------------------- #
+# Fitting requests into the server's context (Bolt on the team box: 8192)
+# --------------------------------------------------------------------------- #
+
+from optimizer.nemotron.client import NemotronError, fit_tokens, thinking_allowed
+
+
+def test_fit_tokens_respects_context_limit():
+    # 9,000 prompt chars ~ 3,000 tokens; 8,192 - 3,000 - 64 = 5,128 room.
+    mt, th = fit_tokens(8192, 9000, 4096, Thinking.on(6144))
+    assert mt == 5128 and th == Thinking.on(5128 - 4096)
+    assert 9000 // 3 + mt <= 8192
+
+
+def test_fit_tokens_drops_thinking_when_room_is_small():
+    mt, th = fit_tokens(8192, 18000, 2048, Thinking.on(2048))
+    assert th == Thinking.off() and mt == 2048
+
+
+def test_fit_tokens_shrinks_answer_and_refuses_impossible_prompts():
+    mt, th = fit_tokens(8192, 23000, 4096, Thinking.off())
+    assert mt == 8192 - 23000 // 3 - 64
+    with pytest.raises(NemotronError):
+        fit_tokens(8192, 24600, 512, Thinking.off())
+
+
+def test_fit_tokens_without_known_limit_keeps_request():
+    assert fit_tokens(None, 50_000, 1000, Thinking.on(500)) == (1500, Thinking.on(500))
+
+
+def test_thinking_setting():
+    assert thinking_allowed("nemotron-bolt", None) is False
+    assert thinking_allowed("nvidia/nemotron-3.5-lightning-30b-a3b", None) is True
+    assert thinking_allowed("nemotron-bolt", "on") is True
+    with pytest.raises(ValueError):
+        thinking_allowed("x", "maybe")
+
+
+def test_client_forces_thinking_off_when_not_allowed(monkeypatch):
+    c = NemotronClient(base_url="http://unused/v1", api_key="x", model="nemotron-bolt")
+    monkeypatch.setattr(c, "context_limit", lambda: 8192)
+    sent = {}
+
+    class Done(Exception):
+        pass
+
+    def create(**kw):
+        sent.update(kw)
+        raise Done
+
+    monkeypatch.setattr(c._client.chat.completions, "create", create)
+    with pytest.raises(Done):
+        c._call([{"role": "user", "content": "hi"}], jobs.ExplanationDraft, Thinking.on(4096), 300)
+    assert sent["extra_body"]["chat_template_kwargs"] == {"enable_thinking": False}
+    assert "reasoning_budget" not in sent["extra_body"] and sent["max_tokens"] == 300
+
+
+def test_single_stated_obligation_amount_is_used_for_both_bounds():
+    d = good_profile()
+    d["bills"] = []
+    d["obligations"] = [{"description": "rent", "amount_low_text": "$1,200", "amount_high_text": None, "due_date": "2026-12-01", "evidence_quote": "Rent $1,200 due 2026-12-01"}]
+    cp = jobs.compile_profile(FakeLLM(ProfileDraft=d), ROUTINE, PROFILE, version="v1")
+    o = cp.facts.obligations[0]
+    assert o.low.minor == o.high.minor == 120_000
+
+
+def test_judge_sees_kind_of_purchase_not_just_usual_item():
+    cs = _cs_with_routine()
+    llm = FakeLLM(JudgementBatch={"judgements": [{"item_id": BOWL.id, "verdict": "suitable", "reasons": ["lunch"], "evidence_quotes": ["black beans"]}]})
+    jobs.judge_suitability(llm, intent(), cs, [(BOWL, CHIP)])
+    assert '"kind_of_purchase": ["lunch"]' in llm.calls[0][2]
+
+
+def test_reply_reports_thinking_actually_used(monkeypatch):
+    c = NemotronClient(base_url="http://unused/v1", api_key="x", model="nemotron-bolt")
+    monkeypatch.setattr(c, "context_limit", lambda: 8192)
+    monkeypatch.setattr(c._client.chat.completions, "create", lambda **kw: _resp('{"headline": "h", "body": "b"}'))
+    r = c.structured("sys", "user", jobs.ExplanationDraft, Thinking.on(2048))
+    assert r.thinking_used is False
