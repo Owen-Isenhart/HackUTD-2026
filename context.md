@@ -1,6 +1,6 @@
 # HackUTD 2026 — Living Project Context
 
-Status: clarification closed at the user’s request. Implementation has started: the optimizer is built on branch `feat/optimizer-nemotron` (see section 15). Provider feasibility and most research gates remain unverified.
+Status: clarification closed at the user’s request. Implementation has started: the optimizer is built on branch `arjun` (see section 15). Provider feasibility and most research gates remain unverified.
 
 This file is the cumulative specification for the project. User-confirmed requirements, proposed approaches, unresolved questions, and verified research must remain distinguishable. No implementation choice becomes a confirmed requirement merely because it appears here.
 
@@ -414,7 +414,7 @@ Use authenticated ownership checks on every API, job and tool. Keep secrets out 
 
 ## 15. Implementation status
 
-Last updated: 2026-11-08. Owner: Arjun. Branch: `feat/optimizer-nemotron`, draft pull request #1. This section replaces the earlier `optimizer/STATUS.md`. Ticked boxes in [spec-checklist.md](spec-checklist.md) name the test that is their evidence.
+Last updated: 2026-11-08. Owner: Arjun. Branch: `arjun` in this repo, draft pull request #2. This section replaces the earlier `optimizer/STATUS.md`. Ticked boxes in [spec-checklist.md](spec-checklist.md) name the test that is their evidence.
 
 ### Working on now: connecting to the team's Nemotron for the live tests
 
