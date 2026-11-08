@@ -11,6 +11,7 @@ const { recommendPipeline } = require("./pipeline-recommendation");
 const { dashboardInsight } = require("./pipeline-dashboard-insights");
 const { appSummary } = require("./app-summary");
 const { nearbyStores } = require("./campus");
+const { defaultGateway } = require("./action-gateway");
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function createPipelineHttp({
   pool,
@@ -21,8 +22,20 @@ function createPipelineHttp({
   plansForOwner = async () => ({}),
   demoLocation = null,
   onRecommendation = async (_owner, result) => result,
+  gateway = defaultGateway,
 }) {
   const limit = createIdentifyLimiter();
+  // Only the app's own budget editor may change a budget; an agent or a message can at most propose.
+  function authorizeBudget(ownerId, params) {
+    const { decision } = gateway.evaluate({
+      principal: { ownerId },
+      origin: "app",
+      sourceTrust: "authenticated_user",
+      action: "apply_budget_change",
+      params,
+    });
+    if (decision !== "ALLOW") throw fail("policy_denied", 403);
+  }
   async function read(req) {
     let bytes = 0,
       chunks = [];
@@ -69,6 +82,7 @@ function createPipelineHttp({
       path === "/api/v1/routines" ||
       path === "/api/v1/session" ||
       path === "/api/v1/demo-location" ||
+      path === "/api/v1/security/audit" ||
       [
         "/api/finance-profile",
         "/api/finance-transactions",
@@ -111,6 +125,11 @@ function createPipelineHttp({
         if (req.method !== "POST") throw fail("not_found", 404);
         const r = await demoLocation.move(ownerId, access, await read(req));
         send(res, r.status, r.body ?? { error: r.error });
+        return true;
+      }
+      if (path === "/api/v1/security/audit" && req.method === "GET") {
+        // Policy decisions only (action, origin, outcome, reason), never parameters or message text.
+        send(res, 200, { events: gateway.audit.list(ownerId) });
         return true;
       }
       if (path.startsWith("/v1/deals/")) {
@@ -407,6 +426,11 @@ function createPipelineHttp({
             throw fail("budget_version_conflict", 409);
           if (req.method === "DELETE") {
             if (!old || old.source !== "user") throw fail("not_found", 404);
+            authorizeBudget(ownerId, {
+              category: budget[1],
+              change: "release",
+              version: b.version,
+            });
             await writeBudget(
               tx,
               ownerId,
@@ -427,6 +451,13 @@ function createPipelineHttp({
             b.limitCents < 0
           )
             throw fail("invalid_budget");
+          authorizeBudget(ownerId, {
+            category: budget[1],
+            change: "set",
+            version: b.version,
+            period: b.period,
+            limitCents: b.limitCents,
+          });
           return {
             version: await writeBudget(
               tx,

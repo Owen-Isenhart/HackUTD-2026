@@ -356,7 +356,11 @@ function summarizeObligations(obligations, { now = new Date(), timeZone = 'Ameri
 }
 
 module.exports = {
+  BASES,
+  CATEGORIES,
+  CONFIDENCE,
   CONTEXT_MESSAGES,
+  KINDS,
   anchoredDates,
   applyUserEdit,
   dayNumberOf,
