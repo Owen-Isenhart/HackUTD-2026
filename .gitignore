@@ -14,3 +14,6 @@ dist/
 *.mobileprovision
 *.p12
 *.ipa
+
+# Local onboarding smoke identity; never publish customer details.
+.local/onboarding-smoke-identity.json

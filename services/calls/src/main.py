@@ -3,11 +3,12 @@ import os
 
 from dotenv import load_dotenv
 
+load_dotenv(".env.local")
+
 from src.call_state import CallStore
 from src.calls_api import create_app
 from src.livekit_dialer import LiveKitDialer
 from src.settings import load_settings
 
-load_dotenv(".env.local")
 _settings = load_settings(os.environ)
 app = create_app(_settings, LiveKitDialer(_settings), CallStore())

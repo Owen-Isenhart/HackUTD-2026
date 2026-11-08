@@ -1,5 +1,6 @@
 """Real Dialer: dispatch nessi-agent to a room, then create the SIP participant in that same room."""
 import json
+import os
 from typing import Optional
 
 import logging
@@ -8,7 +9,7 @@ from livekit import api
 
 from src.settings import Settings
 
-AGENT_NAME = "nessi-agent"
+AGENT_NAME = os.getenv("LIVEKIT_AGENT_NAME", "nessi-agent")
 log = logging.getLogger("nessi.calls")
 
 
@@ -17,9 +18,11 @@ class LiveKitDialer:
         self._s = settings
 
     async def dial(self, room_name: str, to_number: str, scenario: Optional[str] = None,
-                   user_id: str = "demo-user", *, call_id: Optional[str] = None) -> None:
+                   user_id: str = "demo-user", *, call_id: Optional[str] = None,
+                   profile: str = "phone_details", identity_verified: bool = False) -> None:
         lk = api.LiveKitAPI(self._s.livekit_url, self._s.livekit_api_key, self._s.livekit_api_secret)
-        metadata = {"user_id": user_id, "scenario": scenario or ""}
+        metadata = {"user_id": user_id, "scenario": scenario or "",
+                    "profile": profile, "identity_verified": identity_verified, "phone_number": to_number}
         if call_id:
             metadata["call_id"] = call_id
         try:
