@@ -22,7 +22,7 @@ from livekit.agents import (Agent, AgentServer, AgentSession, RunContext, StopRe
                             get_job_context)
 from livekit.plugins import nvidia, openai
 
-from src import demo_tools, recommend
+from src import demo_tools, recommend, tone
 from src.profiles import CallContext, Profile, get_profile, build_instructions
 from src.tools import build_tools
 from src.livekit_dialer import AGENT_NAME
@@ -398,12 +398,26 @@ def resolve_llm_credentials() -> tuple[str, str]:
     return base_url, key
 
 
+DEFAULT_VOICE = "Magpie-Multilingual.EN-US.Leo"
+
+
+async def call_voice(call_ctx: CallContext, classify=tone.classify) -> str:
+    """Recommendation calls (outbound, with a saved call) speak in a voice that matches the suggestion.
+    Every other call keeps the default voice."""
+    if not (call_ctx.call_id and call_ctx.profile == "phone_details" and call_ctx.scenario.strip()):
+        return DEFAULT_VOICE
+    result = await asyncio.to_thread(classify, call_ctx.scenario)
+    log.info("recommendation tone=%s", result)
+    return tone.voice_for(result)
+
+
 server = AgentServer()
 
 
 @server.rtc_session(agent_name=AGENT_NAME)
 async def entrypoint(ctx: agents.JobContext) -> None:
     llm_base_url, llm_api_key = resolve_llm_credentials()
+    call_ctx = parse_metadata(ctx.job.metadata)
     session = AgentSession(
         stt=nvidia.STT(language_code="en-US"),
         llm=openai.LLM(
@@ -414,13 +428,12 @@ async def entrypoint(ctx: agents.JobContext) -> None:
             extra_body={"chat_template_kwargs": {"enable_thinking": False}},
             api_key=llm_api_key,
         ),
-        tts=nvidia.TTS(voice="Magpie-Multilingual.EN-US.Leo", language_code="en-US"),
+        tts=nvidia.TTS(voice=await call_voice(call_ctx), language_code="en-US"),
         turn_detection="stt",
         session_close_transcript_timeout=0.1,  # default 2.0 s delayed hang-up after goodbye
     )
     log_room = room_tag(ctx.room.name)
     attach_call_logging(session, log_room)
-    call_ctx = parse_metadata(ctx.job.metadata)
     inbound_unavailable = False
     if not call_ctx.user_id and os.getenv('INBOUND_CALL_PROFILE') == 'onboarding':
         # Inbound: the caller is already in the room. Look the number up in Tiger before choosing
