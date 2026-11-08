@@ -1,17 +1,17 @@
-Exact data sources and sandbox usage; movement simulation is confirmed, other simulation is not authorized.
-
 # HackUTD 2026 — Living Project Context
 
-Status: clarification closed at the user’s request. Implementation has started: the optimizer is built on branch `arjun` (see section 15). Provider feasibility and most research gates remain unverified.
+Status (November 8, 2026): every branch (`arjun`, `feat-rs`, `deals`, `frontend`, `tom`, and Arjun's fork branch `feat/optimizer-nemotron`) is merged into `main`, and the team now works from `main`. The app's location is connected to the finance recommendation backend, and the voice agent points at the same backend. See section 19 for the layout, what was verified and what is still missing. Provider feasibility and most research gates remain unverified.
 
-Status: the user authorized deals implementation on November 7, 2026. The deals API, worker, TigerData schema/roles and Expo screens are now implemented and tested locally. Live acceptance remains incomplete; see the latest implementation update in section 17 and [validation evidence](services/deals/docs/deals-validation.md). Earlier preparation-only statements below are historical. No commits or pushes are authorized.
+Status: clarification closed at the user’s request. Implementation has started: the optimizer was built on branch `arjun` and is now on `main` (see section 15).
+
+Status: the user authorized deals implementation on November 7, 2026. The deals API, worker, TigerData schema/roles and Expo screens are now implemented and tested locally, under `services/deals/`. Live acceptance remains incomplete; see the latest implementation update in section 17 and [validation evidence](services/deals/docs/deals-validation.md). Earlier preparation-only statements below are historical. At that time no commits or pushes were authorized; that was superseded on November 8 (section 19).
 
 This file is the cumulative specification for the project. User-confirmed requirements, proposed approaches, unresolved questions, and verified research must remain distinguishable. No implementation choice becomes a confirmed requirement merely because it appears here.
 
 ## 1. Working agreement
 
 - Keep all project work inside `projects/hackutd-2026`.
-- Do not commit or push anything yet.
+- Do not commit or push anything yet. *(Superseded November 8, 2026: at the user's request all branches were merged and pushed to `main`, and the team works from `main`. See section 19.)*
 - Clarify the project before implementing it.
 - The later instruction “You’ve asked enough questions. You can finalize the spec” supersedes the original literal STOP condition. Ask no further clarification questions; implementation remains a later phase.
 - Record every new answer or update in this file before asking the next clarification question. Preserve meaningful history and superseded decisions.
@@ -256,6 +256,7 @@ Need to establish:
 - Primary user and first compelling use case.
 - Hackathon deadline and available development time.
 - End-to-end demo flow and judging criteria.
+- Exact data sources and sandbox usage; movement simulation is confirmed, other simulation is not authorized.
 - Must-have versus stretch features.
 - Spending limits beyond the stated free Capital One acquisition constraint.
 - Supported device and platform.
@@ -417,11 +418,11 @@ Use authenticated ownership checks on every API, job and tool. Keep secrets out 
 
 ## 15. Implementation status
 
-Last updated: 2026-11-08. Owner: Arjun. Branch: `arjun` in this repo, draft pull request #2. This section replaces the earlier `optimizer/STATUS.md`. Ticked boxes in [spec-checklist.md](spec-checklist.md) name the test that is their evidence.
+Last updated: 2026-11-08. Owner: Arjun. Merged into `main` on 2026-11-08. It came from two branches: `arjun` in this repo (draft pull request #2) and `feat/optimizer-nemotron` on Arjun's fork. This section replaces the earlier `optimizer/STATUS.md`. Ticked boxes in [spec-checklist.md](spec-checklist.md) name the test that is their evidence.
 
 ### Working on now
 
-Nothing in progress. The optimizer runs end to end against the team's live Nemotron (see "Live Nemotron results" below). Next steps depend on the open questions at the end of this section.
+Nothing in progress. The optimizer runs end to end against the team's live Nemotron (see "Live Nemotron results" below). The finance backend can now call it over HTTP (see "Open questions" below and section 19).
 
 ### Live Nemotron results (2026-11-08)
 
@@ -448,6 +449,12 @@ NEMOTRON_BASE_URL=http://127.0.0.1:8000/v1 uv run pytest tests/test_live_nemotro
 
 **What the live runs found and fixed.**
 - **Context limit.** The profile compile asked for 10,240 output tokens, more than Bolt's 8,192-token limit, and vLLM rejected it. The client now reads the server's limit and fits every request inside it (`fit_tokens` in `nemotron/client.py`).
+- **Second guard for the same limit, merged from the fork.** If the server still rejects a request for its size, the client reads the limit out of the error message and retries with a smaller answer allowance, at most 5 attempts. It understands three vLLM error shapes:
+  - the requested answer is larger than the whole context window (`max_tokens=N cannot be greater than max_model_len=M`)
+  - the prompt plus the answer is too big, counted in tokens
+  - the same check counted in characters, where the client halves the allowance
+
+  This runs after `fit_tokens`, so it only matters when the size estimate was wrong. One test (`test_client_reduces_output_to_server_limits_after_schema_fallback`) was adjusted on merge so that it starts with no known limit and thinking on, which is the case the retry exists for. The client code was not changed.
 - **Thinking off for Bolt.** Thinking (step-by-step reasoning) is now off by default for Bolt. On a 5-item suitability check, run twice each way:
   - thinking on took about 20 s and hedged with "unverified" on a cookie and a latte
   - thinking off took 4.7 s and judged all five items correctly
@@ -472,7 +479,8 @@ NEMOTRON_BASE_URL=http://127.0.0.1:8000/v1 uv run pytest tests/test_live_nemotro
   - judging whether a cheaper item meets the same need
   - writing the notification text
 - Defaults point at the team's model: `nemotron-bolt` at `http://127.0.0.1:8000/v1`. That address answers on the Brev machine itself, or on a laptop through `brev port-forward`.
-- 77 offline tests pass. The 3 live-model tests skip unless `NEMOTRON_BASE_URL` is set, and they pass on the Brev machine.
+- After the merge into `main`, 81 offline tests pass on Windows (2026-11-08). The 3 live-model tests skip unless `NEMOTRON_BASE_URL` is set. They passed on the Brev machine before the merge and have not been rerun since.
+- An HTTP server wraps the optimizer: `python -m optimizer.server` listens on port 8789 at `/internal/v1/optimizer/evaluate`. Every request must carry the key from `OPTIMIZER_API_KEY` in an `x-api-key` header.
 
 ### How optimality is tested
 
@@ -501,8 +509,8 @@ NEMOTRON_BASE_URL=http://127.0.0.1:8000/v1 uv run pytest tests/test_live_nemotro
 
 ### Open questions for the team
 
-- **How the Node backend calls the optimizer.** The backend is Node and the optimizer is Python. One option is a small HTTP endpoint that the backend calls. This is not decided.
-- **Line 10 of this file looks stale.** It says "Do not commit or push anything yet", but progress is now pushed to a fork and a draft pull request at Arjun's request. Line 10 has been left unchanged until the team decides.
+- **How the Node backend calls the optimizer — settled on `main`.** The backend calls the optimizer's HTTP server when both `OPTIMIZER_API_URL` and `OPTIMIZER_API_KEY` are set (`backend/optimizer.js`). Otherwise it ranks with its own built-in rule-based ranker. `test/finance-call.test.js` passed against a real local optimizer on 2026-11-08. With a wrong key the test fails, which shows the optimizer really was called.
+- **"Do not commit or push" in section 1 — settled.** It is now marked as superseded rather than deleted, because the team works from `main`.
 - **Assumptions the spec does not settle.** These are listed in `optimizer/README.md`:
   - whether a percentage discount applies before or after other discounts
   - what the baseline for "savings" is
@@ -628,3 +636,93 @@ Remote references were refreshed and source reviewed across deals, frontend, fea
 Proposed design: Google issuer/subject maps to a stable app UUID; saved onboarding state and verified sandbox customer/account IDs live in TigerData; app sessions and encrypted Google offline credentials are separate; read-only calendar consent is optional and revocable; evidence-backed calendar facts reconcile against bills/transactions before deterministic forecasting. Preserve conversational budget/goal onboarding and source uncertainty. Name plus card last four selects a sandbox record and must not be presented as real bank authentication.
 
 Dependencies found: Google OAuth client configuration absent from inspected local env files; Google Console configuration and actual account consent needed if no authorized console session exists. Supported native OAuth testing needs an Expo development build rather than Expo Go. Existing Nessie/TigerData/Photon/Nemotron configuration should be reused. No implementation, migration, merge, commit, push or provider setup was performed; only planning documentation changed.
+
+Note added November 8, 2026: the plan file linked above, `plan/google-onboarding-calendar.md`, was never committed to any branch, so the link does not resolve. The branch merge in section 19 happened later, but it did not build any of the Google sign-in or Calendar work described here.
+
+## 19. Branch merge and integration — November 8, 2026
+
+The user asked to merge every branch into `main` and then connect the features that already existed, without building new ones. Specifically: the voice agent should reach the recommendation logic, and the app's screens should use the phone's location. The user then asked that everything be folded into `main`, and that the team work from `main` from now on.
+
+### What was merged
+
+In order, all pushed to `origin/main` (Owen-Isenhart/HackUTD-2026):
+
+| Commit | What it brought in |
+| --- | --- |
+| `f682067` | `arjun`: the Python optimizer (`optimizer/`) and the placeholder profile files (`profile/`) |
+| `0ac7bb3` | `feat-rs`: the Node finance backend (`backend/`, `scripts/finance-profile.js`, `src/`, `test/`), the root Expo app (`App.js`), and an earlier copy of the deals service in `services/deals/` |
+| `c2a8e77` | `deals`: Owen's latest deals service, merged into that same `services/deals/` folder instead of the repo root, so its files did not collide with the finance backend's |
+| `595c6c9` | New code connecting the app's location to the finance backend (below) |
+| `5a657f6` | Arjun's fork branch `feat/optimizer-nemotron`: the Nemotron client's retry on token-limit errors (section 15) |
+
+Two branches were already part of `main` before these merges: `frontend` (Arjun's Expo app in `app/`, with GPS and the nearby-store search) and `tom` (the calling service, `services/calls/`). Git now reports no branch that is not merged into `main`. Arjun's fork, arjuns694201107/HackUTD-2026, has nothing left that `main` lacks. It is being kept for now at Arjun's request.
+
+During the `deals` merge, the two copies of this file and of `spec-checklist.md` were combined by hand. The deals sections were renumbered to 16–18, and their links now point into `services/deals/`.
+
+### Where each part lives on `main`
+
+- `app/` — Arjun's Expo app (TypeScript). It contains GPS and a draggable demo position (`app/src/location/`), the nearby-store search, and the finance client (`app/src/finance/`). This is the app the integration work targets.
+- `backend/` and `scripts/finance-profile.js` — the Node finance backend, run with `npm run finance:serve` on port 8787. Its routes include:
+  - `GET /api/finance-profile` — the user's finance profile
+  - `POST /api/finance-recommendation` — the recommendation for one location, used by the app
+  - `POST /api/recommendations/evaluate` — the recommendation route for the voice agent
+- `optimizer/` — the Python optimizer and its HTTP server (port 8789).
+- `services/calls/` — the voice agent (LiveKit with NVIDIA speech and Nemotron).
+- `services/deals/` — the deals service: Fastify API, worker, migrations, and its own Expo screens in `services/deals/mobile/`.
+- Older or separate Expo apps that were not merged into `app/`: the root `App.js`, `nessie-signin-prototype/`, and `services/deals/mobile/`.
+
+### Connection 1: voice agent → recommendation logic
+
+No code change was needed. The pieces were already written to meet each other, and the merge put them in one tree:
+
+1. The voice agent posts what the caller says to the address in `RECOMMENDATION_API_URL`. Its example config (`services/calls/.env.local.example`) points at `http://127.0.0.1:8787/api/recommendations/evaluate`. If the address is blank, the agent returns a reply labeled as a placeholder.
+2. The finance backend answers on that route only when three settings agree: `CALL_RECOMMENDATION_USER_ID`, and a `RECOMMENDATION_API_KEY` of at least 24 characters that differs from both `FINANCE_DEMO_TOKEN` and `CALLS_API_KEY`.
+3. The backend re-ranks the offer using the caller's words and the saved finance limits. It calls the optimizer when `OPTIMIZER_API_URL` and `OPTIMIZER_API_KEY` are set.
+
+### Connection 2: app location → recommendation logic
+
+New code in `app/src/finance/` and `app/src/screens/DealsScreen.tsx`:
+
+- `financeApi.ts` turns each location reading into the request shape the backend's `recommendVisit` accepts:
+  - A live GPS reading is sent as a position fix: latitude, longitude, accuracy and time.
+  - A demo position is sent only as `{source: 'demo'}`.
+  - A live reading without an accuracy value is not sent.
+- `useFinanceRecommendation.ts` fetches the profile once, then asks for a recommendation:
+  - in live mode, every 15 seconds or after moving 50 meters
+  - in demo mode, once each time demo mode is switched on
+
+  A newer request cancels an older one that has not finished.
+- The Deals screen has a new "Best choice here" card. It shows:
+  - the merchant
+  - an explanation
+  - the amount paid, the cashback, and the cost after cashback
+  - or the plain-language reason when there is no recommendation (15 backend reasons are mapped to text)
+- The backend's address comes from `EXPO_PUBLIC_FINANCE_API_URL` in `app/.env.local` (template: `app/.env.example`). The demo token is typed into the card at run time and is not built into the app. This keeps the secret out of the mobile bundle.
+
+**Limit of the demo mode.** In demo mode the backend ignores the dragged marker on purpose (backend test "ignores location supplied to the simulation"). It always evaluates its fixed demo visit: the Chipotle branch at Friday noon. The card says so on screen. The dragged marker still drives the app's own nearby-store list.
+
+### What was verified by running, on Windows, 2026-11-08
+
+- `app/`: the TypeScript check is clean, and 19 of 19 unit tests pass. That includes 7 new tests in `app/test/financeApi.test.mjs`. Those tests run the real backend `recommendVisit` behind a fake network layer, so they check that the two sides agree on the request and answer shapes.
+- Root finance backend: 38 tests pass and 1 is skipped.
+- `test/finance-call.test.js` against a real local optimizer server: passes. With a wrong key it fails, which shows the optimizer really was called.
+- `optimizer/`: 81 pass, and 3 live-model tests are skipped.
+- `services/calls/`: 58 of 58 pass. Pytest needed its temporary folder moved (`--basetemp`) because of a Windows permission error.
+- `services/deals/`: the TypeScript check is clean, and 33 of 33 unit tests pass.
+
+### Not run
+
+- The app on a phone, a simulator or the web. Nothing above shows the card rendering or GPS working on a device.
+- A live phone call through the voice agent to the finance backend. No `endpoint_ms` has been recorded for it, and no spoken answer has been compared with the backend's reply.
+- Live Nessie, live Nemotron and live Photon.
+- The deals service's PostgreSQL integration tests. They need a database.
+
+### Gaps left for later (not built, by the user's instruction)
+
+- **Four Expo apps.** `app/`, the root `App.js`, `nessie-signin-prototype/` and `services/deals/mobile/` are still separate. Only `app/` is connected to the finance backend.
+- **Two store lists.** The app's nearby-store search (OpenStreetMap through the free Overpass service) is not fed to the backend. The backend recommends only from its own demo offer catalog.
+- **Demo marker.** The dragged demo position does not reach the recommendation (see "Limit of the demo mode" above).
+- **Docs that look out of date.** These were flagged to Arjun and not changed:
+  - `Calls.md` still says the recommendation endpoint is a dummy.
+  - The root `README.md` describes only the root `App.js` app.
+  - Section 1 says to keep work inside `projects/hackutd-2026`, a folder that does not exist in this repo.

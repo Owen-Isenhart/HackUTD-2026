@@ -4,6 +4,8 @@ Project requirements, decisions and design defaults: [context.md](context.md).
 
 Calling subsystem (Photon + LiveKit + NVIDIA voice agent): context, decisions and live-call evidence are in [Calls.md](Calls.md); per-test log in `services/calls/docs/smoke-test.md`.
 
+All branches were merged into `main` on November 8, 2026. The layout, the two connections made between parts, and what was and was not run are in [context.md, section 19](context.md#19-branch-merge-and-integration--november-8-2026). The "Merge and integration" items at the end of this file track that work.
+
 Each unchecked item is future work and may be marked complete only with its stated evidence. Completing documentation does not mean implementing the feature. Discovery tasks gate dependent implementation; do not silently omit difficult requirements.
 
 ### Specification
@@ -18,7 +20,7 @@ Each unchecked item is future work and may be marked complete only with its stat
 - [ ] DISC-02 — Verify Photon calling, text access and email capabilities independently; document permissions, limits and unsupported paths. *Partial: outbound calling verified on live calls (see [Calls.md](Calls.md)); inbound, texts and email not verified.*
 - [ ] DISC-03 — Verify Nessie endpoints and sandbox/real-data status; list available balance, transaction, merchant and location fields.
 - [ ] DISC-04 — Verify TigerData deployment, isolation, indexing, geospatial capabilities, encryption and backups; record the selected supported configuration.
-- [ ] DISC-05 — Verify Nemotron endpoint/model, tool/structured-output support, hosting and costs; record a usable configuration without secrets. *Partial: hosted NVIDIA Nemotron (tool calling, thinking off) and a Brev vLLM instance with tool calling both verified, configuration in [Calls.md](Calls.md); hosted-API costs not recorded.*
+- [ ] DISC-05 — Verify Nemotron endpoint/model, tool/structured-output support, hosting and costs; record a usable configuration without secrets. *Partial: hosted NVIDIA Nemotron (tool calling, thinking off) and a Brev vLLM instance with tool calling both verified, configuration in [Calls.md](Calls.md); hosted-API costs not recorded. The optimizer's client fits every request inside Bolt's 8,192-token limit, and retries with a smaller answer allowance when vLLM still rejects one for size (context.md section 15).*
 - [ ] DISC-06 — Test location and push behavior on the target physical device with Expo Go; document background limitations and a supported distribution path if needed.
 - [ ] DISC-07 — Research free Capital One acquisition from primary sources; record access conditions, coverage, eligibility and refresh limits without assuming universal redemption.
 - [ ] DISC-08 — Compare relevant optimization methods using primary sources, baseline, complexity and evaluation criteria; justify the algorithm and LLM boundary.
@@ -70,7 +72,7 @@ Each unchecked item is future work and may be marked complete only with its stat
 
 ### Location and optimization
 
-- [ ] OPT-01 — Implement live location events with accuracy/source/time; show denied permissions and stale fixes explicitly.
+- [ ] OPT-01 — Implement live location events with accuracy/source/time; show denied permissions and stale fixes explicitly. *Partial: `app/src/location/useUserLocation.ts` produces events with accuracy, source and time, and the Deals screen states denied permission and stale readings in words. Checked only by the TypeScript compiler and unit tests; not yet seen on a phone.*
 - [x] OPT-02 — Retrieve geographically feasible candidates within a configurable bubble; verify boundary distances and units. Evidence: `optimizer/tests/test_core.py::test_distance_known_value_and_inclusive_boundary`, `optimizer/tests/test_optimality.py::test_every_ranked_option_obeys_every_rule`.
 - [x] OPT-03 — Enforce purchase-intent and suitability constraints; cheaper mismatched alternatives must be rejected. Evidence: `optimizer/tests/test_engine.py::test_cheaper_mismatched_alternative_is_rejected`, and live on `nemotron-bolt` (2026-11-08) `optimizer/tests/test_live_nemotron.py::test_live_judge_rejects_cookie_for_lunch`.
 - [x] OPT-04 — Compute payable cost, cashback and reward treatment; verify exclusions, minimum spend and stacking restrictions. Evidence: `optimizer/tests/test_pricing.py`, `optimizer/tests/test_optimality.py::test_engine_matches_brute_force_oracle`.
@@ -89,7 +91,7 @@ Each unchecked item is future work and may be marked complete only with its stat
 - [ ] NOTIFY-05 — Reactivate on a verified post-mute purchase; importing older history must not reactivate.
 - [ ] NOTIFY-06 — Enforce cooldown and global preferences across delivery/retry paths; reactivation cannot bypass global disablement.
 - [ ] CALL-01 — Implement explicit recommendation-call opt-in; disabled users must receive no automated recommendation calls.
-- [ ] CALL-02 — Deliver actual Photon calls using validated recommendations; handle unanswered/failed calls with bounded behavior. *Partial: real calls delivered and bounded (5 min cap, failed dials surfaced as 502); recommendations are a dummy and no-answer is not distinguished from failure.*
+- [ ] CALL-02 — Deliver actual Photon calls using validated recommendations; handle unanswered/failed calls with bounded behavior. *Partial: real calls delivered and bounded (5 min cap, failed dials surfaced as 502). Since the November 8 merge, the agent's example config points at the finance backend's real recommendation route instead of the dummy, but no live call has used it yet. No-answer is not distinguished from failure.*
 - [ ] CALL-03 — Support conversation-driven updates through the validated memory harness during recommendation calls. *Partial: only `record_decision` (accept/decline) exists; no memory harness.*
 
 ### Calling subsystem (evidence in [Calls.md](Calls.md))
@@ -99,7 +101,7 @@ Each unchecked item is future work and may be marked complete only with its stat
 - [x] CALLS-03 — The call ends deterministically: accept/decline or a short "no / that's all" says goodbye and deletes the room; the room is deleted even if the goodbye fails; 5 minute hard cap. Evidence: last live call (goodbye then hang-up 0.25 s later) and `services/calls/tests/test_agent_tools.py`.
 - [ ] CALLS-04 — Inbound call: caller dials the Photon line and converses with `nessi-agent`. Not tested; Photon inbound toggle unconfirmed.
 - [ ] CALLS-05 — Track `ringing`/`answered`/`no_answer`/`busy`/`ended` from LiveKit events instead of leaving `dial_requested`/`failed`.
-- [ ] CALLS-06 — Connect the real recommendation endpoint (teammate) via `RECOMMENDATION_API_URL`; record its `endpoint_ms` and verify the spoken answer matches the returned JSON.
+- [ ] CALLS-06 — Connect the real recommendation endpoint (teammate) via `RECOMMENDATION_API_URL`; record its `endpoint_ms` and verify the spoken answer matches the returned JSON. *Partial: connected in config. `services/calls/.env.local.example` points at `http://127.0.0.1:8787/api/recommendations/evaluate`. The backend side passes `test/finance-call.test.js` against a real local optimizer. Not done: a live call through it, a recorded `endpoint_ms`, and comparing the spoken answer with the returned JSON.*
 - [ ] CALLS-07 — Rotate credentials that were pasted into the working session (LiveKit secret, NVIDIA key, Nessie key, Photon SIP password).
 - [ ] CALLS-08 — Diagnose the intermittent first-dial `403 permission_denied` from the SIP provider.
 - [ ] CALLS-09 — Decide whether the voice LLM moves to the Brev vLLM instance; if so expose it with a key-protected endpoint and re-measure latency and tool-calling reliability.
@@ -107,10 +109,10 @@ Each unchecked item is future work and may be marked complete only with its stat
 ### App and security
 
 - [ ] APP-01 — Build home/forecast views showing horizon, uncertainty and pending clarifications.
-- [ ] APP-02 — Build recommendation detail with evidence, savings, eligibility, skip rationale and place controls.
+- [ ] APP-02 — Build recommendation detail with evidence, savings, eligibility, skip rationale and place controls. *Partial: the "Best choice here" card on the Deals screen shows the merchant, an explanation, the amount paid, the cashback, the cost after cashback, and a plain-language skip reason. Missing: evidence, eligibility details and place controls. Not yet seen on a device.*
 - [ ] APP-03 — Build budget/preferences/memory editors with versioned saves and visible confirmation.
 - [ ] APP-04 — Build enrollment status and notification/call/privacy settings including connection revocation.
-- [ ] SEC-01 — Keep secrets server-side; inspect source, bundles and logs for accidental credential exposure. *Partial: calling service keeps secrets in untracked `.env.local`; repo and history scanned for keys, none found; transcripts logged only with `LOG_TRANSCRIPTS=1`. Credentials pasted into the working session still need rotation.*
+- [ ] SEC-01 — Keep secrets server-side; inspect source, bundles and logs for accidental credential exposure. *Partial: calling service keeps secrets in untracked `.env.local`; repo and history scanned for keys, none found; transcripts logged only with `LOG_TRANSCRIPTS=1`. Credentials pasted into the working session still need rotation. The `app/` client reads only the backend address from `EXPO_PUBLIC_FINANCE_API_URL`; the finance demo token is typed in at run time and is not built into the app. No built app bundle has been inspected.*
 - [ ] SEC-02 — Test authenticated ownership and expiry across API calls, jobs and deep links.
 - [ ] SEC-03 — Verify transport/storage protection and key handling against documented deployment settings.
 - [ ] SEC-04 — Test prompt injection from texts/emails/pages; malicious content must not bypass tools or expose private data.
@@ -119,7 +121,7 @@ Each unchecked item is future work and may be marked complete only with its stat
 
 ### Demonstration and acceptance
 
-- [ ] DEMO-01 — Add a restricted draggable-map mode with visible source labels; route simulated movement through the same production recommendation pipeline.
+- [ ] DEMO-01 — Add a restricted draggable-map mode with visible source labels; route simulated movement through the same production recommendation pipeline. *Partial: `app/` has a draggable demo position with a visible source label, and it drives the nearby-store list. It does not yet drive the recommendation: in demo mode the backend evaluates its fixed Chipotle Friday-noon visit and ignores the marker.*
 - [ ] DEMO-02 — Prepare a demo narrative covering onboarding, registration, text forecast, location optimization and Photon calls; label actual provider sandbox inputs.
 - [ ] DEMO-03 — Record the moving-user demo with live GPS and actual delivered outputs.
 - [ ] DEMO-04 — Run the stationary demo by dragging location; verify underlying data and calls are not canned replacements.
@@ -156,3 +158,17 @@ The original project-wide checkboxes above retain their acceptance scope. The na
 - [x] DEALS-CODE-13 — Implement Capital One Offers & Shopping aggregation; apply migration 003 to live TigerData; register 12 merchant programs; seed 12 structured, quote-verified offers; activate Capital One sources to ready; and serve eligible candidates to recommendation optimizer. Total 64 automated tests pass (33 unit + 31 integration).
 
 Latest operator choice: Chipotle already exists; Panera does not. Those decisions are saved in the two prepared enrollment flows. They are not evidence of actual external registration or subscribed marketing. No real merchant confirmation/promotion has arrived yet. The current status supersedes earlier billing/zero-message blockers; see [the validation report](services/deals/docs/deals-validation.md).
+
+### Merge and integration — November 8, 2026
+
+Details and evidence: [context.md, section 19](context.md#19-branch-merge-and-integration--november-8-2026). Every test run named here was on Windows on November 8, 2026.
+
+- [x] MERGE-01 — Merge every branch into `main` (`arjun`, `feat-rs`, `deals` into `services/deals/`, and Arjun's fork branch `feat/optimizer-nemotron`; `frontend` and `tom` were already in `main`). Evidence: `git branch -a --no-merged main` lists nothing. After the merge, each part's own tests pass: `app/` 19/19, root backend 38 pass and 1 skipped, `optimizer/` 81 pass and 3 live tests skipped, `services/calls/` 58/58, `services/deals/` 33/33 unit tests.
+- [x] INTEG-01 — Send the app's location to the finance backend and show its answer. Evidence: `app/test/financeApi.test.mjs` (7 tests) runs the real backend `recommendVisit` behind a fake network layer, covering a live fix, demo mode, no matching routine, missing accuracy and a wrong token.
+- [x] INTEG-02 — Let the finance backend call the Python optimizer over HTTP. Evidence: `test/finance-call.test.js` passes against a real local `python -m optimizer.server`, and fails with a wrong key.
+- [ ] INTEG-03 — Complete one live phone call where the voice agent gets its answer from the finance backend; record `endpoint_ms`. Same evidence as CALLS-06.
+- [ ] INTEG-04 — See the "Best choice here" card working on a phone with live GPS, and in demo mode.
+- [ ] INTEG-05 — Make the dragged demo position drive the recommendation, not only the nearby-store list (DEMO-01).
+- [ ] INTEG-06 — Feed the app's OpenStreetMap nearby stores to the backend, which today recommends only from its own demo offer catalog.
+- [ ] INTEG-07 — Combine the four Expo apps (`app/`, root `App.js`, `nessie-signin-prototype/`, `services/deals/mobile/`) into one, or record which ones to retire.
+- [ ] INTEG-08 — Run the deals PostgreSQL integration tests on the merged tree.
