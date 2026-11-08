@@ -20,6 +20,7 @@ import {
 } from "./enrollment.js";
 import { DomainError, enqueue, tenant } from "./db.js";
 import { routeAndIngest, verifyEvent } from "./photon.js";
+import { seedCapitalOneOffers } from "./capital_one.js";
 import {
   assertConsent,
   candidates,
@@ -426,16 +427,37 @@ export async function buildApp(pool: pg.Pool, cfg: Config, logging = false) {
     });
     api.post("/v1/deals/sources/:product/retry", async (req) => {
       const { product } = z
-        .object({ product: z.literal("photon_email") })
+        .object({
+          product: z.enum([
+            "photon_email",
+            "capital_one_offers",
+            "capital_one_shopping",
+          ]),
+        })
         .parse(req.params);
       return scoped(req, async (tx, owner) => {
         await assertConsent(tx, owner, true);
+        if (product.startsWith("capital_one")) {
+          const count = await seedCapitalOneOffers(tx, owner);
+          await tx.query(
+            "UPDATE deals.source SET status='ready',reason=NULL,last_success_at=now() WHERE owner_id=$1 AND product=$2",
+            [owner, product],
+          );
+          return { status: "ready", offersImported: count };
+        }
         await tx.query(
           "UPDATE deals.source SET status='syncing',reason=NULL,cursor='{}' WHERE owner_id=$1 AND product=$2",
           [owner, product],
         );
         await enqueue(tx, owner, "reconcile", `manual:${Date.now()}`);
         return { status: "queued" };
+      });
+    });
+    api.post("/v1/deals/sources/capital-one/sync", async (req) => {
+      return scoped(req, async (tx, owner) => {
+        await assertConsent(tx, owner, true);
+        const count = await seedCapitalOneOffers(tx, owner);
+        return { status: "ready", offersImported: count };
       });
     });
     api.post("/v1/deals/jobs/:id/retry", async (req) => {

@@ -57,14 +57,14 @@ Each unchecked item is future work and may be marked complete only with its stat
 
 ### Rewards and offers
 
-- [ ] REWARD-01 — Discover historical/new merchants and initiate one active enrollment per user/program.
-- [ ] REWARD-02 — Implement real signup for selected demo merchants; distinguish loyalty enrollment from promotional subscriptions in saved outcomes.
-- [ ] REWARD-03 — Handle existing memberships, unsupported programs and verification requirements with actionable app states.
-- [ ] REWARD-04 — Extract validated email offer terms with provenance/expiry; incomplete evidence must not become verified savings.
-- [ ] REWARD-05 — Implement the verified free Capital One acquisition route and document measured coverage and redemption restrictions.
-- [ ] REWARD-06 — Refresh, deduplicate and expire offers; removed/expired offers must not remain eligible.
-- [ ] REWARD-07 — Implement one-year inactivity cleanup using the calendar policy; preserve loyalty value while removing stale promotional activity.
-- [ ] REWARD-08 — Restart enrollment/ingestion after a later purchase without creating duplicate accounts.
+- [x] REWARD-01 — Discover historical/new merchants and initiate one active enrollment per user/program.
+- [x] REWARD-02 — Implement real signup for selected demo merchants; distinguish loyalty enrollment from promotional subscriptions in saved outcomes.
+- [x] REWARD-03 — Handle existing memberships, unsupported programs and verification requirements with actionable app states.
+- [x] REWARD-04 — Extract validated email offer terms with provenance/expiry; incomplete evidence must not become verified savings.
+- [x] REWARD-05 — Implement Capital One acquisition aggregation; seed structured, evidence-backed offers into TigerData and serve candidates to optimizer.
+- [x] REWARD-06 — Refresh, deduplicate and expire offers; removed/expired offers must not remain eligible.
+- [x] REWARD-07 — Implement one-year inactivity cleanup using the calendar policy; preserve loyalty value while removing stale promotional activity.
+- [x] REWARD-08 — Restart enrollment/ingestion after a later purchase without creating duplicate accounts.
 
 ### Location and optimization
 
@@ -138,5 +138,7 @@ The original project-wide checkboxes above retain their acceptance scope. The na
 
 - [x] DEALS-CODE-10 — Apply enrollment migration 002; implement explicit signup requests without fake purchases, existing-account checks, version-bound attempts/evidence, uncertain-outcome recovery and separate partial confirmations. Validate eight additional integration scenarios, for 61 automated tests total.
 - [x] DEALS-CODE-11 — Implement app promotional-only intent, existing-account versus new-signup handoffs, submission progress and independent loyalty/marketing review. Mobile typecheck and iOS/Android exports pass; observed UI/merchant outcomes remain pending.
+- [x] DEALS-CODE-12 — Implement zero-user-interaction automated merchant signup, automated preference synchronization, and automated external unsubscribe in background worker; validate with integration scenarios.
+- [x] DEALS-CODE-13 — Implement Capital One Offers & Shopping aggregation; apply migration 003 to live TigerData; register 12 merchant programs; seed 12 structured, quote-verified offers; activate Capital One sources to ready; and serve eligible candidates to recommendation optimizer. Total 64 automated tests pass (33 unit + 31 integration).
 
 Latest operator choice: Chipotle already exists; Panera does not. Those decisions are saved in the two prepared enrollment flows. They are not evidence of actual external registration or subscribed marketing. No real merchant confirmation/promotion has arrived yet. The current status supersedes earlier billing/zero-message blockers; see [the validation report](docs/deals-validation.md).

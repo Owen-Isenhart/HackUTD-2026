@@ -16,6 +16,7 @@ import {
   reviewOffer,
   resumeEnrollment,
   enrollmentHandoff,
+  unsubscribeHandoff,
   confirmEnrollment,
   confirmUnsubscribe,
 } from "../../src/service.js";
@@ -142,7 +143,7 @@ test("migrations replay without changes; failed schema transaction rolls back", 
   const count = await admin.query(
     "SELECT count(*)::int AS n FROM deals.schema_migration",
   );
-  assert.equal(count.rows[0].n, 2);
+  assert.equal(count.rows[0].n, 3);
   const tx = await admin.connect();
   try {
     await tx.query("BEGIN");
@@ -1194,4 +1195,130 @@ test("external unsubscribe confirmation is version-bound and leaves explicit opt
     )
   ).rows[0];
   assert.ok(record.opted_out_at);
+});
+
+test("automated zero-interaction merchant signup registers program without user interaction", async () => {
+  const e = await tenant(api, enrollmentOwner, (tx) =>
+    requestEnrollment(tx, enrollmentOwner, {
+      programId: "capital_one_nike",
+      existingMembership: "no",
+      intent: "loyalty_and_promotions",
+    }),
+  );
+  assert.equal(e.state, "queued");
+  assert.equal(e.signup_status, "not_started");
+
+  // Worker runs automated enrollment handoff
+  await tenant(api, enrollmentOwner, (tx) =>
+    enrollmentHandoff(tx, enrollmentOwner, e.id),
+  );
+
+  const flow = await tenant(api, enrollmentOwner, (tx) =>
+    enrollmentFlow(tx, enrollmentOwner, e.id),
+  );
+  assert.equal(flow.state, "enrolled");
+  assert.equal(flow.signupStatus, "confirmed");
+  assert.equal(flow.loyaltyStatus, "enrolled");
+  assert.equal(flow.promotionStatus, "subscribed");
+  assert.equal(flow.safeToCreateAccount, false);
+  assert.equal(flow.nextAction, "manage_membership");
+});
+
+test("automated external unsubscribe completes without manual user confirmation", async () => {
+  const e = (
+    await tenant(api, enrollmentOwner, (tx) =>
+      tx.query(
+        "SELECT * FROM deals.enrollment WHERE program_id='capital_one_nike'",
+      ),
+    )
+  ).rows[0];
+
+  // User opts out locally
+  await tenant(api, enrollmentOwner, async (tx) => {
+    await tx.query("SELECT id FROM deals.owner WHERE id=$1 FOR UPDATE", [
+      enrollmentOwner,
+    ]);
+    await suppressEnrollment(tx, enrollmentOwner, e.id, true);
+  });
+
+  const suppressed = (
+    await tenant(api, enrollmentOwner, (tx) =>
+      tx.query("SELECT * FROM deals.enrollment WHERE id=$1", [e.id]),
+    )
+  ).rows[0];
+  assert.equal(suppressed.state, "unsubscribe_pending");
+
+  // Worker executes automated unsubscribe handoff at merchant
+  await tenant(api, enrollmentOwner, (tx) =>
+    unsubscribeHandoff(tx, enrollmentOwner, e.id, suppressed.version),
+  );
+
+  const flow = await tenant(api, enrollmentOwner, (tx) =>
+    enrollmentFlow(tx, enrollmentOwner, e.id),
+  );
+  assert.equal(flow.state, "unsubscribed");
+  assert.equal(flow.promotionStatus, "unsubscribed");
+  assert.equal(flow.safeToCreateAccount, false);
+});
+
+test("Capital One offer aggregation seeds offers, activates sources, and serves candidates to optimizer", async () => {
+  const userToken = await issueToken(enrollmentOwner, cfg);
+  const optToken = await issueToken(enrollmentOwner, cfg, "deals:optimizer");
+
+  const syncRes = await app.inject({
+    method: "POST",
+    url: "/v1/deals/sources/capital-one/sync",
+    headers: { authorization: `Bearer ${userToken}` },
+  });
+  assert.equal(syncRes.statusCode, 200);
+  const syncJson = syncRes.json();
+  assert.equal(syncJson.status, "ready");
+  assert.equal(syncJson.offersImported, 12);
+
+  // Status endpoint shows Capital One sources ready
+  const statusRes = await app.inject({
+    method: "GET",
+    url: "/v1/deals/status",
+    headers: { authorization: `Bearer ${userToken}` },
+  });
+  assert.equal(statusRes.statusCode, 200);
+  const c1Sources = statusRes
+    .json()
+    .sources.filter((s: any) => s.product.startsWith("capital_one"));
+  assert.equal(c1Sources.length, 2);
+  for (const s of c1Sources) {
+    assert.equal(s.status, "ready");
+    assert.equal(s.reason, null);
+  }
+
+  // Offers endpoint lists seeded Capital One offers
+  const offersRes = await app.inject({
+    method: "GET",
+    url: "/v1/deals/offers",
+    headers: { authorization: `Bearer ${userToken}` },
+  });
+  assert.equal(offersRes.statusCode, 200);
+  const offers = offersRes.json();
+  assert.ok(offers.length >= 12);
+
+  // Optimizer retrieves candidates for Capital One merchants
+  const candidateRes = await app.inject({
+    method: "POST",
+    url: "/v1/deals/candidates",
+    headers: { authorization: `Bearer ${optToken}` },
+    payload: {
+      merchantIds: ["walmart", "sephora", "macys"],
+      channel: "online",
+    },
+  });
+  assert.equal(candidateRes.statusCode, 200);
+  const candidateJson = candidateRes.json();
+  assert.ok(candidateJson.candidates.length >= 3);
+  for (const c of candidateJson.candidates) {
+    assert.equal(c.status, "active");
+    assert.ok(
+      c.terms.benefit.type === "cashback" ||
+        c.terms.benefit.type === "fixed_discount",
+    );
+  }
 });

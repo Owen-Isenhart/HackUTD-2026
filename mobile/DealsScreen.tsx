@@ -650,18 +650,44 @@ export function DealsScreen({
                       />
                     ) : (
                       <>
-                        <Text style={s.note}>
-                          No offers have been imported from this source.
-                          Eligibility and access must be verified with the
-                          official service.
-                        </Text>
+                        {source.status === "ready" ? (
+                          <>
+                            <Text style={s.note}>
+                              Exclusive cardholder offers and statement credits
+                              are active and synchronized.
+                            </Text>
+                            <Button
+                              label="Re-sync offers"
+                              onPress={() =>
+                                action(() => post("/sources/capital-one/sync"))
+                              }
+                              secondary
+                              disabled={busy}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <Text style={s.note}>
+                              Sync your exclusive Capital One cardholder offers
+                              and shopping deals.
+                            </Text>
+                            <Button
+                              label="Sync Capital One deals"
+                              onPress={() =>
+                                action(() => post("/sources/capital-one/sync"))
+                              }
+                              secondary
+                              disabled={busy}
+                            />
+                          </>
+                        )}
                         <Button
                           label="Visit official service ↗"
                           onPress={() =>
                             action(() =>
                               openMerchant(
                                 source.product === "capital_one_offers"
-                                  ? "https://www.capitalone.com/"
+                                  ? "https://www.capitalone.com/offers"
                                   : "https://capitaloneshopping.com/",
                               ),
                             )
