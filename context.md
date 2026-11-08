@@ -1,3 +1,5 @@
+Exact data sources and sandbox usage; movement simulation is confirmed, other simulation is not authorized.
+
 # HackUTD 2026 — Living Project Context
 
 Status: clarification closed at the user’s request. Final product context and design; implementation has not started. Provider feasibility and research gates remain unverified.
@@ -252,7 +254,6 @@ Need to establish:
 - Primary user and first compelling use case.
 - Hackathon deadline and available development time.
 - End-to-end demo flow and judging criteria.
-- Exact data sources and sandbox usage; movement simulation is confirmed, other simulation is not authorized.
 - Must-have versus stretch features.
 - Spending limits beyond the stated free Capital One acquisition constraint.
 - Supported device and platform.
