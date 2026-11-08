@@ -423,6 +423,7 @@ Last updated: 2026-11-08. Owner: Arjun. Branch: `feat/optimizer-nemotron`, draft
 - Both live tests failed in 2.40 seconds before extraction. The client requested 10,240 output tokens against the server's 8,192-token context window. A second direct probe confirmed that the prompt's tokens must also fit inside that window.
 - The client now retries with a smaller output allowance taken from these server errors. Scripted tests cover the two limits together with schema fallback, and ensure unrelated errors and exhausted context still fail. Live verification of this fix is next.
 - Ran on Windows after the fix: `uv run pytest -q tests/test_nemotron.py`, 21 passed in 2.14 seconds.
+- The first live rerun after that fix still failed both tests in 0.81 seconds. vLLM's early validation reports prompt length in characters, before its exact token-count check. The client now handles this format by halving the allowance, within the same bounded retry loop. The scripted test includes this observed response. The 21 client tests passed again in 2.40 seconds.
 - The full suite on Brev before the fix reported 67 passed, 2 skipped, 1 failed in 40.79 seconds. The random-sample coverage guard saw 15 non-default-card choices against a floor of 20. That test passed alone on rerun in 3.79 seconds. No coverage threshold was changed.
 
 ### Done: the recommendation optimizer (`optimizer/`, Python)

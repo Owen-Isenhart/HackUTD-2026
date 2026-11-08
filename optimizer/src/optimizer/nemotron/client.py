@@ -108,12 +108,13 @@ class NemotronClient:
 
         # vLLM can reject the output budget first against the context window,
         # then against the space left after tokenizing this request's prompt.
-        # Retry only with a smaller budget reported by the server.
-        for attempt in range(4):
+        # Its initial check can report characters instead of token counts.
+        # In that case, halve the allowance and let the server check again.
+        for attempt in range(5):
             try:
                 return self._client.chat.completions.create(**kwargs)
             except BadRequestError as e:
-                if attempt == 3:
+                if attempt == 4:
                     raise
                 error = str(e).lower()
                 if self._schema_mode and "response_format" in error:
@@ -126,11 +127,18 @@ class NemotronClient:
                     error,
                     flags=re.S,
                 )
+                characters = re.search(
+                    r"maximum context length is \d+ tokens.*?prompt contains \d+ characters",
+                    error,
+                    flags=re.S,
+                )
                 limit = None
                 if prompt:
                     limit = int(prompt[1]) - int(prompt[2])
                 elif window:
                     limit = int(window[1])
+                elif characters:
+                    limit = kwargs["max_tokens"] // 2
                 if limit is None or not 0 < limit < kwargs["max_tokens"]:
                     raise
                 kwargs["max_tokens"] = limit

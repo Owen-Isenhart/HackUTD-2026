@@ -286,7 +286,10 @@ def test_client_reduces_output_to_server_limits_after_schema_fallback(monkeypatc
         "response_format json_schema is unsupported",
         "max_tokens=10240 cannot be greater than max_model_len=8192",
         "This model's maximum context length is 8192 tokens. However, you requested "
-        "8192 output tokens and your prompt contains 1700 input tokens.",
+        "8192 output tokens and your prompt contains 7878 characters "
+        "(more than 0 characters, which is the upper bound for 0 input tokens).",
+        "This model's maximum context length is 8192 tokens. However, you requested "
+        "4096 output tokens and your prompt contains 5000 input tokens.",
         None,
     ])
     seen = []
@@ -301,7 +304,7 @@ def test_client_reduces_output_to_server_limits_after_schema_fallback(monkeypatc
     monkeypatch.setattr(c._client.chat.completions, "create", create)
     reply = c.structured("sys", "user", jobs.ExplanationDraft, Thinking.on(6144), max_answer_tokens=4096)
     assert reply.data.headline == "h"
-    assert seen == [(10240, True), (10240, False), (8192, False), (6492, False)]
+    assert seen == [(10240, True), (10240, False), (8192, False), (4096, False), (3192, False)]
 
 
 @pytest.mark.parametrize("error", [
