@@ -50,6 +50,12 @@ settings.register_profile("thorough", max_examples=3000, deadline=None, suppress
 settings.load_profile(os.environ.get("HYPOTHESIS_PROFILE", "default"))
 
 CATS = ["lunch", "coffee"]
+
+
+def money(tight_low: int, high: int):
+    """Hypothesis favours values near zero; mix a comfortable range with a tight
+    one so limits sometimes bind and sometimes don't."""
+    return st.one_of(st.integers(high // 2, high), st.integers(tight_low, high))
 ids = lambda prefix, n: [f"{prefix}{k}" for k in range(n)]  # noqa: E731
 
 
@@ -66,12 +72,12 @@ def worlds(draw) -> Inputs:
             id=f"p{k}",
             name=f"Place {k}",
             merchant_id=f"m{k}",
-            lat=HERE[0] + draw(st.sampled_from([1, 1, 1, 2])) * draw(st.integers(-80, 80)) / 10_000,  # mostly inside the 1.5 km radius
+            lat=HERE[0] + draw(st.sampled_from([1, 3])) * draw(st.integers(-80, 80)) / 10_000,  # mostly inside the 1.5 km radius
             lon=HERE[1] + draw(st.integers(-80, 80)) / 10_000,
         )
         for k in range(n_places)
     ]
-    n_items = draw(st.integers(1, 6))
+    n_items = draw(st.integers(2, 7))
     items = [
         Item(
             id=f"i{k}",
@@ -87,42 +93,62 @@ def worlds(draw) -> Inputs:
     n_methods = draw(st.integers(1, 3))
     default = draw(st.one_of(st.none(), st.integers(0, n_methods - 1)))
     methods = [
-        PaymentMethod(id=f"card{k}", name=f"card {k}", kind="credit", base_cashback_bps=draw(st.integers(0, 500)), is_default=(k == default))
+        PaymentMethod(id=f"card{k}", name=f"card {k}", kind="credit", base_cashback_bps=draw(st.one_of(st.integers(100, 500), st.integers(0, 500))), is_default=(k == default))
         for k in range(n_methods)
     ]
     offers = []
-    for k in range(draw(st.integers(0, 8))):
-        kind = draw(st.sampled_from(list(OfferKind)))
+    for k in range(draw(st.one_of(st.integers(3, 10), st.integers(0, 10)))):
+        kind = draw(st.sampled_from([OfferKind.AMOUNT_OFF, OfferKind.PERCENT_OFF, OfferKind.CASHBACK_PERCENT, OfferKind.CASHBACK_AMOUNT, OfferKind.POINTS_FLAT, OfferKind.POINTS_PER_DOLLAR]))
         pct = kind in (OfferKind.PERCENT_OFF, OfferKind.CASHBACK_PERCENT)
         offers.append(
             Offer(
                 id=f"o{k}",
                 source="test",
-                merchant_id=draw(st.sampled_from(places)).merchant_id if items else "none",
+                merchant_id=draw(st.sampled_from([p for p in places if any(i.place_id == p.id for i in items)])).merchant_id,
                 terms_text="t",
                 kind=kind,
-                value=draw(st.integers(0, 5000 if pct else 1500)),
+                value=draw(st.one_of(st.integers(100, 5000 if pct else 1500), st.integers(0, 5000 if pct else 1500))),
                 min_spend=draw(st.sampled_from([None, None, None, 500, 1500])) and usd(draw(st.integers(0, 2500))),
                 max_benefit=draw(st.one_of(st.none(), st.integers(0, 1000).map(usd))),
                 starts_at=draw(st.sampled_from([None] * 6 + [NOW - timedelta(days=1), NOW + timedelta(hours=1)])),
                 expires_at=draw(st.sampled_from([NOW + timedelta(days=2)] * 6 + [NOW, NOW + timedelta(seconds=1), NOW - timedelta(days=1)])),
-                required_payment_method_ids=draw(st.sampled_from([[]] * 4 + [["card0"], ["card1"], ["card9"]])),
+                required_payment_method_ids=draw(st.sampled_from([[]] * 3 + [["card1"], ["card0"], ["card9"]])),
                 eligible_item_categories=draw(st.sampled_from([[]] * 4 + [["lunch"], ["coffee"]])),
                 eligible_item_ids=draw(st.sampled_from([[]] * 4 + [[f"i{draw(st.integers(0, n_items - 1))}"]])),
                 requires_activation=draw(st.sampled_from([False] * 4 + [True])),
                 activated=draw(st.booleans()),
-                stack_group=draw(st.sampled_from([None, None, "g1", "g2"])),
-                stackable=draw(st.booleans()),
+                stack_group=draw(st.sampled_from([None, None, None, "g1", "g2"])),
+                stackable=draw(st.sampled_from([True, True, True, False])),
                 verified=draw(st.booleans()) or draw(st.booleans()),  # mostly verified
             )
         )
+    if draw(st.booleans()):
+        # A promotion bundle: several usable, stackable offers on one item, so
+        # the solver has to combine offers rather than pick one.
+        target = draw(st.sampled_from(items))
+        merchant = next(p.merchant_id for p in places if p.id == target.place_id)
+        for k in range(draw(st.integers(2, 3))):
+            offers.append(
+                Offer(
+                    id=f"s{k}",
+                    source="test",
+                    merchant_id=merchant,
+                    terms_text="t",
+                    kind=draw(st.sampled_from([OfferKind.AMOUNT_OFF, OfferKind.CASHBACK_AMOUNT, OfferKind.PERCENT_OFF])),
+                    value=draw(st.integers(50, 400)),
+                    expires_at=NOW + timedelta(days=1),
+                    eligible_item_ids=[target.id],
+                    stack_group=draw(st.sampled_from([None, None, "g1"])),
+                    verified=True,
+                )
+            )
     budgets = [
         Budget(
             id=f"b{k}",
             all_spending=(scope := draw(st.sampled_from(["all", "lunch", "coffee"]))) == "all",
             scope_categories=[] if scope == "all" else [scope],
             period=draw(st.sampled_from(list(Period))),
-            amount=usd(draw(st.integers(0, 12_000))),
+            amount=usd(draw(money(0, 12_000))),
             evidence="t",
         )
         for k in range(draw(st.integers(0, 3)))
@@ -140,7 +166,7 @@ def worlds(draw) -> Inputs:
     restrictions = [Restriction(id=f"r{k}", description="r", evidence="t") for k in range(draw(st.integers(0, 2)))]
     judgements = []
     for it in items:
-        verdict = draw(st.sampled_from([None] + [Verdict.SUITABLE] * 6 + [Verdict.UNSUITABLE, Verdict.UNVERIFIED]))
+        verdict = draw(st.sampled_from([Verdict.SUITABLE] * 6 + [None, Verdict.UNSUITABLE, Verdict.UNVERIFIED]))
         if verdict is None:
             continue
         judgements.append(
@@ -165,12 +191,12 @@ def worlds(draw) -> Inputs:
         as_of=NOW,
         valid_until=NOW + timedelta(hours=6),
         horizon_days=30,
-        available_now=usd(draw(st.integers(0, 20_000))),
-        min_projected_balance_lower=usd(draw(st.integers(-1000, 20_000))),
+        available_now=usd(draw(money(0, 20_000))),
+        min_projected_balance_lower=usd(draw(money(-1000, 20_000))),
         reserve=usd(draw(st.integers(0, 1000))),
     )
     intent = PurchaseIntent(
-        categories=draw(st.sampled_from([["lunch"], ["coffee"], ["lunch", "coffee"]])),
+        categories=draw(st.sampled_from([["lunch"], ["coffee"], ["lunch", "coffee"], ["lunch", "coffee"]])),
         description="d",
         source="routine",
         confidence=draw(st.sampled_from(["high", "medium"])),

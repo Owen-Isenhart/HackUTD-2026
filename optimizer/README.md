@@ -28,13 +28,14 @@ The client works with any OpenAI-compatible endpoint (a server that accepts the 
 
 | Hardware | Model | Source |
 | --- | --- | --- |
+| **Team default:** the shared Brev VM `following-copper-silkworm` | `nemotron-bolt`, served from `nvidia/NVIDIA-Nemotron-3.5-Bolt-E4B-BF16` | Team handoff guide. Reach it at `http://127.0.0.1:8000/v1` after `brev port-forward following-copper-silkworm --port 8000:8000` |
 | One H100, H200 or A100 80 GB (e.g. a Brev machine) | `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4` (default) | Hugging Face model card: "1× H100" |
 | Blackwell B200 / B300 | `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4` | Model card minimum: "1× B200" |
 | No GPU, with an NVIDIA API key | `nvidia/nemotron-3-super-120b-a12b` on `https://integrate.api.nvidia.com/v1` | NVIDIA API docs |
 
 Settings are environment variables:
-- `NEMOTRON_BASE_URL`: the server address. Default is `http://localhost:8000/v1`.
-- `NEMOTRON_MODEL`: the model name.
+- `NEMOTRON_BASE_URL`: the server address. Default is `http://127.0.0.1:8000/v1`.
+- `NEMOTRON_MODEL`: the model name. Default is `nemotron-bolt`.
 - `NEMOTRON_API_KEY`: the key. Falls back to `NVIDIA_API_KEY`.
 
 ## Running
@@ -69,6 +70,33 @@ uv run python -m optimizer recommend --routine ../profile/initial-routine.md --p
 `world.json` holds `places`, `items`, `offers`, `payment_methods` and `transactions`. Their fields are defined in [`models.py`](src/optimizer/models.py).
 
 The two files in [`../profile/`](../profile/) are placeholders with no data. Your partner's real files replace them. If they contain no current balance, the optimizer refuses to judge affordability.
+
+Bolt is the smallest Nemotron, at about 4 billion parameters. The two jobs that need judgment were designed with the larger models in mind. `tests/test_live_nemotron.py` will show whether Bolt is good enough. If it isn't, point `NEMOTRON_MODEL` at Lightning or Super.
+
+The serve script `serve/brev-vllm.sh` predates the team VM. The team serves the model its own way, so it's only needed for a second machine.
+
+## How optimality is tested
+
+`tests/test_optimality.py` checks that the optimizer always returns the best answer the rules allow:
+
+- **Brute-force reference.** [`tests/oracle.py`](tests/oracle.py) is a second implementation that shares no code with the optimizer. It tries every card with every subset of offers for every item. On thousands of random worlds, the optimizer's full ranked list must equal the reference's exactly.
+- **Rule audit.** Every ranked option is re-checked against every hard rule. Every candidate must be either ranked or rejected with a reason.
+- **Metamorphic tests.** These change the input in ways whose effect is known in advance:
+  - shuffling the input changes nothing
+  - more money never gives a worse answer
+  - an extra offer never raises the cost
+  - unverified offers and irrelevant items change nothing
+  - removing the winner promotes the runner-up
+- **Coverage guard.** The suite fails if the random worlds stop reaching the cases that matter, so the tests above can't pass by testing nothing.
+- **Hand-worked scenarios** with answers computed by hand. One is a case where taking the biggest offer first gives the wrong answer.
+
+For a longer run:
+
+```bash
+HYPOTHESIS_PROFILE=thorough uv run pytest tests/test_optimality.py
+```
+
+That runs 3,000 random worlds per test.
 
 ## Rules the code enforces
 
