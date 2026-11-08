@@ -150,6 +150,34 @@ def baseline_option(item: Item, place: Place, distance: float, methods: list[Pay
     )
 
 
+def retrieve_candidates(
+    cs: ConstraintSet,
+    fix: LocationFix,
+    places: list[Place],
+    items: list[Item],
+    intent: PurchaseIntent,
+    config: OptimizerConfig = OptimizerConfig(),
+) -> tuple[list[Item], list[Rejection], dict[str, float]]:
+    """Items of the intended kind inside the radius, nearest first (OPT-02).
+    Also used by the pipeline so Nemotron judges exactly these items."""
+    inside, outside = geo.places_in_bubble(fix, places, cs.bubble_m)
+    rejections: list[Rejection] = []
+    candidates: list[Item] = []
+    for it in sorted(items, key=lambda i: i.id):
+        if it.category not in intent.categories:
+            continue
+        if it.place_id in outside:
+            rejections.append(
+                Rejection(item_id=it.id, stage="geography", reason=f"{outside[it.place_id]:.0f} m away; radius is {cs.bubble_m:.0f} m")
+            )
+            continue
+        candidates.append(it)
+    candidates.sort(key=lambda i: (inside[i.place_id], i.id))
+    for it in candidates[config.max_candidates :]:
+        rejections.append(Rejection(item_id=it.id, stage="geography", reason="beyond the nearest-candidates cap"))
+    return candidates[: config.max_candidates], rejections, inside
+
+
 def optimize(inp: Inputs, now: datetime, config: OptimizerConfig = OptimizerConfig()) -> Recommendation:
     cs, fc, intent = inp.constraints, inp.forecast, inp.intent
     cur = cs.currency
@@ -180,22 +208,7 @@ def optimize(inp: Inputs, now: datetime, config: OptimizerConfig = OptimizerConf
         return _empty(Decision.INSUFFICIENT_DATA, ["It isn't clear enough what you're shopping for."], inp, now)
 
     # ---- 2. Candidates: right kind of item, inside the radius -------------- #
-    inside, outside = geo.places_in_bubble(inp.fix, inp.places, cs.bubble_m)
-    rejections: list[Rejection] = []
-    candidates: list[Item] = []
-    for it in sorted(inp.items, key=lambda i: i.id):
-        if it.category not in intent.categories:
-            continue
-        if it.place_id in outside:
-            rejections.append(
-                Rejection(item_id=it.id, stage="geography", reason=f"{outside[it.place_id]:.0f} m away; radius is {cs.bubble_m:.0f} m")
-            )
-            continue
-        candidates.append(it)
-    candidates.sort(key=lambda i: (inside[i.place_id], i.id))
-    for it in candidates[config.max_candidates :]:
-        rejections.append(Rejection(item_id=it.id, stage="geography", reason="beyond the nearest-candidates cap"))
-    candidates = candidates[: config.max_candidates]
+    candidates, rejections, inside = retrieve_candidates(cs, inp.fix, inp.places, inp.items, intent, config)
 
     # ---- 3. Suitability and hard restrictions (verdicts come from Nemotron) - #
     judged = {j.item_id: j for j in inp.judgements}

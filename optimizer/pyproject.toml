@@ -23,3 +23,7 @@ dev = [
     "hypothesis>=6.170.15",
     "pytest>=9.2.0",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--basetemp=.pytest-tmp"
