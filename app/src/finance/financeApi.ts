@@ -58,6 +58,7 @@ const SKIP_TEXT: Record<string, string> = {
   invalid_location: 'The location was too old or too inaccurate to check.',
   optimizer_unavailable: 'The optimizer did not answer, so no recommendation was made.',
   no_eligible_offer: 'No eligible offer at the place your routine points to.',
+  transaction_coverage_exceeded: 'Your purchase history is too large to check in full, so no recommendation was made.',
   location_expired: 'The location went out of date while the recommendation was being made.',
 };
 export const describeSkip = (reason: string) => SKIP_TEXT[reason] ?? 'No eligible routine offer for this location and time.';
