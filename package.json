@@ -8,6 +8,8 @@
     "start:phone": "node scripts/start-expo-go.js --tunnel",
     "start:native": "expo start --dev-client",
     "photon:send": "node --env-file-if-exists=.env scripts/send-photon.js",
+    "finance:profile": "node --env-file-if-exists=.env scripts/finance-profile.js",
+    "finance:serve": "node --env-file-if-exists=.env scripts/finance-profile.js --serve",
     "test": "node --test"
   },
   "dependencies": {

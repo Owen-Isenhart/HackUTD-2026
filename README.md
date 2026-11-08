@@ -29,6 +29,33 @@ A real inbound call to the user's iPhone can be placed by a backend through a Ph
 
 The optional iBeacon prototype is in `modules/merchant-beacons`, `src/useBeaconRanging.js`, and `firmware/MerchantBeacon` for later testing.
 
+## Nessie finance profile and Nemotron routines
+
+Set `NESSIE_API_KEY` and `NESSIE_ACCOUNT_ID` in the ignored `.env`. The sandbox account seeded for this demo is `73b254c5-3402-4f86-a2f4-1991db6e5b9a`. In a separate local Ubuntu WSL terminal, open the SSH forward with a signed-in Brev CLI. Keep it running while you use the finance backend. [NVIDIA Brev port forwarding](https://docs.nvidia.com/brev/cli/connectivity#brev-port-forward)
+
+```bash
+~/.local/bin/brev port-forward following-copper-silkworm --port 8000:8000
+```
+
+From PowerShell in this repo, check that the server lists `nemotron-bolt`, then generate a profile.
+
+```powershell
+curl.exe -fsS http://127.0.0.1:8000/v1/models
+npm.cmd run finance:profile
+```
+
+If the backend runs on the VM, it can reach vLLM at `http://127.0.0.1:8000/v1` directly. Override `NEMOTRON_BASE_URL` or `NEMOTRON_MODEL` if your endpoint or served name differs. The CLI reports `routineInsight.status` as `interpreted`, `unavailable`, or `no_routine`. If the model is unavailable, the profile still shows the observed Nessie routines. [vLLM structured outputs](https://docs.vllm.ai/en/v0.31.0/features/structured_outputs/)
+
+The profile reports the balance Nessie returns and totals unique posted purchases in cents. The week starts on Monday, and dates use `FINANCE_TIME_ZONE` (default `America/Chicago`). A routine groups purchases at the same Nessie merchant by weekday and time of day in the last 90 days. It takes two distinct dates to qualify. Patterns with two or three days are tentative, and date-only purchases support weekday patterns. The model gets up to eight aggregate patterns with temporary indices and returns a highlight with a reason from a fixed list. Account IDs, merchant names, purchase records, and balances stay out of its prompt.
+
+The profile refreshes from Nessie each time. Bill and deposit counts indicate the coverage of the sandbox, and unconfirmed budgets and goals are unset. This slice covers initial observed routines and the current finance snapshot. Durable memory, budget confirmation, and the 30-day forecast need their own data and reconciliation flows.
+
+### Show the profile in Expo Go
+
+1. Set a random `FINANCE_DEMO_TOKEN` of at least 24 characters in `.env`. Run `npm.cmd run finance:serve` on the backend machine. The server binds to loopback port `8787` by default.
+2. Point an HTTPS reverse proxy or HTTPS development tunnel at `http://127.0.0.1:8787`. Set `EXPO_PUBLIC_FINANCE_API_URL` to that HTTPS origin and restart Expo. The Expo Metro tunnel serves the app bundle separately.
+3. Open the app, scroll to **Sandbox finance profile**, and enter the token on the phone. Tap **Refresh finance profile**. The token grants access to the one configured sandbox account for this demo.
+
 ## Verification
 
-Run `npm.cmd test` for the demo location, radius, and cashback calculations. Run `npx.cmd expo export --platform ios` to check the iOS JavaScript bundle. Use the iPhone steps above to verify location permission, the notification banner, and audio.
+Run `npm.cmd test` for the demo offers, finance calculations, and model contract. Run `npx.cmd expo export --platform ios` to check the iOS JavaScript bundle. Use the iPhone steps above to verify location permission, the notification banner, and audio.
