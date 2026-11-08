@@ -4,11 +4,12 @@ Last updated: 2026-11-07. Owner: Arjun. Branch: `feat/optimizer-nemotron`.
 
 ## Working on now
 
-**Getting a live Nemotron to test against.**
-- The plan is to serve Nemotron on the team's Brev GPU machine (`following-copper-silkworm`) and reach it from Arjun's laptop.
-- Brev's command-line tool has no Windows version, so it has to run inside WSL (Windows Subsystem for Linux).
-- WSL is installed but hangs, most likely until Windows is restarted.
-- Fallback if Brev stays blocked: NVIDIA's hosted API with an `NVIDIA_API_KEY`.
+**Connecting to the team's running Nemotron to run the live tests.**
+- The team already serves Nemotron 3.5 Bolt E4B on the Brev machine `following-copper-silkworm`. Its served name is `nemotron-bolt`. Don't start a second copy.
+- The client now defaults to it: `NEMOTRON_BASE_URL=http://127.0.0.1:8000/v1`, `NEMOTRON_MODEL=nemotron-bolt`. That address works once a port forward is open.
+- On Arjun's laptop, WSL (Windows Subsystem for Linux) and the Brev command-line tool are installed, but Brev is not signed in yet. The browser sign-in timed out twice. The next step is Arjun signing in with the token command from https://brev.nvidia.com/settings/cli.
+- After that: run `brev port-forward following-copper-silkworm --port 8000:8000`, check the model answers, then run `tests/test_live_nemotron.py`.
+- Concern: Bolt is the smallest Nemotron, at about 4B parameters. The two judgment jobs were designed for Lightning (30B) or Super (120B). The live tests will show whether Bolt is good enough.
 
 ## Done
 
@@ -35,7 +36,7 @@ The optimizer covers spec tasks `OPT-02` to `OPT-09`. See [README.md](README.md)
 - a Brev serve script
 - placeholder profile files in [../profile/](../profile/)
 
-**Tests:** 50 pass, using a scripted stand-in for the model.
+**Tests:** 66 pass, using a scripted stand-in for the model. They include a separate brute-force checker (`tests/oracle.py`) that the optimizer must match exactly.
 
 ## Not verified yet
 
