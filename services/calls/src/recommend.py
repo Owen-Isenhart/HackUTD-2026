@@ -43,7 +43,9 @@ def _default_post(url: str, payload: dict) -> dict:
     if os.getenv("RECOMMENDATION_API_KEY"):
         headers["x-api-key"] = os.environ["RECOMMENDATION_API_KEY"]
     req = urllib.request.Request(url, json.dumps(payload).encode(), headers)
-    with _opener.open(req, timeout=25 if payload.get("profile") == "onboarding" else 8) as r:
+    # Identity lookups call Nemotron and Nessie in turn, so they get more time than data questions.
+    timeout = {"onboarding": 25, "phone_details": 15}.get(payload.get("profile"), 8)
+    with _opener.open(req, timeout=timeout) as r:
         return json.loads(r.read())
 
 
@@ -83,3 +85,22 @@ def resolve_onboarding(api_url: str, phone_number: str, session_id: str) -> dict
         return result if isinstance(result, dict) else {'status': 'unavailable'}
     except Exception:
         return {'status': 'unavailable'}
+
+
+def route_inbound(route_url: str, phone_number: str, session_id: str) -> dict:
+    """Ask the lookup service which sequence this caller gets: phone_details for a number linked to an
+    onboarded user, onboarding otherwise. Caller ID alone never verifies identity."""
+    try:
+        result = _default_post(route_url, {"phone_number": phone_number, "session_id": session_id})
+        return result if isinstance(result, dict) else {"status": "unavailable"}
+    except Exception:
+        return {"status": "unavailable"}
+
+
+def seed_verified_session(sessions_url: str, session_id: str, user_id: str, phone_number: str) -> bool:
+    """Outbound only: pre-verify a phone_details session for a call placed to the user's own linked number."""
+    try:
+        result = _default_post(sessions_url, {"session_id": session_id, "user_id": user_id, "phone_number": phone_number})
+        return isinstance(result, dict) and result.get("status") == "verified"
+    except Exception:
+        return False

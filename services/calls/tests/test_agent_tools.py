@@ -108,8 +108,8 @@ def test_dialer_dispatches_before_sip(monkeypatch):
 
 
 def test_opening_line_discloses_ai_and_speaks_scenario_verbatim():
-    assert opening_line(None) == "Hi, I'm Nessiessential's AI assistant."
-    assert opening_line("  Chick-fil-A is nearby. ") == "Hi, I'm Nessiessential's AI assistant. Chick-fil-A is nearby."
+    assert opening_line(None) == "Hi, I'm the Nessential agent, an AI assistant."
+    assert opening_line("  Chick-fil-A is nearby. ") == "Hi, I'm the Nessential agent, an AI assistant. Chick-fil-A is nearby."
 
 
 def test_llm_credentials_never_leak_to_other_hosts(monkeypatch):

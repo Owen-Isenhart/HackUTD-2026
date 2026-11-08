@@ -3,7 +3,8 @@ import hmac
 import logging
 import time
 import uuid
-from typing import Literal, Optional, Protocol
+import asyncio
+from typing import Callable, Literal, Optional, Protocol
 
 from fastapi import Depends, FastAPI, Header, HTTPException
 from livekit.api import SipCallError
@@ -23,7 +24,8 @@ SIP_OUTCOME = {408: CallStatus.no_answer, 480: CallStatus.no_answer, 486: CallSt
 class Dialer(Protocol):
     async def dial(self, room_name: str, to_number: str, scenario: Optional[str] = None,
                    user_id: str = "demo-user", *, call_id: Optional[str] = None,
-                   profile: str = "phone_details", identity_verified: bool = False) -> None: ...
+                   profile: str = "phone_details", identity_verified: bool = False,
+                   returning: bool = False) -> None: ...
 
 
 class CallRequest(BaseModel):
@@ -36,7 +38,13 @@ class CallRequest(BaseModel):
     call_id: Optional[uuid.UUID] = None
 
 
-def create_app(settings: Settings, dialer: Dialer, store: CallStore) -> FastAPI:
+SessionSeeder = Callable[[str, str, str], bool]
+
+
+def create_app(settings: Settings, dialer: Dialer, store: CallStore,
+               seed_session: Optional[SessionSeeder] = None) -> FastAPI:
+    """seed_session(room, user_id, number) pre-verifies an outbound phone_details call in the lookup
+    service; it only succeeds when the number is the user's own linked phone in Tiger."""
     app = FastAPI(title="nessi-calls")
 
     def require_key(x_api_key: Optional[str] = Header(default=None)) -> None:
@@ -80,7 +88,15 @@ def create_app(settings: Settings, dialer: Dialer, store: CallStore) -> FastAPI:
             return {"call_id": rec.call_id, "room_name": rec.room_name,
                     "status": rec.status.value}
         try:
-            metadata = {"profile": req.profile, "identity_verified": req.identity_verified}
+            verified = req.identity_verified
+            if verified and req.profile == "phone_details" and seed_session is not None:
+                # Seed before dialing, so the session is verified before the callee can speak. If the
+                # lookup service does not confirm the link, the agent verifies the caller itself.
+                verified = await asyncio.to_thread(seed_session, rec.room_name, req.user_id, number)
+                log.info("phone_details session seeded call_id=%s verified=%s", rec.call_id, verified)
+            metadata = {"profile": req.profile, "identity_verified": verified}
+            if verified and seed_session is not None and req.profile == "phone_details":
+                metadata["returning"] = True
             if call_id:
                 metadata["call_id"] = call_id
             await dialer.dial(rec.room_name, number, req.scenario, req.user_id, **metadata)

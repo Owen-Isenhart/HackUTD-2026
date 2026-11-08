@@ -74,7 +74,7 @@ Set `RECOMMENDATION_API_URL` in `.env.local` (and `RECOMMENDATION_API_KEY` if th
 ## Open items
 
 - **Real recommendation endpoint:** not connected. Dummy only.
-- **Inbound calls:** not tested. Photon's inbound toggle toward the LiveKit SIP address was never confirmed in the dashboard.
+- **Inbound calls:** inbound onboarding reached the worker and completed on a real call (see `services/calls/docs/onboarding.md`). Returning callers: numbers linked in Tiger (`onboarding_phone_link`) to an onboarded user now get the phone-details sequence instead of onboarding. Unit-tested only; migration 008 and live calls are still to run (`services/calls/docs/smoke-test.md`). Every call now introduces itself as "the Nessential agent".
 - **Call status:** `POST /calls` returns `dial_requested`. A no-answer or declined call is stored as `failed`, not `no_answer`/`busy`; answered/ended are not tracked from LiveKit events.
 - **Intermittent `403 permission_denied`** on a first dial; check Photon call activity.
 - **Credentials:** the LiveKit API secret, the NVIDIA key, the Nessie key and the Photon SIP password were all pasted into the working session. Rotate them after the demo. Nothing secret is in the repo (history scanned); provider resource IDs above are identifiers, not credentials. The repo is public.

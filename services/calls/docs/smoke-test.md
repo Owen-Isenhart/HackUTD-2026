@@ -54,3 +54,18 @@ Inbound access clarification: removed the demo phone allowlist from inbound onbo
 First inbound validation reached the voice worker and spoke the unavailable fallback before identity collection. Diagnosis found an unregistered calling number and a session validator that rejected LiveKit room names containing plus signs. Fixed the validator and made phone-first calls create a provisional unverified signup automatically. No prior app signup or inbound allowlist is now required.
 
 Latest script revision: short AI-disclosed welcome, first/last name, last four digits, immediate lookup, and one fixed success or failure closing. No confirmation word, digit readback, transaction summary, or follow-up questions after the result. This intentionally supersedes the original prompt’s readback/confirmation and unavailable-follow-up instructions.
+
+## Returning callers, 2026-11-08
+
+Branch `feat/phone-details-returning` (merge of `onboarding_call` plus routing). Registered numbers get the phone-details sequence; new numbers keep onboarding. Spoken brand changed to "the Nessential agent" / "Nessential" on every call.
+
+| Check | Status | Evidence |
+|---|---|---|
+| Routing, returning-caller agent guards, outbound seeding, SIP 403 retry, log hashing, spoken brand | VERIFIED (unit) | 117 Python tests passed (`uv run --locked pytest -q`) |
+| Speech helpers, identity gate before data, linked-account-only match, three-item cap, spoken twins, HTTP routes | VERIFIED (unit) | `npm test`: 67 passed, 3 skipped |
+| Tiger phone link, route, session separation, link-conflict rollback, seeding (migration 008) | NOT RUN | `test/onboarding-store.test.js` needs a disposable `ONBOARDING_TEST_DATABASE_URL`; no local PostgreSQL in this session |
+| Migration 008 applied to Tiger | VERIFIED | Applied alone in one transaction (Tiger lacks repo migrations 002-006; `--migrate` would add them). Backfill linked both verified users; the allowlisted test number's hash matches with the original `ONBOARDING_HASH_KEY` |
+| Live route for the test number | VERIFIED (HTTP) | Lookup service on 8790 returned `registered` / `phone_details`; a balance question before verification returned `identity_required`. Worker `nessi-onboarding-agent` registered in US Central |
+| Live: same phone after onboarding gets the welcome-back sequence and answers | NOT RUN (phone) | |
+| Live: registered phone, wrong digits twice, app referral, next call still phone details | NOT RUN (phone) | |
+| Live: data question before verifying is refused | NOT RUN (phone) | |

@@ -25,15 +25,18 @@ class CallContext:
     identity_verified: bool = False
     call_id: Optional[str] = None
     phone_number: Optional[str] = None
+    # Set only by the inbound Tiger route or a seeded outbound call: answered by the lookup service,
+    # which checks identity against the caller's own linked account.
+    returning: bool = False
 
 
 DEFAULT_PROFILE = 'phone_details'
 PROFILES = {
     'onboarding': Profile('onboarding', 'onboarding.txt', 'phone',
-        "Say exactly: Welcome to Nessiessential onboarding with your AI assistant. What's your first and last name?",
+        "Say exactly: Hi, I'm the Nessential agent, an AI assistant. Welcome to Nessential onboarding. What's your first and last name?",
         True, True, 300, ('respond_to_caller', 'record_decision')),
     'phone_details': Profile('phone_details', 'phone_details.txt', 'phone',
-        'Greet the caller as an AI assistant. If identity is verified, say why you are calling; otherwise ask for their first and last name.',
+        'Greet the caller as the Nessential agent, an AI assistant. If identity is verified, say why you are calling; otherwise ask for their first and last name.',
         True, True, 600, ('respond_to_caller', 'record_decision', 'save_call_note')),
     'app_voice': Profile('app_voice', 'app_voice.txt', 'app', None,
         False, False, 1800, ('respond_to_caller', 'navigate_app')),

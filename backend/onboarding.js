@@ -59,17 +59,19 @@ function createNessieLookup({ env = process.env, fetchImpl = fetch } = {}) {
   const origin = new URL(env.NESSIE_API_BASE_URL || 'https://api.nessieisreal.com');
   if (origin.protocol !== 'https:' || origin.username || origin.password || origin.search || origin.hash
     || origin.pathname !== '/' || !env.NESSIE_API_KEY) throw new Error('Configure an HTTPS Nessie origin and server key.');
-  async function get(path) {
+  async function fetchJson(path, isValid) {
     const url = new URL(path, origin);
     url.searchParams.set('key', env.NESSIE_API_KEY);
     try {
       const response = await fetchImpl(url, { redirect: 'error', signal: AbortSignal.timeout(5000) });
       if (!response.ok) throw Error();
       const result = await response.json();
-      if (!Array.isArray(result)) throw Error();
+      if (!isValid(result)) throw Error();
       return result;
     } catch { throw new Error('Nessie unavailable.'); }
   }
+  const get = (path) => fetchJson(path, Array.isArray);
+  const getObject = (path) => fetchJson(path, (value) => value && typeof value === 'object' && !Array.isArray(value));
   const id = (value) => {
     if (typeof value !== 'string' || !/^[a-z0-9-]{1,128}$/i.test(value)) throw Error('Invalid resource.');
     return encodeURIComponent(value);
@@ -79,6 +81,10 @@ function createNessieLookup({ env = process.env, fetchImpl = fetch } = {}) {
     accounts: (customer) => get(`/customers/${id(customer)}/accounts`),
     purchases: (account) => get(`/accounts/${id(account)}/purchases`),
     merchants: () => get('/merchants'),
+    // Read-only lookups for a returning caller's own linked customer and account.
+    customer: (customer) => getObject(`/customers/${id(customer)}`),
+    account: (account) => getObject(`/accounts/${id(account)}`),
+    bills: (account) => get(`/accounts/${id(account)}/bills`),
   };
 }
 
@@ -149,4 +155,4 @@ function createOnboarding({ store, nessie, env = process.env, fetchImpl = fetch,
   };
 }
 
-module.exports = { createOnboarding, createNessieLookup, extractIdentity, normalizeLast4, unsafeInput };
+module.exports = { createOnboarding, createNessieLookup, extractIdentity, validateIdentity, normalizeLast4, unsafeInput };
