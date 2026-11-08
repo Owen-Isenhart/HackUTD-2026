@@ -1,0 +1,6763 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/EmailMessageReceivedEvent",
+  "$defs": {
+    "AcceptedEmailMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "$ref": "#/$defs/MessageAcceptance"
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/EmailMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "email",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "accepted",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/AcceptedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "acceptance",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "AcceptedImessageMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "$ref": "#/$defs/MessageAcceptance"
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/ImessageMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "imessage",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "accepted",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/AcceptedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "acceptance",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "AcceptedMessageTimestamps": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "description": "When Photon finalized terminal acceptance.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "deliveredAt": {
+          "not": {}
+        },
+        "dispatchedAt": {
+          "description": "When the emitting service established the public dispatch/send milestone.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "receivedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "dispatchedAt",
+        "acceptedAt"
+      ],
+      "type": "object"
+    },
+    "AcceptedSmsMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "$ref": "#/$defs/MessageAcceptance"
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/SmsMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "sms",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "accepted",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/AcceptedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "acceptance",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "AcceptedTelegramMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "$ref": "#/$defs/MessageAcceptance"
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/TelegramMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "telegram",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "accepted",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/AcceptedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "acceptance",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "AcceptedUnknownMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "$ref": "#/$defs/MessageAcceptance"
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/Content"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "$ref": "#/$defs/PlatformIdentifier"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "accepted",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/AcceptedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "acceptance",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "AcceptedWhatsappBusinessMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "$ref": "#/$defs/MessageAcceptance"
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/WhatsappBusinessMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "whatsapp_business",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "accepted",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/AcceptedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "acceptance",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "AcceptedWhatsappMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "$ref": "#/$defs/MessageAcceptance"
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/WhatsappMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "whatsapp",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "accepted",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/AcceptedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "acceptance",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "AppInstallationId": {
+      "pattern": "^pho_ain_[0-7][0-9a-hjkmnp-tv-z]{25}$",
+      "type": "string"
+    },
+    "AttachmentContent": {
+      "additionalProperties": true,
+      "properties": {
+        "attachmentId": {
+          "$ref": "#/$defs/AttachmentId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "type": {
+          "const": "attachment",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "attachmentId"
+      ],
+      "type": "object"
+    },
+    "AttachmentId": {
+      "pattern": "^pho_att_[0-7][0-9a-hjkmnp-tv-z]{25}$",
+      "type": "string"
+    },
+    "ConfirmedRecipient": {
+      "additionalProperties": true,
+      "properties": {
+        "handle": {
+          "description": "Recipient handle from the original send: an email address for email, or the corresponding address on another platform.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "userId": {
+          "$ref": "#/$defs/UserId",
+          "description": "Photon User ID of the confirmed recipient."
+        }
+      },
+      "required": [
+        "userId",
+        "handle"
+      ],
+      "type": "object"
+    },
+    "Content": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/VoiceContent"
+            },
+            {
+              "$ref": "#/$defs/ReactionContent"
+            },
+            {
+              "$ref": "#/$defs/MessageDeleteContent"
+            },
+            {
+              "$ref": "#/$defs/MessageReadContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceParticipantsUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/PollContent"
+            },
+            {
+              "$ref": "#/$defs/PollVoteContent"
+            },
+            {
+              "$ref": "#/$defs/PollUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/GroupContent"
+            },
+            {
+              "$ref": "#/$defs/MessageUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "voice",
+                      "reaction",
+                      "message.delete",
+                      "message.read",
+                      "space.participants.update",
+                      "space.typing.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "group",
+                      "message.update",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "ContentMetadata": {
+      "additionalProperties": {
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "propertyNames": {
+          "type": "string"
+        },
+        "type": "object"
+      },
+      "properties": {
+        "email": {
+          "$ref": "#/$defs/EmailMetadata"
+        },
+        "voice": {
+          "$ref": "#/$defs/VoiceMetadata"
+        }
+      },
+      "type": "object"
+    },
+    "DeliveredEmailMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/EmailMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "email",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "delivered",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DeliveredMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DeliveredImessageMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/ImessageMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "imessage",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "delivered",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DeliveredMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DeliveredMessageTimestamps": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "deliveredAt": {
+          "description": "When Photon finalized delivery based on authoritative confirmation.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "dispatchedAt": {
+          "description": "When the emitting service established the public dispatch/send milestone.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "receivedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "dispatchedAt",
+        "deliveredAt"
+      ],
+      "type": "object"
+    },
+    "DeliveredSmsMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/SmsMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "sms",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "delivered",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DeliveredMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DeliveredTelegramMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/TelegramMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "telegram",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "delivered",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DeliveredMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DeliveredUnknownMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/Content"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "$ref": "#/$defs/PlatformIdentifier"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "delivered",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DeliveredMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DeliveredWhatsappBusinessMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/WhatsappBusinessMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "whatsapp_business",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "delivered",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DeliveredMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DeliveredWhatsappMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/WhatsappMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "whatsapp",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "delivered",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DeliveredMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DeliveryConfirmationNotApplicableAcceptance": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "delivery_confirmation_not_applicable",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "confirmedRecipients": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "DeliveryConfirmationTimedOutAcceptance": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "delivery_confirmation_timed_out",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "confirmedRecipients": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "DeliveryConfirmationUnavailableAcceptance": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "delivery_confirmation_unavailable",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "confirmedRecipients": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "DeliveryPartiallyConfirmedAcceptance": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "delivery_partially_confirmed",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "description": "Unique recipients with authoritative delivery confirmation for the original send.",
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "confirmedRecipients": {
+          "description": "Optional complete list of confirmed recipient snapshots, each with a Photon userId and the handle used for the original send. User IDs must be unique, and both fields must be visible to the caller. The list length must equal confirmedRecipientCount. Persist the snapshots with the terminal outcome. Omit when the full confirmed set cannot be identified or disclosed; omission does not mean zero deliveries.",
+          "items": {
+            "$ref": "#/$defs/ConfirmedRecipient"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "confirmedRecipientCount"
+      ],
+      "type": "object"
+    },
+    "DispatchedEmailMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/EmailMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "email",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "dispatched",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DispatchedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DispatchedImessageMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/ImessageMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "imessage",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "dispatched",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DispatchedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DispatchedMessageTimestamps": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "deliveredAt": {
+          "not": {}
+        },
+        "dispatchedAt": {
+          "description": "When the emitting service established the public dispatch/send milestone.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "receivedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "dispatchedAt"
+      ],
+      "type": "object"
+    },
+    "DispatchedSmsMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/SmsMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "sms",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "dispatched",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DispatchedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DispatchedTelegramMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/TelegramMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "telegram",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "dispatched",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DispatchedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DispatchedUnknownMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/Content"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "$ref": "#/$defs/PlatformIdentifier"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "dispatched",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DispatchedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DispatchedWhatsappBusinessMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/WhatsappBusinessMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "whatsapp_business",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "dispatched",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DispatchedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "DispatchedWhatsappMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/WhatsappMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "whatsapp",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "dispatched",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/DispatchedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "EmailAddressing": {
+      "additionalProperties": true,
+      "properties": {
+        "bcc": {
+          "description": "Omitted means unavailable or undisclosed; an empty array means known empty. Never infer hidden recipients from another observation.",
+          "items": {
+            "$ref": "#/$defs/EmailMailbox"
+          },
+          "type": "array"
+        },
+        "cc": {
+          "description": "Omitted means unavailable or undisclosed; an empty array means known empty. Never infer hidden recipients from another observation.",
+          "items": {
+            "$ref": "#/$defs/EmailMailbox"
+          },
+          "type": "array"
+        },
+        "from": {
+          "$ref": "#/$defs/EmailMailbox",
+          "description": "The captured sender mailbox. Its address and resolved User ID must agree with the source Message's sentBy."
+        },
+        "replyTo": {
+          "description": "Omitted means unavailable or undisclosed; an empty array means known empty. Never infer hidden recipients from another observation.",
+          "items": {
+            "$ref": "#/$defs/EmailMailbox"
+          },
+          "type": "array"
+        },
+        "sourceMessageId": {
+          "$ref": "#/$defs/MessageId",
+          "description": "The Message that supplied this observation. In a Message Space snapshot this is the containing Message's own ID, not its parent ID."
+        },
+        "to": {
+          "description": "Omitted means unavailable or undisclosed; an empty array means known empty. Never infer hidden recipients from another observation.",
+          "items": {
+            "$ref": "#/$defs/EmailMailbox"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "sourceMessageId",
+        "from"
+      ],
+      "type": "object"
+    },
+    "EmailContentDisposition": {
+      "enum": [
+        "inline",
+        "attachment"
+      ],
+      "type": "string"
+    },
+    "EmailGroupContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "parts": {
+          "items": {
+            "$ref": "#/$defs/EmailGroupContentPart"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "type": {
+          "const": "group",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "parts"
+      ],
+      "type": "object"
+    },
+    "EmailGroupContentPart": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/VoiceContent"
+            },
+            {
+              "$ref": "#/$defs/ReactionContent"
+            },
+            {
+              "$ref": "#/$defs/MessageDeleteContent"
+            },
+            {
+              "$ref": "#/$defs/MessageReadContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceParticipantsUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/PollContent"
+            },
+            {
+              "$ref": "#/$defs/PollVoteContent"
+            },
+            {
+              "$ref": "#/$defs/PollUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "voice",
+                      "reaction",
+                      "message.delete",
+                      "message.read",
+                      "space.participants.update",
+                      "space.typing.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "message.update",
+                      "group",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "EmailMailbox": {
+      "additionalProperties": true,
+      "properties": {
+        "address": {
+          "$ref": "#/$defs/EmailMailboxAddress"
+        },
+        "name": {
+          "description": "The captured display name, when known.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "userId": {
+          "$ref": "#/$defs/UserId",
+          "description": "The resolved Photon User ID, when available. Outbound admission must resolve every mailbox before capture."
+        }
+      },
+      "required": [
+        "address"
+      ],
+      "type": "object"
+    },
+    "EmailMailboxAddress": {
+      "description": "The captured mailbox address. Preserve local-part case; admission services own normalization and sending restrictions.",
+      "minLength": 1,
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "pattern": "[\\s\\x00-\\x1f\\x7f]",
+          "type": "string"
+        }
+      ],
+      "pattern": "^[^\\s@\\x00-\\x1f\\x7f]+@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)*$",
+      "type": "string"
+    },
+    "EmailMessage": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ReceivedEmailMessage"
+        },
+        {
+          "$ref": "#/$defs/DispatchedEmailMessage"
+        },
+        {
+          "$ref": "#/$defs/AcceptedEmailMessage"
+        },
+        {
+          "$ref": "#/$defs/DeliveredEmailMessage"
+        },
+        {
+          "$ref": "#/$defs/FailedEmailMessage"
+        }
+      ]
+    },
+    "EmailMessageContent": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/VoiceContent"
+            },
+            {
+              "$ref": "#/$defs/ReactionContent"
+            },
+            {
+              "$ref": "#/$defs/MessageDeleteContent"
+            },
+            {
+              "$ref": "#/$defs/MessageReadContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceParticipantsUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/PollContent"
+            },
+            {
+              "$ref": "#/$defs/PollVoteContent"
+            },
+            {
+              "$ref": "#/$defs/PollUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/EmailGroupContent"
+            },
+            {
+              "$ref": "#/$defs/MessageUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "voice",
+                      "reaction",
+                      "message.delete",
+                      "message.read",
+                      "space.participants.update",
+                      "space.typing.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "group",
+                      "message.update",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "EmailMessageReceivedEvent": {
+      "additionalProperties": true,
+      "properties": {
+        "apiVersion": {
+          "const": "2026-07-01",
+          "type": "string"
+        },
+        "app_installation_id": {
+          "$ref": "#/$defs/AppInstallationId",
+          "description": "Public App installation ID. Present only on App webhook deliveries."
+        },
+        "data": {
+          "$ref": "#/$defs/EmailMessageReceivedEventData"
+        },
+        "id": {
+          "$ref": "#/$defs/EventId"
+        },
+        "source": {
+          "const": "email.photon",
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "type": {
+          "const": "message.received",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "apiVersion",
+        "source",
+        "timestamp",
+        "data"
+      ],
+      "type": "object"
+    },
+    "EmailMessageReceivedEventData": {
+      "additionalProperties": true,
+      "properties": {
+        "object": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Message"
+            },
+            {
+              "additionalProperties": {},
+              "properties": {
+                "platform": {
+                  "const": "email",
+                  "type": "string"
+                },
+                "status": {
+                  "const": "received",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "platform",
+                "status"
+              ],
+              "type": "object"
+            }
+          ]
+        },
+        "organizationId": {
+          "$ref": "#/$defs/OrganizationId",
+          "description": "Public organization owning the event's project. May be absent on older events."
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        }
+      },
+      "required": [
+        "projectId",
+        "object"
+      ],
+      "type": "object"
+    },
+    "EmailMetadata": {
+      "additionalProperties": true,
+      "properties": {
+        "contentDisposition": {
+          "$ref": "#/$defs/EmailContentDisposition"
+        },
+        "contentId": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "originalHtml": {
+          "type": "string"
+        },
+        "related": {
+          "type": "boolean"
+        },
+        "sourceMediaType": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "subject": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "EmailSpaceDetails": {
+      "additionalProperties": true,
+      "properties": {
+        "latestAddressing": {
+          "$ref": "#/$defs/EmailAddressing",
+          "description": "The latest eligible whole observation on a canonical Space, or this Message's immutable capture in an embedded Space. Absent when no observation is available."
+        }
+      },
+      "type": "object"
+    },
+    "EmailSpaceSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/EmailSpaceDetails"
+        },
+        "id": {
+          "$ref": "#/$defs/SpaceId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "participantIds": {
+          "items": {
+            "$ref": "#/$defs/UserId"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "platform": {
+          "const": "email",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "kind",
+        "participantIds",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "EmailUserDetails": {
+      "additionalProperties": true,
+      "properties": {
+        "managedBy": {
+          "$ref": "#/$defs/ManagerId"
+        },
+        "resourceId": {
+          "$ref": "#/$defs/ResourceId"
+        }
+      },
+      "type": "object"
+    },
+    "EmailUserSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/EmailUserDetails"
+        },
+        "handle": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/$defs/UserId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "platform": {
+          "const": "email",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "handle",
+        "kind",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "EventId": {
+      "pattern": "^pho_evt_[0-7][0-9a-hjkmnp-tv-z]{25}$",
+      "type": "string"
+    },
+    "FailedEmailMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/EmailMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "$ref": "#/$defs/MessageFailure"
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "email",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "failed",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/FailedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "failure",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "FailedImessageMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/ImessageMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "$ref": "#/$defs/MessageFailure"
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "imessage",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "failed",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/FailedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "failure",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "FailedMessageTimestamps": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "deliveredAt": {
+          "not": {}
+        },
+        "dispatchedAt": {
+          "description": "When the emitting service established the public dispatch/send milestone.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failedAt": {
+          "description": "When Photon finalized terminal failure.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "receivedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "failedAt"
+      ],
+      "type": "object"
+    },
+    "FailedSmsMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/SmsMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "$ref": "#/$defs/MessageFailure"
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "sms",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "failed",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/FailedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "failure",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "FailedTelegramMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/TelegramMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "$ref": "#/$defs/MessageFailure"
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "telegram",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "failed",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/FailedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "failure",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "FailedUnknownMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/Content"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "$ref": "#/$defs/MessageFailure"
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "$ref": "#/$defs/PlatformIdentifier"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "failed",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/FailedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "failure",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "FailedWhatsappBusinessMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/WhatsappBusinessMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "$ref": "#/$defs/MessageFailure"
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "whatsapp_business",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "failed",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/FailedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "failure",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "FailedWhatsappMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/WhatsappMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "$ref": "#/$defs/MessageFailure"
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "whatsapp",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "failed",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/FailedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "failure",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "GroupContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "parts": {
+          "items": {
+            "$ref": "#/$defs/GroupContentPart"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "type": {
+          "const": "group",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "parts"
+      ],
+      "type": "object"
+    },
+    "GroupContentPart": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/VoiceContent"
+            },
+            {
+              "$ref": "#/$defs/ReactionContent"
+            },
+            {
+              "$ref": "#/$defs/MessageDeleteContent"
+            },
+            {
+              "$ref": "#/$defs/MessageReadContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceParticipantsUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/PollContent"
+            },
+            {
+              "$ref": "#/$defs/PollVoteContent"
+            },
+            {
+              "$ref": "#/$defs/PollUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "voice",
+                      "reaction",
+                      "message.delete",
+                      "message.read",
+                      "space.participants.update",
+                      "space.typing.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "message.update",
+                      "group",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "ImessageGroupContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "parts": {
+          "items": {
+            "$ref": "#/$defs/ImessageGroupContentPart"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "type": {
+          "const": "group",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "parts"
+      ],
+      "type": "object"
+    },
+    "ImessageGroupContentPart": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/MessageReadContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "message.read",
+                      "space.typing.update",
+                      "voice",
+                      "reaction",
+                      "message.delete",
+                      "space.participants.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "message.update",
+                      "group",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "ImessageMessage": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ReceivedImessageMessage"
+        },
+        {
+          "$ref": "#/$defs/DispatchedImessageMessage"
+        },
+        {
+          "$ref": "#/$defs/AcceptedImessageMessage"
+        },
+        {
+          "$ref": "#/$defs/DeliveredImessageMessage"
+        },
+        {
+          "$ref": "#/$defs/FailedImessageMessage"
+        }
+      ]
+    },
+    "ImessageMessageContent": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/MessageReadContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/ImessageGroupContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "message.read",
+                      "space.typing.update",
+                      "group",
+                      "voice",
+                      "reaction",
+                      "message.delete",
+                      "space.participants.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "message.update",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "ImessageSpaceDetails": {
+      "additionalProperties": true,
+      "properties": {},
+      "type": "object"
+    },
+    "ImessageSpaceSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/ImessageSpaceDetails"
+        },
+        "id": {
+          "$ref": "#/$defs/SpaceId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "participantIds": {
+          "items": {
+            "$ref": "#/$defs/UserId"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "platform": {
+          "const": "imessage",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "kind",
+        "participantIds",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "ImessageUserDetails": {
+      "additionalProperties": true,
+      "properties": {
+        "managedBy": {
+          "$ref": "#/$defs/ManagerId"
+        },
+        "resourceId": {
+          "$ref": "#/$defs/ResourceId"
+        },
+        "type": {
+          "$ref": "#/$defs/UserLineType"
+        }
+      },
+      "type": "object"
+    },
+    "ImessageUserSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/ImessageUserDetails"
+        },
+        "handle": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/$defs/UserId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "platform": {
+          "const": "imessage",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "handle",
+        "kind",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "type": "array"
+        },
+        {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "ManagerId": {
+      "pattern": "^pho_mgr_[0-7][0-9a-hjkmnp-tv-z]{25}$",
+      "type": "string"
+    },
+    "Message": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SmsMessage"
+            },
+            {
+              "$ref": "#/$defs/WhatsappMessage"
+            },
+            {
+              "$ref": "#/$defs/WhatsappBusinessMessage"
+            },
+            {
+              "$ref": "#/$defs/EmailMessage"
+            },
+            {
+              "$ref": "#/$defs/ImessageMessage"
+            },
+            {
+              "$ref": "#/$defs/TelegramMessage"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownMessage"
+            },
+            {
+              "properties": {
+                "platform": {
+                  "not": {
+                    "enum": [
+                      "sms",
+                      "whatsapp",
+                      "whatsapp_business",
+                      "email",
+                      "imessage",
+                      "telegram",
+                      "voice"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "platform"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "MessageAcceptance": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/DeliveryConfirmationUnavailableAcceptance"
+        },
+        {
+          "$ref": "#/$defs/DeliveryConfirmationNotApplicableAcceptance"
+        },
+        {
+          "$ref": "#/$defs/DeliveryConfirmationTimedOutAcceptance"
+        },
+        {
+          "$ref": "#/$defs/DeliveryPartiallyConfirmedAcceptance"
+        }
+      ]
+    },
+    "MessageBlockedByCarrierFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "message_blocked_by_carrier",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "MessageBlockedFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "message_blocked",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "MessageContentInvalidFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "message_content_invalid",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "MessageDeleteContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "reason": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "scope": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "type": {
+          "const": "message.delete",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "MessageDeliveryFailedFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "message_delivery_failed",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "description": "Unique recipients with authoritative delivery confirmation for the original send; omission means evidence is not supplied.",
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "MessageExpiredFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "message_expired",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "MessageFailedFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "message_failed",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "MessageFailure": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/SenderNotAuthorizedFailure"
+        },
+        {
+          "$ref": "#/$defs/SenderUnavailableFailure"
+        },
+        {
+          "$ref": "#/$defs/SenderRegistrationRequiredFailure"
+        },
+        {
+          "$ref": "#/$defs/RecipientInvalidFailure"
+        },
+        {
+          "$ref": "#/$defs/RecipientUnreachableFailure"
+        },
+        {
+          "$ref": "#/$defs/RecipientOptedOutFailure"
+        },
+        {
+          "$ref": "#/$defs/MessageTypeUnsupportedFailure"
+        },
+        {
+          "$ref": "#/$defs/MessageContentInvalidFailure"
+        },
+        {
+          "$ref": "#/$defs/MessageTooLargeFailure"
+        },
+        {
+          "$ref": "#/$defs/MessageBlockedFailure"
+        },
+        {
+          "$ref": "#/$defs/MessageBlockedByCarrierFailure"
+        },
+        {
+          "$ref": "#/$defs/MessageRateLimitedFailure"
+        },
+        {
+          "$ref": "#/$defs/MessageRejectedFailure"
+        },
+        {
+          "$ref": "#/$defs/MessageExpiredFailure"
+        },
+        {
+          "$ref": "#/$defs/MessageDeliveryFailedFailure"
+        },
+        {
+          "$ref": "#/$defs/MessageSubmissionUnknownFailure"
+        },
+        {
+          "$ref": "#/$defs/MessagingUnavailableFailure"
+        },
+        {
+          "$ref": "#/$defs/MessageFailedFailure"
+        }
+      ]
+    },
+    "MessageId": {
+      "pattern": "^pho_msg_[0-7][0-9a-hjkmnp-tv-z]{25}$",
+      "type": "string"
+    },
+    "MessageRateLimitedFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "message_rate_limited",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "MessageReadContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "type": {
+          "const": "message.read",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "MessageRejectedFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "message_rejected",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "MessageSubmissionUnknownFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "message_submission_unknown",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "MessageTooLargeFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "message_too_large",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "MessageTypeUnsupportedFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "message_type_unsupported",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "MessageUpdateContent": {
+      "additionalProperties": true,
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/MessageUpdateValue"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "type": {
+          "const": "message.update",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "content"
+      ],
+      "type": "object"
+    },
+    "MessageUpdateGroupContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "parts": {
+          "items": {
+            "$ref": "#/$defs/MessageUpdateGroupContentPart"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "type": {
+          "const": "group",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "parts"
+      ],
+      "type": "object"
+    },
+    "MessageUpdateGroupContentPart": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/TextContent"
+        },
+        {
+          "$ref": "#/$defs/AttachmentContent"
+        },
+        {
+          "$ref": "#/$defs/VoiceContent"
+        }
+      ]
+    },
+    "MessageUpdateValue": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MessageUpdateGroupContentPart"
+        },
+        {
+          "$ref": "#/$defs/MessageUpdateGroupContent"
+        }
+      ]
+    },
+    "MessagingUnavailableFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "messaging_unavailable",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "OrganizationId": {
+      "pattern": "^pho_org_[0-7][0-9a-hjkmnp-tv-z]{25}$",
+      "type": "string"
+    },
+    "PhoneCarrier": {
+      "additionalProperties": true,
+      "minProperties": 1,
+      "properties": {
+        "lineType": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "mobileCountryCode": {
+          "pattern": "^[0-9]{3}$",
+          "type": "string"
+        },
+        "mobileNetworkCode": {
+          "pattern": "^[0-9]{2,3}$",
+          "type": "string"
+        },
+        "name": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "normalizedName": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "PlatformIdentifier": {
+      "pattern": "^[a-z][a-z0-9_-]*$",
+      "type": "string"
+    },
+    "PollContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/PollOption"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "question": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "selectionMode": {
+          "$ref": "#/$defs/PollSelectionMode"
+        },
+        "type": {
+          "const": "poll",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "question",
+        "options",
+        "selectionMode"
+      ],
+      "type": "object"
+    },
+    "PollOption": {
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "text": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "text"
+      ],
+      "type": "object"
+    },
+    "PollSelectionMode": {
+      "enum": [
+        "single",
+        "multiple"
+      ],
+      "type": "string"
+    },
+    "PollUpdateContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/PollOption"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "question": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "selectionMode": {
+          "$ref": "#/$defs/PollSelectionMode"
+        },
+        "type": {
+          "const": "poll.update",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "question",
+        "options",
+        "selectionMode"
+      ],
+      "type": "object"
+    },
+    "PollVoteContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "selectedOptions": {
+          "items": {
+            "$ref": "#/$defs/PollOption"
+          },
+          "type": "array"
+        },
+        "type": {
+          "const": "poll.vote",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "selectedOptions"
+      ],
+      "type": "object"
+    },
+    "ProjectId": {
+      "pattern": "^pho_prj_[0-7][0-9a-hjkmnp-tv-z]{25}$",
+      "type": "string"
+    },
+    "ReactionContent": {
+      "additionalProperties": true,
+      "properties": {
+        "action": {
+          "not": {}
+        },
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "reaction": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "type": {
+          "const": "reaction",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "reaction"
+      ],
+      "type": "object"
+    },
+    "ReceivedEmailMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/EmailMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "email",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "received",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/ReceivedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "ReceivedImessageMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/ImessageMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "imessage",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "received",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/ReceivedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "ReceivedMessageTimestamps": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "deliveredAt": {
+          "not": {}
+        },
+        "dispatchedAt": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "receivedAt": {
+          "description": "Authoritative source receipt or observation time, preserved across replay.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receivedAt"
+      ],
+      "type": "object"
+    },
+    "ReceivedSmsMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/SmsMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "sms",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "received",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/ReceivedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "ReceivedTelegramMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/TelegramMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "telegram",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "received",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/ReceivedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "ReceivedUnknownMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/Content"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "$ref": "#/$defs/PlatformIdentifier"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "received",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/ReceivedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "ReceivedWhatsappBusinessMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/WhatsappBusinessMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "whatsapp_business",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "received",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/ReceivedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "ReceivedWhatsappMessage": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptance": {
+          "not": {}
+        },
+        "addressedTo": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "content": {
+          "$ref": "#/$defs/WhatsappMessageContent"
+        },
+        "createdAt": {
+          "description": "When Photon first persisted this resource.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "failure": {
+          "not": {}
+        },
+        "id": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "parentMessageId": {
+          "$ref": "#/$defs/MessageId"
+        },
+        "platform": {
+          "const": "whatsapp",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "receivedBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "sentBy": {
+          "$ref": "#/$defs/UserSnapshot"
+        },
+        "space": {
+          "$ref": "#/$defs/SpaceSnapshot"
+        },
+        "status": {
+          "const": "received",
+          "type": "string"
+        },
+        "timestamp": {
+          "not": {}
+        },
+        "timestamps": {
+          "$ref": "#/$defs/ReceivedMessageTimestamps"
+        },
+        "updatedAt": {
+          "description": "When Photon last persisted a change to this resource's public state.",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "space",
+        "sentBy",
+        "content",
+        "metadata",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "timestamps"
+      ],
+      "type": "object"
+    },
+    "RecipientInvalidFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "recipient_invalid",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "RecipientOptedOutFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "recipient_opted_out",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "RecipientUnreachableFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "recipient_unreachable",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "ResourceId": {
+      "pattern": "^pho_res_[0-7][0-9a-hjkmnp-tv-z]{25}$",
+      "type": "string"
+    },
+    "ResourceMetadata": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "properties": {
+        "displayName": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "email": {
+          "$ref": "#/$defs/EmailMetadata"
+        },
+        "spam": {
+          "$ref": "#/$defs/SpamClassification"
+        }
+      },
+      "type": "object"
+    },
+    "SenderNotAuthorizedFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "sender_not_authorized",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "SenderRegistrationRequiredFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "sender_registration_required",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "SenderUnavailableFailure": {
+      "additionalProperties": true,
+      "properties": {
+        "acceptedAt": {
+          "not": {}
+        },
+        "code": {
+          "const": "sender_unavailable",
+          "type": "string"
+        },
+        "confirmedRecipientCount": {
+          "not": {}
+        },
+        "failedAt": {
+          "not": {}
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "SmsGroupContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "parts": {
+          "items": {
+            "$ref": "#/$defs/SmsGroupContentPart"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "type": {
+          "const": "group",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "parts"
+      ],
+      "type": "object"
+    },
+    "SmsGroupContentPart": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/VoiceContent"
+            },
+            {
+              "$ref": "#/$defs/ReactionContent"
+            },
+            {
+              "$ref": "#/$defs/MessageDeleteContent"
+            },
+            {
+              "$ref": "#/$defs/MessageReadContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceParticipantsUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/PollContent"
+            },
+            {
+              "$ref": "#/$defs/PollVoteContent"
+            },
+            {
+              "$ref": "#/$defs/PollUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "voice",
+                      "reaction",
+                      "message.delete",
+                      "message.read",
+                      "space.participants.update",
+                      "space.typing.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "message.update",
+                      "group",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "SmsMessage": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ReceivedSmsMessage"
+        },
+        {
+          "$ref": "#/$defs/DispatchedSmsMessage"
+        },
+        {
+          "$ref": "#/$defs/AcceptedSmsMessage"
+        },
+        {
+          "$ref": "#/$defs/DeliveredSmsMessage"
+        },
+        {
+          "$ref": "#/$defs/FailedSmsMessage"
+        }
+      ]
+    },
+    "SmsMessageContent": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/VoiceContent"
+            },
+            {
+              "$ref": "#/$defs/ReactionContent"
+            },
+            {
+              "$ref": "#/$defs/MessageDeleteContent"
+            },
+            {
+              "$ref": "#/$defs/MessageReadContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceParticipantsUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/PollContent"
+            },
+            {
+              "$ref": "#/$defs/PollVoteContent"
+            },
+            {
+              "$ref": "#/$defs/PollUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/SmsGroupContent"
+            },
+            {
+              "$ref": "#/$defs/MessageUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "voice",
+                      "reaction",
+                      "message.delete",
+                      "message.read",
+                      "space.participants.update",
+                      "space.typing.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "group",
+                      "message.update",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "SmsSpaceDetails": {
+      "additionalProperties": true,
+      "properties": {},
+      "type": "object"
+    },
+    "SmsSpaceSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/SmsSpaceDetails"
+        },
+        "id": {
+          "$ref": "#/$defs/SpaceId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "participantIds": {
+          "items": {
+            "$ref": "#/$defs/UserId"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "platform": {
+          "const": "sms",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "kind",
+        "participantIds",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "SmsUserDetails": {
+      "additionalProperties": true,
+      "properties": {
+        "carrier": {
+          "$ref": "#/$defs/PhoneCarrier"
+        },
+        "countryCode": {
+          "pattern": "^[A-Z]{2}$",
+          "type": "string"
+        },
+        "managedBy": {
+          "$ref": "#/$defs/ManagerId"
+        },
+        "nationalFormat": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "resourceId": {
+          "$ref": "#/$defs/ResourceId"
+        }
+      },
+      "type": "object"
+    },
+    "SmsUserSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/SmsUserDetails"
+        },
+        "handle": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/$defs/UserId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "platform": {
+          "const": "sms",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "handle",
+        "kind",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "SpaceId": {
+      "pattern": "^pho_spc_[0-7][0-9a-hjkmnp-tv-z]{25}$",
+      "type": "string"
+    },
+    "SpaceParticipantsUpdateContent": {
+      "additionalProperties": true,
+      "properties": {
+        "added": {
+          "items": {
+            "$ref": "#/$defs/UserSnapshot"
+          },
+          "type": "array"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "removed": {
+          "items": {
+            "$ref": "#/$defs/UserSnapshot"
+          },
+          "type": "array"
+        },
+        "type": {
+          "const": "space.participants.update",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "added",
+        "removed"
+      ],
+      "type": "object"
+    },
+    "SpaceSnapshot": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SmsSpaceSnapshot"
+            },
+            {
+              "$ref": "#/$defs/WhatsappSpaceSnapshot"
+            },
+            {
+              "$ref": "#/$defs/WhatsappBusinessSpaceSnapshot"
+            },
+            {
+              "$ref": "#/$defs/EmailSpaceSnapshot"
+            },
+            {
+              "$ref": "#/$defs/VoiceSpaceSnapshot"
+            },
+            {
+              "$ref": "#/$defs/ImessageSpaceSnapshot"
+            },
+            {
+              "$ref": "#/$defs/TelegramSpaceSnapshot"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownSpaceSnapshot"
+            },
+            {
+              "properties": {
+                "platform": {
+                  "not": {
+                    "enum": [
+                      "sms",
+                      "whatsapp",
+                      "whatsapp_business",
+                      "email",
+                      "voice",
+                      "imessage",
+                      "telegram"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "platform"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "SpaceTypingUpdateContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "type": {
+          "const": "space.typing.update",
+          "type": "string"
+        },
+        "typing": {
+          "description": "True starts or refreshes typing; false stops it or reports a stop.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "typing"
+      ],
+      "type": "object"
+    },
+    "SpamClassification": {
+      "additionalProperties": true,
+      "properties": {
+        "classifiedAt": {
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "source": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "status": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "source"
+      ],
+      "type": "object"
+    },
+    "TelegramGroupContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "parts": {
+          "items": {
+            "$ref": "#/$defs/TelegramGroupContentPart"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "type": {
+          "const": "group",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "parts"
+      ],
+      "type": "object"
+    },
+    "TelegramGroupContentPart": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/VoiceContent"
+            },
+            {
+              "$ref": "#/$defs/MessageDeleteContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "voice",
+                      "message.delete",
+                      "space.typing.update",
+                      "reaction",
+                      "message.read",
+                      "space.participants.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "message.update",
+                      "group",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "TelegramMessage": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ReceivedTelegramMessage"
+        },
+        {
+          "$ref": "#/$defs/DispatchedTelegramMessage"
+        },
+        {
+          "$ref": "#/$defs/AcceptedTelegramMessage"
+        },
+        {
+          "$ref": "#/$defs/DeliveredTelegramMessage"
+        },
+        {
+          "$ref": "#/$defs/FailedTelegramMessage"
+        }
+      ]
+    },
+    "TelegramMessageContent": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/VoiceContent"
+            },
+            {
+              "$ref": "#/$defs/MessageDeleteContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/TelegramGroupContent"
+            },
+            {
+              "$ref": "#/$defs/MessageUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "voice",
+                      "message.delete",
+                      "space.typing.update",
+                      "group",
+                      "message.update",
+                      "reaction",
+                      "message.read",
+                      "space.participants.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "TelegramSpaceDetails": {
+      "additionalProperties": true,
+      "properties": {},
+      "type": "object"
+    },
+    "TelegramSpaceSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/TelegramSpaceDetails"
+        },
+        "id": {
+          "$ref": "#/$defs/SpaceId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "participantIds": {
+          "items": {
+            "$ref": "#/$defs/UserId"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "platform": {
+          "const": "telegram",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "kind",
+        "participantIds",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "TelegramUserDetails": {
+      "additionalProperties": true,
+      "properties": {
+        "resourceId": {
+          "$ref": "#/$defs/ResourceId"
+        }
+      },
+      "type": "object"
+    },
+    "TelegramUserSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/TelegramUserDetails"
+        },
+        "handle": {
+          "pattern": "^([1-9][0-9]{0,15}|chat:-?[1-9][0-9]{0,15})$",
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/$defs/UserId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "platform": {
+          "const": "telegram",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "handle",
+        "kind",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "TextContent": {
+      "additionalProperties": true,
+      "properties": {
+        "format": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "text": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "type": {
+          "const": "text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "format",
+        "text"
+      ],
+      "type": "object"
+    },
+    "UnknownContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "type": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "UnknownMessage": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ReceivedUnknownMessage"
+        },
+        {
+          "$ref": "#/$defs/DispatchedUnknownMessage"
+        },
+        {
+          "$ref": "#/$defs/AcceptedUnknownMessage"
+        },
+        {
+          "$ref": "#/$defs/DeliveredUnknownMessage"
+        },
+        {
+          "$ref": "#/$defs/FailedUnknownMessage"
+        }
+      ]
+    },
+    "UnknownSpaceSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "id": {
+          "$ref": "#/$defs/SpaceId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "participantIds": {
+          "items": {
+            "$ref": "#/$defs/UserId"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "platform": {
+          "$ref": "#/$defs/PlatformIdentifier"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "kind",
+        "participantIds",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "UnknownUserSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "id": {
+          "$ref": "#/$defs/UserId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "platform": {
+          "$ref": "#/$defs/PlatformIdentifier"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "kind",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "UserId": {
+      "pattern": "^pho_usr_[0-7][0-9a-hjkmnp-tv-z]{25}$",
+      "type": "string"
+    },
+    "UserLineType": {
+      "enum": [
+        "shared",
+        "dedicated"
+      ],
+      "type": "string"
+    },
+    "UserSnapshot": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SmsUserSnapshot"
+            },
+            {
+              "$ref": "#/$defs/WhatsappUserSnapshot"
+            },
+            {
+              "$ref": "#/$defs/WhatsappBusinessUserSnapshot"
+            },
+            {
+              "$ref": "#/$defs/EmailUserSnapshot"
+            },
+            {
+              "$ref": "#/$defs/VoiceUserSnapshot"
+            },
+            {
+              "$ref": "#/$defs/ImessageUserSnapshot"
+            },
+            {
+              "$ref": "#/$defs/TelegramUserSnapshot"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownUserSnapshot"
+            },
+            {
+              "properties": {
+                "platform": {
+                  "not": {
+                    "enum": [
+                      "sms",
+                      "whatsapp",
+                      "whatsapp_business",
+                      "email",
+                      "voice",
+                      "imessage",
+                      "telegram"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "platform"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "VoiceContent": {
+      "additionalProperties": true,
+      "properties": {
+        "attachmentId": {
+          "$ref": "#/$defs/AttachmentId"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "type": {
+          "const": "voice",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "attachmentId"
+      ],
+      "type": "object"
+    },
+    "VoiceMetadata": {
+      "additionalProperties": true,
+      "properties": {
+        "durationMs": {
+          "description": "Server-observed recording duration in milliseconds, when known.",
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "waveform": {
+          "description": "Server-provided normalized waveform samples for optional display.",
+          "items": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "VoiceSpaceDetails": {
+      "additionalProperties": true,
+      "properties": {},
+      "type": "object"
+    },
+    "VoiceSpaceSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/VoiceSpaceDetails"
+        },
+        "id": {
+          "$ref": "#/$defs/SpaceId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "participantIds": {
+          "items": {
+            "$ref": "#/$defs/UserId"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "platform": {
+          "const": "voice",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "kind",
+        "participantIds",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "VoiceUserDetails": {
+      "additionalProperties": true,
+      "properties": {
+        "managedBy": {
+          "$ref": "#/$defs/ManagerId"
+        },
+        "resourceId": {
+          "$ref": "#/$defs/ResourceId"
+        }
+      },
+      "type": "object"
+    },
+    "VoiceUserSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/VoiceUserDetails"
+        },
+        "handle": {
+          "pattern": "^\\+[1-9][0-9]{1,14}$",
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/$defs/UserId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "platform": {
+          "const": "voice",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "handle",
+        "kind",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "WhatsappBusinessGroupContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "parts": {
+          "items": {
+            "$ref": "#/$defs/WhatsappBusinessGroupContentPart"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "type": {
+          "const": "group",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "parts"
+      ],
+      "type": "object"
+    },
+    "WhatsappBusinessGroupContentPart": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/VoiceContent"
+            },
+            {
+              "$ref": "#/$defs/ReactionContent"
+            },
+            {
+              "$ref": "#/$defs/MessageDeleteContent"
+            },
+            {
+              "$ref": "#/$defs/MessageReadContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceParticipantsUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/PollContent"
+            },
+            {
+              "$ref": "#/$defs/PollVoteContent"
+            },
+            {
+              "$ref": "#/$defs/PollUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "voice",
+                      "reaction",
+                      "message.delete",
+                      "message.read",
+                      "space.participants.update",
+                      "space.typing.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "message.update",
+                      "group",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "WhatsappBusinessMessage": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ReceivedWhatsappBusinessMessage"
+        },
+        {
+          "$ref": "#/$defs/DispatchedWhatsappBusinessMessage"
+        },
+        {
+          "$ref": "#/$defs/AcceptedWhatsappBusinessMessage"
+        },
+        {
+          "$ref": "#/$defs/DeliveredWhatsappBusinessMessage"
+        },
+        {
+          "$ref": "#/$defs/FailedWhatsappBusinessMessage"
+        }
+      ]
+    },
+    "WhatsappBusinessMessageContent": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/VoiceContent"
+            },
+            {
+              "$ref": "#/$defs/ReactionContent"
+            },
+            {
+              "$ref": "#/$defs/MessageDeleteContent"
+            },
+            {
+              "$ref": "#/$defs/MessageReadContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceParticipantsUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/PollContent"
+            },
+            {
+              "$ref": "#/$defs/PollVoteContent"
+            },
+            {
+              "$ref": "#/$defs/PollUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/WhatsappBusinessGroupContent"
+            },
+            {
+              "$ref": "#/$defs/MessageUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "voice",
+                      "reaction",
+                      "message.delete",
+                      "message.read",
+                      "space.participants.update",
+                      "space.typing.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "group",
+                      "message.update",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "WhatsappBusinessSpaceDetails": {
+      "additionalProperties": true,
+      "properties": {},
+      "type": "object"
+    },
+    "WhatsappBusinessSpaceSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/WhatsappBusinessSpaceDetails"
+        },
+        "id": {
+          "$ref": "#/$defs/SpaceId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "participantIds": {
+          "items": {
+            "$ref": "#/$defs/UserId"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "platform": {
+          "const": "whatsapp_business",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "kind",
+        "participantIds",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "WhatsappBusinessUserDetails": {
+      "additionalProperties": true,
+      "properties": {
+        "managedBy": {
+          "$ref": "#/$defs/ManagerId"
+        },
+        "phoneNumber": {
+          "pattern": "^\\+[1-9][0-9]{1,14}$",
+          "type": "string"
+        },
+        "resourceId": {
+          "$ref": "#/$defs/ResourceId"
+        }
+      },
+      "type": "object"
+    },
+    "WhatsappBusinessUserSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/WhatsappBusinessUserDetails"
+        },
+        "handle": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/$defs/UserId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "platform": {
+          "const": "whatsapp_business",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "handle",
+        "kind",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "WhatsappGroupContent": {
+      "additionalProperties": true,
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/ContentMetadata"
+        },
+        "parts": {
+          "items": {
+            "$ref": "#/$defs/WhatsappGroupContentPart"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "type": {
+          "const": "group",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "parts"
+      ],
+      "type": "object"
+    },
+    "WhatsappGroupContentPart": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/VoiceContent"
+            },
+            {
+              "$ref": "#/$defs/ReactionContent"
+            },
+            {
+              "$ref": "#/$defs/MessageDeleteContent"
+            },
+            {
+              "$ref": "#/$defs/MessageReadContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceParticipantsUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/PollContent"
+            },
+            {
+              "$ref": "#/$defs/PollVoteContent"
+            },
+            {
+              "$ref": "#/$defs/PollUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "voice",
+                      "reaction",
+                      "message.delete",
+                      "message.read",
+                      "space.participants.update",
+                      "space.typing.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "message.update",
+                      "group",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "WhatsappMessage": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ReceivedWhatsappMessage"
+        },
+        {
+          "$ref": "#/$defs/DispatchedWhatsappMessage"
+        },
+        {
+          "$ref": "#/$defs/AcceptedWhatsappMessage"
+        },
+        {
+          "$ref": "#/$defs/DeliveredWhatsappMessage"
+        },
+        {
+          "$ref": "#/$defs/FailedWhatsappMessage"
+        }
+      ]
+    },
+    "WhatsappMessageContent": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextContent"
+            },
+            {
+              "$ref": "#/$defs/AttachmentContent"
+            },
+            {
+              "$ref": "#/$defs/VoiceContent"
+            },
+            {
+              "$ref": "#/$defs/ReactionContent"
+            },
+            {
+              "$ref": "#/$defs/MessageDeleteContent"
+            },
+            {
+              "$ref": "#/$defs/MessageReadContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceParticipantsUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/SpaceTypingUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/PollContent"
+            },
+            {
+              "$ref": "#/$defs/PollVoteContent"
+            },
+            {
+              "$ref": "#/$defs/PollUpdateContent"
+            },
+            {
+              "$ref": "#/$defs/WhatsappGroupContent"
+            },
+            {
+              "$ref": "#/$defs/MessageUpdateContent"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/UnknownContent"
+            },
+            {
+              "properties": {
+                "type": {
+                  "not": {
+                    "enum": [
+                      "text",
+                      "attachment",
+                      "voice",
+                      "reaction",
+                      "message.delete",
+                      "message.read",
+                      "space.participants.update",
+                      "space.typing.update",
+                      "poll",
+                      "poll.vote",
+                      "poll.update",
+                      "group",
+                      "message.update",
+                      "message"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      ]
+    },
+    "WhatsappSpaceDetails": {
+      "additionalProperties": true,
+      "properties": {},
+      "type": "object"
+    },
+    "WhatsappSpaceSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/WhatsappSpaceDetails"
+        },
+        "id": {
+          "$ref": "#/$defs/SpaceId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "participantIds": {
+          "items": {
+            "$ref": "#/$defs/UserId"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "platform": {
+          "const": "whatsapp",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "kind",
+        "participantIds",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "WhatsappUserDetails": {
+      "additionalProperties": true,
+      "properties": {
+        "managedBy": {
+          "$ref": "#/$defs/ManagerId"
+        },
+        "phoneNumber": {
+          "pattern": "^\\+[1-9][0-9]{1,14}$",
+          "type": "string"
+        },
+        "resourceId": {
+          "$ref": "#/$defs/ResourceId"
+        },
+        "type": {
+          "$ref": "#/$defs/UserLineType"
+        }
+      },
+      "type": "object"
+    },
+    "WhatsappUserSnapshot": {
+      "additionalProperties": true,
+      "properties": {
+        "createdAt": {
+          "not": {}
+        },
+        "details": {
+          "$ref": "#/$defs/WhatsappUserDetails"
+        },
+        "handle": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/$defs/UserId"
+        },
+        "kind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "platform": {
+          "const": "whatsapp",
+          "type": "string"
+        },
+        "projectId": {
+          "$ref": "#/$defs/ProjectId"
+        },
+        "updatedAt": {
+          "not": {}
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "platform",
+        "handle",
+        "kind",
+        "details",
+        "metadata"
+      ],
+      "type": "object"
+    }
+  }
+}

@@ -11,7 +11,7 @@ function completionUrl(baseUrl) {
   return url;
 }
 
-async function requestInsight({ name, prompt, facts, properties, timeout = 15000 }, { env, fetchImpl }) {
+async function requestInsight({ name, prompt, facts, properties, timeout = 15000, maxTokens = 96 }, { env, fetchImpl }) {
   const model = env.NEMOTRON_MODEL || 'nemotron-bolt';
   const headers = { 'Content-Type': 'application/json' };
   if (env.NEMOTRON_API_KEY) headers.Authorization = `Bearer ${env.NEMOTRON_API_KEY}`;
@@ -29,7 +29,7 @@ async function requestInsight({ name, prompt, facts, properties, timeout = 15000
           { role: 'user', content: JSON.stringify(facts) },
         ],
         temperature: 0,
-        max_tokens: 96,
+        max_tokens: maxTokens,
         chat_template_kwargs: { enable_thinking: false },
         response_format: {
           type: 'json_schema',
@@ -108,4 +108,4 @@ async function explainRecommendation({ routine, payableCents, cashbackCents }, o
   return { status: 'interpreted', model, reason: insight.reason };
 }
 
-module.exports = { interpretRoutines, explainRecommendation };
+module.exports = { interpretRoutines, explainRecommendation, requestInsight };

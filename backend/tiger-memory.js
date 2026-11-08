@@ -1,4 +1,4 @@
-const { readFileSync } = require('node:fs');
+const { readdirSync, readFileSync } = require('node:fs');
 const { join } = require('node:path');
 const { Pool } = require('pg');
 
@@ -15,12 +15,14 @@ function createTigerPool(env = process.env) {
 }
 
 async function migrateTiger(pool) {
-  const migration = readFileSync(join(__dirname, 'migrations', '001-finance-memory.sql'), 'utf8');
+  const directory = join(__dirname, 'migrations');
+  const migrations = readdirSync(directory).filter((name) => /^\d{3}-[a-z0-9-]+\.sql$/.test(name)).sort()
+    .map((name) => readFileSync(join(directory, name), 'utf8'));
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
     await client.query('SELECT pg_advisory_xact_lock(72839901)');
-    await client.query(migration);
+    for (const migration of migrations) await client.query(migration);
     await client.query('COMMIT');
   } catch (error) {
     await client.query('ROLLBACK').catch(() => {});
@@ -38,13 +40,15 @@ function createTigerMemory(pool, ownerId) {
         INSERT INTO hackutd_finance.profile AS p (owner_id, as_of, snapshot)
         VALUES ($1, $2, $3)
         ON CONFLICT (owner_id) DO UPDATE
-        SET as_of = EXCLUDED.as_of, snapshot = EXCLUDED.snapshot, version = p.version + 1
+        SET as_of = EXCLUDED.as_of, snapshot = EXCLUDED.snapshot,
+            version = p.version + CASE WHEN p.snapshot - 'asOf' - 'routineInsight'
+              IS DISTINCT FROM EXCLUDED.snapshot - 'asOf' - 'routineInsight' THEN 1 ELSE 0 END
         WHERE p.as_of < EXCLUDED.as_of
       `, [ownerId, profile.asOf, profile]);
     },
     async loadProfile() {
       const { rows: [row] } = await pool.query(`
-        SELECT p.snapshot, p.version, m.version AS memory_version, m.budget, m.goals, m.confirmed_at
+        SELECT p.snapshot, p.version, m.version AS memory_version, m.budget, m.goals, m.confirmed_at, m.reserve_cents
         FROM hackutd_finance.profile AS p
         LEFT JOIN hackutd_finance.confirmed_memory AS m USING (owner_id)
         WHERE p.owner_id = $1
@@ -57,20 +61,23 @@ function createTigerMemory(pool, ownerId) {
         memoryStorage: 'tiger_data',
         confirmedBudget: row.budget,
         confirmedGoals: row.goals,
+        confirmedReserveCents: row.reserve_cents == null ? null : Number(row.reserve_cents),
         memoryConfirmedAt: row.confirmed_at,
       };
     },
-    async confirmMemory({ version, budget, goals }) {
-      const values = [ownerId, budget, JSON.stringify(goals)];
+    async confirmMemory({ version, budget, goals, reserveCents }) {
+      const values = [ownerId, budget, JSON.stringify(goals), reserveCents ?? null];
       const query = version === 0
-        ? `INSERT INTO hackutd_finance.confirmed_memory (owner_id, budget, goals)
-           VALUES ($1, $2, $3) ON CONFLICT (owner_id) DO NOTHING RETURNING version, confirmed_at`
+        ? `INSERT INTO hackutd_finance.confirmed_memory (owner_id, budget, goals, reserve_cents)
+           VALUES ($1, $2, $3, $4) ON CONFLICT (owner_id) DO NOTHING RETURNING version, confirmed_at, reserve_cents`
         : `UPDATE hackutd_finance.confirmed_memory
-           SET budget = $2, goals = $3, confirmed_at = now(), version = version + 1
-           WHERE owner_id = $1 AND version = $4 RETURNING version, confirmed_at`;
-      if (version !== 0) values.push(version);
+           SET budget = $2, goals = $3, confirmed_at = now(), version = version + 1,
+               reserve_cents = CASE WHEN $6 THEN $4::bigint ELSE reserve_cents END
+           WHERE owner_id = $1 AND version = $5 RETURNING version, confirmed_at, reserve_cents`;
+      if (version !== 0) values.push(version, reserveCents !== undefined);
       const { rows: [row] } = await pool.query(query, values);
-      return row && { version: row.version, confirmedAt: row.confirmed_at };
+      return row && { version: row.version, confirmedAt: row.confirmed_at,
+        reserveCents: row.reserve_cents == null ? null : Number(row.reserve_cents) };
     },
   };
 }

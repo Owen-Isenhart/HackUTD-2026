@@ -59,3 +59,29 @@ test('rejects fabricated explanations and ignores location supplied to the simul
   assert.equal(result.recommendation.source, 'demo');
   assert.equal(result.recommendation.explanation.status, 'fallback');
 });
+
+test('uses the forecast trough and confirmed reserve before the optimizer or Nemotron', async () => {
+  const cashflow = { coverage: { bills: 1, loans: 0, deposits: 0 }, postedBills: [], incomeHistory: [],
+    schedules: [{ source: 'nessie_bill', nextDate: '2026-11-21', amountCents: 500, payee: 'power company' }] };
+  const options = { clock: () => now, fetchImpl: () => assert.fail('Blocked offer was sent for ranking') };
+  const blocked = await recommendVisit({ ...profile, bankCashflow: cashflow, confirmedReserveCents: 200 }, visit, options);
+  assert.equal(blocked.reason, 'forecast_liquidity');
+  const incomplete = await recommendVisit({ ...profile, bankCashflow: { ...cashflow, unresolvedSchedules: 1 } }, visit, options);
+  assert.equal(incomplete.reason, 'forecast_incomplete');
+  let optimizerForecast;
+  const eligible = await recommendVisit({ ...profile, bankCashflow: cashflow, confirmedReserveCents: 100 }, visit, {
+    clock: () => now, env: { OPTIMIZER_API_URL: 'http://127.0.0.1:8789', OPTIMIZER_API_KEY: 'test-optimizer-key-abcdefg' },
+    fetchImpl: async (url, request) => {
+      if (url.pathname.endsWith('/evaluate')) {
+        const { forecast, items } = JSON.parse(request.body);
+        optimizerForecast = forecast;
+        return Response.json({ decision: 'recommend', ranked: [{ item_id: items[0].id, payable_now: { minor: 1400 },
+          verified_cashback: { minor: 70 }, effective_cost: { minor: 1330 } }] });
+      }
+      return Response.json({ choices: [{ message: { content: '{"reason":"routine_fit"}' } }] });
+    },
+  });
+  assert.equal(eligible.recommendation.payableCents, 1400);
+  assert.equal(optimizerForecast.min_projected_balance_lower.minor, 1500);
+  assert.equal(optimizerForecast.reserve.minor, 100);
+});

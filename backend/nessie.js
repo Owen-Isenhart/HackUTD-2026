@@ -22,11 +22,14 @@ async function readNessie({ accountId, apiKey, fetchImpl = fetch }) {
   }
 
   const path = `/accounts/${encodeURIComponent(accountId)}`;
-  const [account, purchases, bills, deposits] = await Promise.allSettled([
+  const [account, purchases, bills, deposits, withdrawals, loans, transfers] = await Promise.allSettled([
     get(path, 'account'),
     get(`${path}/purchases`, 'purchases'),
     get(`${path}/bills`, 'bills'),
     get(`${path}/deposits`, 'deposits'),
+    get(`${path}/withdrawals`, 'withdrawals'),
+    get(`${path}/loans`, 'loans'),
+    get(`${path}/transfers`, 'transfers'),
   ]);
   if (account.status === 'rejected') throw account.reason;
   if (purchases.status === 'rejected') throw purchases.reason;
@@ -34,16 +37,16 @@ async function readNessie({ accountId, apiKey, fetchImpl = fetch }) {
     throw new Error('Nessie returned an unexpected account or purchase response.');
   }
 
-  function countRecords(result) {
-    if (result.status === 'fulfilled' && Array.isArray(result.value)) return result.value.length;
-    return null;
-  }
+  const records = (result) => result.status === 'fulfilled' && Array.isArray(result.value) ? result.value : null;
 
   return {
     account: account.value,
     purchases: purchases.value,
-    billCount: countRecords(bills),
-    depositCount: countRecords(deposits),
+    bills: records(bills),
+    deposits: records(deposits),
+    loans: records(loans),
+    withdrawalCount: records(withdrawals)?.length ?? null,
+    transferCount: records(transfers)?.length ?? null,
     async getMerchants(merchantIds) {
       const merchants = new Map();
       for (let i = 0; i < merchantIds.length; i += 6) {

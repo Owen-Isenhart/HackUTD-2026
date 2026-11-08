@@ -57,7 +57,11 @@ test('uses posted, owner-scoped purchases and distinct local days to build the p
     monthToDate: { count: 4, totalCents: 3825 },
     last90Days: { count: 6, totalCents: 5576 },
   });
-  assert.deepEqual(profile.coverage, { billRecords: 0, depositRecords: null, purchasesWithoutResolvedMerchant: 1 });
+  assert.deepEqual(profile.coverage, { billRecords: 0, depositRecords: null, withdrawalRecords: null, loanRecords: null,
+    transferRecords: null, purchasesWithoutResolvedMerchant: 1 });
+  assert.equal(profile.transactions.length, 6);
+  assert.equal(profile.transactions[0].occurredAt, '2026-11-06T18:15:00.000Z');
+  assert.equal(profile.transactions.find(({ amountCents }) => amountCents === 325).occurredAt, null);
   const midday = profile.routines.find(({ daypart }) => daypart === 'midday');
   assert.equal(midday.weekday, 'Friday');
   assert.equal(midday.observedDays, 2);

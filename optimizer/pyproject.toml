@@ -1,0 +1,29 @@
+[project]
+name = "optimizer"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Arjun Sidharth", email = "arjuns69420@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "geographiclib>=2.1",
+    "openai>=3.46.0",
+    "ortools>=9.15.6755",
+    "pydantic>=2.14.3",
+    "python-dateutil>=4.0.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.170.15",
+    "pytest>=9.2.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--basetemp=.pytest-tmp"

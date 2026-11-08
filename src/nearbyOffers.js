@@ -51,4 +51,4 @@ function offerCosts({ cashbackPercent }, payableCents) {
   return { payableCents, cashbackCents, effectiveCostCents: payableCents - cashbackCents };
 }
 
-module.exports = { DEMO_LOCATION, SEARCH_RADIUS_METERS, findNearbyOffers, offerCosts, offerSummary };
+module.exports = { DEMO_LOCATION, SEARCH_RADIUS_METERS, offers, findNearbyOffers, offerCosts, offerSummary };

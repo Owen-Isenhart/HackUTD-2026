@@ -11,15 +11,21 @@
     "finance:profile": "node --env-file-if-exists=.env scripts/finance-profile.js",
     "finance:serve": "node --env-file-if-exists=.env scripts/finance-profile.js --serve",
     "finance:migrate": "node --env-file-if-exists=.env scripts/finance-profile.js --migrate",
-    "test": "node --test"
+    "texts:sync": "node --env-file-if-exists=.env scripts/finance-profile.js --texts-sync",
+    "gmail:code": "node --env-file-if-exists=.env scripts/finance-profile.js --gmail-code",
+    "test": "node --test test/*.test.js"
   },
   "dependencies": {
     "expo": "~58.0.23",
+    "expo-crypto": "~58.0.7",
     "expo-dev-client": "~58.0.18",
     "expo-location": "~58.0.20",
     "expo-notifications": "~58.1.8",
+    "expo-secure-store": "~58.0.2",
     "expo-speech": "~58.0.3",
     "expo-status-bar": "~58.0.4",
+    "expo-task-manager": "~58.0.13",
+    "jose": "6.2.15",
     "pg": "^8.23.1",
     "react": "19.3.0",
     "react-native": "0.88.1",

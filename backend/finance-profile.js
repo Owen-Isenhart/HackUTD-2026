@@ -1,23 +1,20 @@
+const { createHash } = require('node:crypto');
 const { readNessie } = require('./nessie');
+const { normalizeBankCashflow, normalizeName, toCents, POSTED } = require('./nessie-cashflow');
 const { interpretRoutines } = require('./nemotron');
 const { daypart } = require('../src/routineTime');
 
 const DAY_MS = 86_400_000;
 const HISTORY_DAYS = 90;
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const POSTED_STATUSES = new Set(['completed', 'executed']);
 const CATEGORIES = new Map([
   ['restaurant', 'dining'],
   ['coffee shop', 'coffee'],
   ['groceries', 'groceries'],
   ['gas station', 'fuel'],
+  ['retail', 'retail'],
 ]);
-
-function toCents(amount) {
-  if (typeof amount !== 'number' || !Number.isFinite(amount)) return null;
-  const cents = Math.round(amount * 100);
-  return Number.isSafeInteger(cents) ? cents : null;
-}
+const merchantCategory = (merchant) => CATEGORIES.get(String(merchant?.category).trim().toLowerCase()) ?? 'other';
 
 function dayNumber(date) {
   const timestamp = Date.parse(`${date}T00:00:00Z`);
@@ -35,7 +32,8 @@ function purchaseDateTime(value, formatter, now) {
   if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return { date: value, hour: null };
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})$/i.test(value)) return null;
   const instant = Date.parse(value);
-  return Number.isFinite(instant) && instant <= now.getTime() ? localDateTime(formatter, instant) : null;
+  return Number.isFinite(instant) && instant <= now.getTime()
+    ? { ...localDateTime(formatter, instant), occurredAt: new Date(instant).toISOString() } : null;
 }
 
 function medianCents(values) {
@@ -49,7 +47,7 @@ function postedPurchases(records, accountId, formatter, now) {
   const unique = new Map();
   for (const record of records) {
     if (record?.payer_id !== accountId || typeof record._id !== 'string' || !record._id
-      || !POSTED_STATUSES.has(record.status)) continue;
+      || !POSTED.has(record.status)) continue;
     const cents = toCents(record.amount);
     const when = purchaseDateTime(record.purchase_date, formatter, now);
     if (cents === null || cents < 0 || !when) continue;
@@ -78,7 +76,7 @@ function calculateRoutines(history, merchants, timeZone) {
     if (dates.length < 2) continue;
     routines.push({
       merchant: merchant.name,
-      category: CATEGORIES.get(String(merchant.category).trim().toLowerCase()) ?? 'other',
+      category: merchantCategory(merchant),
       weekday,
       daypart: window,
       timeZone,
@@ -116,7 +114,7 @@ async function buildFinanceProfile({ env = process.env, fetchImpl = fetch, now =
   const weekStart = todayNumber - daysSinceMonday;
   const monthStart = today.slice(0, 7);
 
-  const { account, purchases, billCount, depositCount, getMerchants } = await readNessie({
+  const { account, purchases, bills, deposits, withdrawalCount, loans, transferCount, getMerchants } = await readNessie({
     accountId: env.NESSIE_ACCOUNT_ID, apiKey: env.NESSIE_API_KEY, fetchImpl,
   });
   const history = postedPurchases(purchases, account._id, formatter, now)
@@ -132,6 +130,7 @@ async function buildFinanceProfile({ env = process.env, fetchImpl = fetch, now =
     currency: 'USD',
     timeZone,
     source: 'nessie_sandbox',
+    accountType: normalizeName(account.type) || null,
     historyStartDate: new Date(historyStart * DAY_MS).toISOString().slice(0, 10),
     balanceCents: toCents(account.balance),
     spend: {
@@ -140,12 +139,23 @@ async function buildFinanceProfile({ env = process.env, fetchImpl = fetch, now =
       last90Days: summarizePurchases(history),
     },
     coverage: {
-      billRecords: billCount,
-      depositRecords: depositCount,
+      billRecords: bills?.length ?? null,
+      depositRecords: deposits?.length ?? null,
+      withdrawalRecords: withdrawalCount,
+      loanRecords: loans?.length ?? null,
+      transferRecords: transferCount,
       purchasesWithoutResolvedMerchant: history.filter(({ merchantId }) => !merchants.has(merchantId)).length,
     },
+    transactions: history.map((purchase) => ({
+      id: createHash('sha256').update(`nessie:${account._id}:${purchase.id}`).digest('hex').slice(0, 32),
+      type: 'purchase', amountCents: purchase.cents, date: purchase.date,
+      occurredAt: purchase.occurredAt ?? null, merchant: merchants.get(purchase.merchantId)?.name ?? null,
+      category: merchantCategory(merchants.get(purchase.merchantId)),
+    })).sort((a, b) => b.date.localeCompare(a.date) || (b.occurredAt ?? '').localeCompare(a.occurredAt ?? '') || a.id.localeCompare(b.id)),
     confirmedBudget: null,
     confirmedGoals: null,
+    bankCashflow: normalizeBankCashflow({ accountId: account._id, bills, deposits, loans, today,
+      depositDate: (value) => purchaseDateTime(value, formatter, now)?.date }),
     routines,
     routineInsight,
   };

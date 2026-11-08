@@ -1,0 +1,53 @@
+{
+  "name": "nessiessential-deals",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.12.0"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/src/server.js",
+    "worker": "tsx src/worker.ts",
+    "worker:start": "node dist/src/worker.js",
+    "build": "tsc -p tsconfig.build.json && node scripts/build-assets.mjs",
+    "format": "prettier --write 'src/**/*.ts' 'scripts/*.{ts,mjs}' 'test/**/*.ts' 'mobile/*.{ts,tsx,json}' '*.json'",
+    "format:check": "prettier --check 'src/**/*.ts' 'scripts/*.{ts,mjs}' 'test/**/*.ts' 'mobile/*.{ts,tsx,json}' '*.json'",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test --test-isolation=none test/*.test.ts",
+    "test:integration": "node --import tsx --test --test-isolation=none --test-concurrency=1 test/integration/*.test.ts",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:provision": "tsx scripts/provision.ts",
+    "owner:create": "tsx scripts/owner.ts",
+    "provider:check": "tsx scripts/provider-check.ts",
+    "photon:destination": "tsx scripts/photon-destination.ts",
+    "photon:verify-webhook": "node --import tsx scripts/verify-webhook.ts",
+    "photon:check-inbound": "node --import tsx scripts/check-inbound.ts",
+    "nemotron:check": "node --import tsx scripts/nemotron-check.ts",
+    "capital-one:seed": "tsx scripts/seed-capital-one.ts",
+    "deals:rehearse": "tsx scripts/rehearse-deal-flow.ts",
+    "check": "npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "@fastify/helmet": "13.2.0",
+    "@fastify/rate-limit": "11.2.2",
+    "@js-temporal/polyfill": "0.5.1",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "fastify": "5.12.8",
+    "html-to-text": "10.0.1",
+    "jose": "6.2.15",
+    "pg": "8.23.1",
+    "standardwebhooks": "1.1.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/html-to-text": "9.0.4",
+    "@types/node": "26.6.6",
+    "@types/pg": "8.23.1",
+    "prettier": "3.9.10",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}

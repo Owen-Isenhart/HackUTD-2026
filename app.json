@@ -5,12 +5,25 @@
     "scheme": "handsoffbanking",
     "version": "0.1.0",
     "orientation": "portrait",
-    "platforms": ["ios"],
+    "platforms": [
+      "ios"
+    ],
     "ios": {
       "bundleIdentifier": "com.hackutd2026.handsoffbanking",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Show nearby offers and check for matches while you keep routine alerts on in the app."
       }
-    }
+    },
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "isIosBackgroundLocationEnabled": true,
+          "locationWhenInUsePermission": "Show nearby offers and check for matches while you keep routine alerts on in the app.",
+          "locationAlwaysAndWhenInUsePermission": "Check for nearby offers while your iPhone is locked after you opt in to a Photon call or iMessage."
+        }
+      ]
+    ]
   }
 }
