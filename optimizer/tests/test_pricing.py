@@ -137,8 +137,6 @@ def brute_force(price, offers, methods, limit):
                     continue
                 if any(not o.stackable for o in combo) and len(combo) > 1:
                     continue
-                if sum(pricing.instant_discount_of(o, price) for o in combo) > price:
-                    continue
                 bd = pricing.compute_breakdown(price, m, list(combo))
                 if limit is not None and bd.payable_now > limit:
                     continue
@@ -162,3 +160,10 @@ def test_cpsat_matches_brute_force(sc):
         assert (s.breakdown.effective_cost, s.breakdown.payable_now) == expected
         if limit is not None:
             assert s.breakdown.payable_now <= limit
+
+
+def test_discounts_beyond_price_make_item_free():
+    # 80 + 50 off a 100 item: the real-world result is 0, not "pick only the 80".
+    it = item("cookie", "cafe", 100)
+    s = sel(it, [offer("a", "cafe", OfferKind.AMOUNT_OFF, 80), offer("b", "cafe", OfferKind.AMOUNT_OFF, 50)], [DEBIT])
+    assert s.breakdown.payable_now == 0 and sorted(o.id for o in s.offers) == ["a", "b"]

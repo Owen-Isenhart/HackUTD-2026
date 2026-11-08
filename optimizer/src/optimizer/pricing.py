@@ -163,8 +163,12 @@ def _build(price: int, methods: list[PaymentMethod], offers: list[Offer], limit:
                     m.add_bool_or([use[k].Not(), use[j].Not()])
 
     disc = [instant_discount_of(o, price) for o in offers]
+    # Discounts adding up past the price make the item free, not impossible:
+    # payable = max(price - discounts, 0), matching compute_breakdown.
+    raw = m.new_int_var(price - sum(disc), price, "raw_payable")
+    m.add(raw == price - sum(d * u for d, u in zip(disc, use)))
     payable = m.new_int_var(0, price, "payable")
-    m.add(payable == price - sum(d * u for d, u in zip(disc, use)))
+    m.add_max_equality(payable, [raw, 0])
 
     cashback_terms = []
     for k, o in enumerate(offers):

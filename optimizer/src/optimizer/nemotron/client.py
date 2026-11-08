@@ -3,8 +3,8 @@
 Works against a self-hosted vLLM server (e.g. on Brev) or NVIDIA's hosted API
 (integrate.api.nvidia.com). Configuration comes from environment variables:
 
-    NEMOTRON_BASE_URL   default http://localhost:8000/v1
-    NEMOTRON_MODEL      default nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4
+    NEMOTRON_BASE_URL   default http://127.0.0.1:8000/v1 (team Brev VM via brev port-forward)
+    NEMOTRON_MODEL      default nemotron-bolt (served name of nvidia/NVIDIA-Nemotron-3.5-Bolt-E4B-BF16)
     NEMOTRON_API_KEY    falls back to NVIDIA_API_KEY, then "EMPTY" (vLLM)
 
 Nemotron's distinctive control used here is per-request reasoning: the same
@@ -30,7 +30,7 @@ from pydantic import BaseModel, ValidationError
 
 T = TypeVar("T", bound=BaseModel)
 
-DEFAULT_MODEL = "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4"
+DEFAULT_MODEL = "nemotron-bolt"
 
 
 @dataclass(frozen=True)
@@ -78,7 +78,7 @@ class NemotronClient:
 
         self.model = model or os.environ.get("NEMOTRON_MODEL", DEFAULT_MODEL)
         self._client = OpenAI(
-            base_url=base_url or os.environ.get("NEMOTRON_BASE_URL", "http://localhost:8000/v1"),
+            base_url=base_url or os.environ.get("NEMOTRON_BASE_URL", "http://127.0.0.1:8000/v1"),
             api_key=api_key or os.environ.get("NEMOTRON_API_KEY") or os.environ.get("NVIDIA_API_KEY") or "EMPTY",
             timeout=timeout_s,
             max_retries=2,
