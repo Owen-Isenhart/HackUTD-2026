@@ -10,7 +10,7 @@ test("persona generation is deterministic, bounded and keeps times local through
   assert.equal(
     require("crypto")
       .createHash("sha256")
-      .update(require("fs").readFileSync("data/persona/alex-taylor.v1.json"))
+      .update(require("fs").readFileSync("data/persona/alex-taylor.v1.json", "utf8").replace(/\r\n/g, "\n"))
       .digest("hex"),
     "ad25bb54134596868c15575d085bf8e7313623499e9bebda5202886eb4e4b114",
   );

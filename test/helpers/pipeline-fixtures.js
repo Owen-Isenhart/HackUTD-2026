@@ -29,12 +29,14 @@ const nessieFixture = () => ({
   customerAccounts: async () => [
     {
       id: checking,
+      customer_id: customer,
       type: "Checking",
       account_number: "012345672583",
       nickname: "Checking",
     },
     {
       id: card,
+      customer_id: customer,
       type: "Credit Card",
       account_number: "012345676619",
       nickname: "Capital One SavorOne Rewards",
@@ -42,6 +44,7 @@ const nessieFixture = () => ({
   ],
   account: async (id) => ({
     id,
+    customer_id: customer,
     available_cents: id === checking ? 15000000 : 900000,
   }),
   accountTransactions: async () => [],

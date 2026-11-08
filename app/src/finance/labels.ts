@@ -8,6 +8,7 @@ export const usd = (cents: number | null | undefined) =>
 
 const SOURCE_WORDS: Record<string, string> = {
   nessie_sandbox: 'Sandbox bank data',
+  nessie_v2_sandbox: 'Nessie v2 sandbox',
   synthetic_persona: 'Synthetic demo history',
   synthetic_test: 'Synthetic demo history',
   user_stated: 'Stated by you',

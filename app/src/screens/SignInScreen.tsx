@@ -20,6 +20,8 @@ import { useReducedMotion } from '../motion';
 // Ported from nessie-signin-prototype/App.js (HomeHero). Same look and behavior; typed, with
 // ambient loops (idle sway, ripples) switched off under reduced motion.
 const NESSIE_ASPECT = 499 / 622; // width / height of assets/signin/nessie.png
+const LAKE_ASPECT = 1024 / 572;
+const WATER_ANCHOR = 0.58;
 const useNativeDriver = Platform.OS !== 'web';
 
 function nessieBox(width: number) {
@@ -138,62 +140,88 @@ export default function SignInScreen({ onContinue }: { onContinue: () => void })
   }
   const short = box.height > 0 && box.height < 700;
   const logoSize = short ? 34 : 40;
-  // Vertical budget: logo row + form (3 x 44 controls, demo link, gaps, notice room) + insets.
-  const reserved = insets.top + 12 + logoSize * 1.3 + 16 + FORM_HEIGHT + insets.bottom + 16;
+  const headerSpace = insets.top + 12 + logoSize * 1.3 + 16;
+  const reserved = headerSpace + FORM_HEIGHT + insets.bottom + 16;
   const avail = Math.max(box.height - reserved, 0);
   const nessieWidth = Math.max(Math.min(box.width * 0.55, 260, (avail * NESSIE_ASPECT) / 0.94), 72);
+  // The lake uses centered cover scaling. Project the image anchor into the viewport.
+  const lakeHeight = Math.max(box.height, box.width / LAKE_ASPECT);
+  const waterline = (box.height - lakeHeight) / 2 + lakeHeight * WATER_ANCHOR;
 
-  const [firstName,setFirstName]=useState('');const [lastName,setLastName]=useState('');const [last4,setLast4]=useState('');const [busy,setBusy]=useState(false);
-  const [notice,setNotice]=useState('This finds a record in the Nessie sandbox bank. It is not bank sign-in.');
-  async function signIn(){if(busy)return;if(!firstName.trim()||!lastName.trim()||!/^\d{4}$/.test(last4)){setNotice('Enter your name and exactly four digits.');return;}setBusy(true);try{await identifySandbox({firstName,lastName,last4});onContinue();}catch(e){setNotice(e instanceof Error?e.message:'Could not find the sandbox account.');}finally{setBusy(false);}}
+  const [fullName, setFullName] = useState('');
+  const [last4, setLast4] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState('Sign in to your Nessie sandbox account.');
+  async function signIn() {
+    if (busy) return;
+    if (!fullName.trim() || !/^\d{4}$/.test(last4)) {
+      setNotice('Enter your full name and the card’s last four digits.');
+      return;
+    }
+    setBusy(true);
+    try {
+      await identifySandbox({ fullName: fullName.trim(), last4 });
+      onContinue();
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : 'Could not find the sandbox account.');
+    } finally {
+      setBusy(false);
+    }
+  }
 
   return (
     <View style={styles.root} onLayout={onLayout}>
-      <ImageBackground source={require('../../assets/signin/lake.webp')} resizeMode="cover" style={[styles.bg, { width: box.width, height: box.height }]} />
+      <ImageBackground source={require('../../assets/signin/lake.webp')} resizeMode="cover"
+        style={StyleSheet.absoluteFill} pointerEvents="box-none">
+        {box.height > 0 ? (
+          <View style={[styles.mascot, { top: waterline - nessieBox(nessieWidth).boxHeight }]}>
+            <View pointerEvents="none" style={styles.rippleBox}>
+              <Ring width={nessieWidth * 0.95} delay={0} reduce={reduce} />
+              <Ring width={nessieWidth * 0.95} delay={2000} reduce={reduce} />
+            </View>
+            <JellyNessie width={nessieWidth} reduce={reduce} />
+          </View>
+        ) : null}
+      </ImageBackground>
       {box.height > 0 && (
-        <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <KeyboardAvoidingView pointerEvents="box-none" behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={[StyleSheet.absoluteFill, styles.formViewport, { paddingTop: headerSpace }]}>
           <ScrollView
+            style={styles.formScroll}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={[styles.column, { minHeight: box.height, paddingTop: insets.top + 12, paddingBottom: insets.bottom + 16 }]}
+            contentContainerStyle={[styles.formContent, { paddingBottom: insets.bottom + 16 }]}
           >
-            <View style={styles.logoRow}>
-              <Text accessibilityRole="header" style={[styles.logo, { fontSize: logoSize }]}>Nessential</Text>
-
-            </View>
-
-            <View style={styles.mascot}>
-              <View>
-                <View pointerEvents="none" style={styles.rippleBox}>
-                  <Ring width={nessieWidth * 0.95} delay={0} reduce={reduce} />
-                  <Ring width={nessieWidth * 0.95} delay={2000} reduce={reduce} />
-                </View>
-                <JellyNessie width={nessieWidth} reduce={reduce} />
-              </View>
-            </View>
-
             <View style={styles.signIn}>
-              <TextInput accessibilityLabel="First name" placeholder="First name" autoComplete="given-name" value={firstName} onChangeText={setFirstName} style={styles.authInput}/>
-              <TextInput accessibilityLabel="Last name" placeholder="Last name" autoComplete="family-name" value={lastName} onChangeText={setLastName} style={styles.authInput}/>
-              <TextInput accessibilityLabel="Last four digits" placeholder="Last four digits" keyboardType="number-pad" maxLength={4} value={last4} onChangeText={v=>setLast4(v.replace(/\D/g,''))} style={styles.authInput} onSubmitEditing={signIn}/>
-              <Pressable accessibilityRole="button" disabled={busy} onPress={signIn} style={styles.signInButton}><Text style={styles.signInButtonText}>{busy?'Finding account…':'Find my sandbox account'}</Text></Pressable>
+              <TextInput accessibilityLabel="Full name" placeholder="Full name" autoComplete="name" value={fullName}
+                onChangeText={setFullName} autoCapitalize="words" autoCorrect={false} maxLength={121} style={styles.authInput} />
+              <TextInput accessibilityLabel="Last four digits of card" placeholder="Last 4 digits of card"
+                keyboardType="number-pad" secureTextEntry maxLength={4} value={last4}
+                onChangeText={(value) => setLast4(value.replace(/\D/g, ''))} style={styles.authInput} onSubmitEditing={signIn} />
+              <Pressable accessibilityRole="button" disabled={busy} onPress={signIn} style={styles.signInButton}>
+                <Text style={styles.signInButtonText}>{busy ? 'Finding account…' : 'Sign in'}</Text>
+              </Pressable>
               <Text accessibilityLiveRegion="polite" style={styles.authNotice}>{notice}</Text>
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
       )}
+      <View style={[styles.logoRow, { top: insets.top + 12 }]}>
+        <Text accessibilityRole="header" style={[styles.logo, { fontSize: logoSize }]}>Nessential</Text>
+        <View style={styles.signUpPill}><Text style={styles.signUpPillText}>Sign up</Text></View>
+      </View>
     </View>
   );
 }
 
-// 3 x 44 controls + 36 demo link + 4 x 8 gaps + 36 notice (two lines).
-const FORM_HEIGHT = 44 * 4 + 8 * 4 + 54;
+const FORM_HEIGHT = 44 * 3 + 8 * 3 + 54;
 
 const styles = StyleSheet.create({
   root: { flex: 1, overflow: 'hidden' },
-  bg: { position: 'absolute', top: 0, left: 0 },
-  column: { flexGrow: 1, alignItems: 'center' },
-  logoRow: { alignSelf: 'stretch', paddingHorizontal: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  formViewport: { justifyContent: 'flex-end' },
+  formScroll: { flexGrow: 0, flexShrink: 1 },
+  formContent: { alignItems: 'center' },
+  logoRow: { position: 'absolute', left: 0, right: 0, paddingHorizontal: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   signUpPill: {
     borderColor: 'rgba(246, 244, 239, 0.55)',
     borderWidth: 1,
@@ -207,17 +235,12 @@ const styles = StyleSheet.create({
   authInput: { height: 44, borderRadius: 10, paddingHorizontal: 14, color: '#12303A', fontSize: 16, backgroundColor: '#FFFFFF' },
   signInButton: { alignItems: 'center', justifyContent: 'center', height: 44, borderRadius: 10, backgroundColor: '#050505' },
   signInButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
-  demoButton: { alignItems: 'center', justifyContent: 'center', height: 36 },
-  demoButtonText: {
-    color: '#FFFFFF', fontSize: 14, fontWeight: '600', textDecorationLine: 'underline',
-    textShadowColor: 'rgba(8, 24, 36, 0.7)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4,
-  },
   authNotice: {
     color: '#FFFFFF', minHeight: 36, fontSize: 13, lineHeight: 18, textAlign: 'center',
     textShadowColor: 'rgba(8, 24, 36, 0.7)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4,
   },
   logo: { color: '#050505', fontFamily: 'Jost_300Light', letterSpacing: 1.5 },
-  mascot: { flex: 1, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'flex-end', paddingTop: 8, paddingBottom: 12 },
+  mascot: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
   rippleBox: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 0, alignItems: 'center' },
   ripple: { position: 'absolute', borderWidth: 2, borderColor: 'rgba(240, 248, 248, 0.85)' },
 });

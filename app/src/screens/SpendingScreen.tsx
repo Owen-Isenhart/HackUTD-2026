@@ -1,17 +1,18 @@
 import React, { useMemo, useState } from 'react';
-import { Animated, Pressable, View } from 'react-native';
+import { Animated, Pressable, TextInput, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { router } from 'expo-router';
 import { useReveal } from '../motion';
 import { Screen } from '../components/Screen';
 import { Button, Card, Icon, IconCircle, IconName, Pill, Row, SectionTitle, T } from '../components/ui';
 import { DataState, Tag } from '../components/DataState';
+import { FinanceInsightCard, type FinanceInsight } from '../components/FinanceInsightCard';
 import { c, radius, space, tnum } from '../theme';
 import { useApi } from '../finance/useApi';
 import { categoryTotals, sourceWords, usd } from '../finance/labels';
 
 type Purchase = { id: string; date: string; occurredAt: string | null; amountCents: number; merchant: string | null; category: string | null; provenance: string };
-type Profile = { asOf: string; timeZone: string; transactions: Purchase[]; spend: { monthToDate: { totalCents: number; count: number } } };
+type Profile = { asOf: string; asOfLocalDate?: string; timeZone: string; transactions: Purchase[]; spend: { monthToDate: { totalCents: number; count: number } } };
 type Budget = { category: string; period: 'week' | 'month'; limitCents: number; spentCents: number; source: string };
 
 const R = 60;
@@ -36,50 +37,62 @@ const PAGE = 25;
 export default function SpendingScreen() {
   const profile = useApi<Profile>('/api/finance-profile');
   const budgets = useApi<{ budgets: Budget[] }>('/api/v1/budgets');
+  const insight = useApi<{ insight: FinanceInsight | null }>('/api/v1/finance/insight?panel=spending');
   return (
     <Screen title="Current Spending">
       <DataState state={profile.state} onRetry={profile.reload}>
-        {(p) => <Spending profile={p} budgets={budgets} />}
+        {(p) => <Spending profile={p} budgets={budgets} insight={insight.data?.insight} />}
       </DataState>
     </Screen>
   );
 }
 
-function Spending({ profile, budgets }: { profile: Profile; budgets: ReturnType<typeof useApi<{ budgets: Budget[] }>> }) {
+function Spending({ profile, budgets, insight }: {
+  profile: Profile; budgets: ReturnType<typeof useApi<{ budgets: Budget[] }>>; insight?: FinanceInsight | null;
+}) {
   const rows = useMemo(() => [...(profile.transactions ?? [])].sort((a, b) => b.date.localeCompare(a.date) || (b.occurredAt ?? '').localeCompare(a.occurredAt ?? '')), [profile]);
-  const months = useMemo(() => [...new Set(rows.map((r) => r.date.slice(0, 7)))], [rows]);
+  const today = profile.asOfLocalDate ?? profile.asOf.slice(0, 10);
+  const currentMonth = today.slice(0, 7);
+  const months = useMemo(() => [...new Set([currentMonth, ...rows.map((r) => r.date.slice(0, 7))])], [rows, currentMonth]);
   const [index, setIndex] = useState(0);
   const [shown, setShown] = useState(PAGE);
-  const month = months[index];
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState<string | null>(null);
+  const monthIndex = Math.min(index, months.length - 1);
+  const month = months[monthIndex];
   const reveal = useReveal(450);
-  if (!month) return <T v="bodySm" style={{ color: c.onSurfaceVariant }}>No purchases in your sandbox history yet.</T>;
+  const moveMonth = (next: number) => { setIndex(next); setCategory(null); setShown(PAGE); };
 
   const totals = categoryTotals(rows, month);
   const total = totals.reduce((a, t) => a + t.cents, 0);
-  const isCurrent = month === profile.asOf.slice(0, 7);
-  const days = isCurrent ? Number(profile.asOf.slice(8, 10)) : daysIn(month);
+  const isCurrent = month === currentMonth;
+  const days = isCurrent ? Number(today.slice(-2)) : daysIn(month);
   // Compare with the month before only when that whole month is in the history.
-  const prev = months[index + 1];
-  const prevComplete = prev && months.length > index + 2;
+  const prev = months[monthIndex + 1];
+  const prevComplete = prev && months.length > monthIndex + 2;
   const prevTotal = prevComplete ? categoryTotals(rows, prev).reduce((a, t) => a + t.cents, 0) : null;
   const synthetic = rows.some((r) => r.provenance === 'synthetic_persona');
   // Each ring segment's length and where it starts, computed before rendering.
   const segments = totals.map((t) => (total ? (t.cents / total) * CIRC : 0));
   const starts = segments.map((_, i) => segments.slice(0, i).reduce((a, b) => a + b, 0));
+  const needle = search.trim().toLowerCase();
+  const purchases = rows.filter((row) => row.date.startsWith(month)
+    && (!category || (row.category ?? 'other') === category)
+    && (!needle || (row.merchant ?? 'Unknown merchant').replace(/_/g, ' ').toLowerCase().includes(needle)));
 
   return (
     <>
       <Card>
         <Row style={{ justifyContent: 'space-between', marginBottom: space.md }}>
-          <Pressable disabled={index >= months.length - 1} onPress={() => setIndex(index + 1)} accessibilityLabel="Earlier month">
-            <Icon name="chevron-left" color={index >= months.length - 1 ? c.outlineVariant : c.secondary} />
+          <Pressable disabled={monthIndex >= months.length - 1} onPress={() => moveMonth(monthIndex + 1)} accessibilityLabel="Earlier month">
+            <Icon name="chevron-left" color={monthIndex >= months.length - 1 ? c.outlineVariant : c.secondary} />
           </Pressable>
           <Row style={{ gap: 6, backgroundColor: c.surfaceContainer, paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.full }}>
             <Icon name="calendar-month-outline" size={18} />
             <T v="labelMd" style={{ color: c.primary }}>{monthName(month)}</T>
           </Row>
-          <Pressable disabled={index === 0} onPress={() => setIndex(index - 1)} accessibilityLabel="Later month">
-            <Icon name="chevron-right" color={index === 0 ? c.outlineVariant : c.secondary} />
+          <Pressable disabled={monthIndex === 0} onPress={() => moveMonth(monthIndex - 1)} accessibilityLabel="Later month">
+            <Icon name="chevron-right" color={monthIndex === 0 ? c.outlineVariant : c.secondary} />
           </Pressable>
         </Row>
         <T v="labelSm" style={{ color: c.onSurfaceVariant, textTransform: 'uppercase', letterSpacing: 1 }}>{isCurrent ? 'Spent this month so far' : 'Spent this month'}</T>
@@ -92,6 +105,7 @@ function Spending({ profile, budgets }: { profile: Profile; budgets: ReturnType<
           <Pill label={synthetic ? 'Sandbox + synthetic' : 'Sandbox data'} bg="rgba(172,237,252,0.5)" color={c.secondary} />
         </Row>
       </Card>
+      {isCurrent ? <FinanceInsightCard insight={insight} /> : null}
 
       {totals.length ? (
         <Card style={{ alignItems: 'center' }}>
@@ -111,7 +125,8 @@ function Spending({ profile, budgets }: { profile: Profile; budgets: ReturnType<
           </View>
           <View style={{ alignSelf: 'stretch', gap: 14 }}>
             {totals.map((t) => (
-              <View key={t.category} style={{ gap: 6 }}>
+              <Pressable key={t.category} accessibilityRole="button" accessibilityState={{ selected: category === t.category }}
+                onPress={() => { setCategory(category === t.category ? null : t.category); setShown(PAGE); }} style={{ gap: 6 }}>
                 <Row style={{ justifyContent: 'space-between' }}>
                   <Row style={{ gap: 10 }}>
                     <IconCircle name={cat(t.category).icon} size={32} bg={c.surfaceContainer} color={c.primaryContainer} />
@@ -125,7 +140,7 @@ function Spending({ profile, budgets }: { profile: Profile; budgets: ReturnType<
                 <View style={{ height: 8, backgroundColor: c.surfaceContainer, borderRadius: 4, overflow: 'hidden' }}>
                   <Animated.View style={{ width: `${t.pct}%`, height: '100%', backgroundColor: cat(t.category).color, borderRadius: 4, transformOrigin: 'left', transform: [{ scaleX: reveal }] }} />
                 </View>
-              </View>
+              </Pressable>
             ))}
           </View>
         </Card>
@@ -156,8 +171,13 @@ function Spending({ profile, budgets }: { profile: Profile; budgets: ReturnType<
       </Card>
 
       <Card style={{ gap: 14 }}>
-        <SectionTitle title="Recent purchases" sub={`${rows.length} in your history`} />
-        {rows.slice(0, shown).map((t) => (
+        <SectionTitle title={category ? `${title(category)} purchases` : 'Posted purchases'}
+          sub={`${purchases.length} matching · ${monthName(month)}`} />
+        <TextInput accessibilityLabel="Search purchases" placeholder="Search by merchant" value={search}
+          onChangeText={(value) => { setSearch(value); setShown(PAGE); }}
+          style={{ padding: space.sm, borderRadius: radius.md, backgroundColor: c.surfaceContainer, color: c.onSurface }} />
+        {purchases.length === 0 ? <T v="bodySm">No purchases match this view.</T> : null}
+        {purchases.slice(0, shown).map((t) => (
           <Row key={t.id} style={{ justifyContent: 'space-between' }}>
             <Row style={{ gap: 12, flexShrink: 1 }}>
               <IconCircle name={cat(t.category ?? 'other').icon} bg="#f2ece9" />
@@ -169,8 +189,8 @@ function Spending({ profile, budgets }: { profile: Profile; budgets: ReturnType<
             <T v="labelLg" style={[{ color: c.error, fontFamily: 'Manrope_600SemiBold' }, tnum]}>-{usd(t.amountCents)}</T>
           </Row>
         ))}
-        {rows.length > shown ? (
-          <Button label={`Show ${Math.min(PAGE, rows.length - shown)} more`} textColor={c.primary} style={{ backgroundColor: c.surfaceContainer }} onPress={() => setShown(shown + PAGE)} />
+        {purchases.length > shown ? (
+          <Button label={`Show ${Math.min(PAGE, purchases.length - shown)} more`} textColor={c.primary} style={{ backgroundColor: c.surfaceContainer }} onPress={() => setShown(shown + PAGE)} />
         ) : null}
         {synthetic ? <Tag text="Synthetic demo purchases do not change your sandbox balance." /> : null}
       </Card>

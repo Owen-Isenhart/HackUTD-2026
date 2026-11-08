@@ -4,16 +4,18 @@ import Svg, { Path, Polyline } from 'react-native-svg';
 import { Screen } from '../components/Screen';
 import { Button, Card, Icon, Pill, Row, SectionTitle, T } from '../components/ui';
 import { DataState, Tag } from '../components/DataState';
+import { FinanceInsightCard, type FinanceInsight } from '../components/FinanceInsightCard';
 import { c, radius, shadow, space, tnum } from '../theme';
 import { api, FinanceApiError } from '../finance/financeApi';
 import { useApi, waitForRun } from '../finance/useApi';
 import { usd } from '../finance/labels';
 
 type Day = { date: string; lowCents: number; middleCents: number; highCents: number };
+type Commitment = { date: string; amount: number; payee: string; source: string; estimated: boolean };
 type Forecast = {
   method: string; asOf: string; status?: string; startingBalanceCents: number | null; minimumBalanceLowCents: number | null;
   safeToSpendCents: number | null; reserveCents?: number; missingSources?: string[]; daily?: Day[];
-  bands?: { daily?: Day[]; method?: string } | null; adoption?: string;
+  commitments?: Commitment[];
 };
 type Plan = { id: string; version: number; category: string; status: string; amountCents: number | null; dueDate: string | null; missing: string[]; evidence: string; source: string };
 type Plans = { horizonDays: number; committedCents: number; reservedPendingCents: number; expectedInflowCents: number; upcoming: Plan[]; pendingClarifications: Plan[]; expectedInflows: Plan[] };
@@ -24,11 +26,16 @@ const MISSING: Record<string, string> = {
 const SOURCE: Record<string, string> = { friend_texts: 'from a friend', your_email: 'from your email', your_texts: 'from you' };
 const MISSING_SOURCE: Record<string, string> = {
   checking_balance: 'no checking balance', unbounded_obligation: 'a plan without an amount', truncated_ledger: 'incomplete bank history',
+  loan_schedule_unknown: 'a loan without a confirmed due date', bill_date_unknown: 'a bill without a due date',
+  bill_amount_unknown: 'a bill without a confirmed amount', plan_date_unknown: 'a plan without a date',
 };
+const COMMITMENT_SOURCE: Record<string, string> = { bill: 'Nessie bill', loan: 'Nessie loan', plan: 'Tiger Data plan', pending: 'Nessie pending debit' };
+const shortDate = (date: string) => new Date(`${date}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 
 export default function UpcomingScreen() {
   const forecast = useApi<Forecast>('/api/v1/finance/forecast');
   const plans = useApi<Plans>('/api/text-obligations');
+  const insight = useApi<{ insight: FinanceInsight | null }>('/api/v1/finance/insight?panel=upcoming');
   const [syncing, setSyncing] = useState(false);
   const refresh = async () => {
     setSyncing(true);
@@ -39,16 +46,18 @@ export default function UpcomingScreen() {
     setSyncing(false);
     void forecast.reload();
     void plans.reload();
+    void insight.reload();
   };
   return (
     <Screen title="Upcoming Cashflow">
       <DataState state={forecast.state} onRetry={forecast.reload}>
         {(f) => <ForecastCard f={f} />}
       </DataState>
+      <FinanceInsightCard insight={insight.data?.insight} />
       <Button label={syncing ? 'Refreshing your data…' : 'Refresh from the bank'} small onPress={syncing ? undefined : refresh} />
       {plans.state.kind !== 'unavailable' ? (
         <DataState state={plans.state} onRetry={plans.reload}>
-          {(p) => <PlansSection plans={p} onChanged={() => { void plans.reload(); void forecast.reload(); }} />}
+          {(p) => <PlansSection plans={p} onChanged={() => { void plans.reload(); void forecast.reload(); void insight.reload(); }} />}
         </DataState>
       ) : null}
     </Screen>
@@ -56,11 +65,14 @@ export default function UpcomingScreen() {
 }
 
 function ForecastCard({ f }: { f: Forecast }) {
-  const daily = f.bands?.daily ?? f.daily ?? [];
+  const daily = f.daily ?? [];
+  const ranged = f.method === 'weekly_block_bootstrap_v1';
   const [day, setDay] = useState<string | null>(null);
   const strip = daily.slice(0, 14);
   const picked = strip.find((d) => d.date === day);
   const missing = (f.missingSources ?? []).map((m) => MISSING_SOURCE[m] ?? m.replace(/_/g, ' '));
+  const commitments = f.commitments ?? [];
+  const scheduled = commitments.filter((item) => !item.estimated).reduce((sum, item) => sum + item.amount, 0);
   return (
     <>
       <View style={{ borderRadius: 20, overflow: 'hidden', backgroundColor: c.primaryContainer, padding: space.lg, gap: 8, ...shadow.card }}>
@@ -71,24 +83,27 @@ function ForecastCard({ f }: { f: Forecast }) {
           </Row>
           <T v="labelSm" style={{ color: c.secondaryFixed }}>{f.status === 'stale' ? 'Updating…' : `As of ${new Date(f.asOf).toLocaleString()}`}</T>
         </Row>
-        <T v="labelMd" style={{ color: c.surfaceHighest, textTransform: 'uppercase', letterSpacing: 1 }}>Safe to spend</T>
+        <T v="labelMd" style={{ color: c.surfaceHighest, textTransform: 'uppercase', letterSpacing: 1 }}>Cash after commitments and reserve</T>
         <T v="headlineLgMobile" style={[{ color: c.surface }, tnum]}>{f.safeToSpendCents === null ? 'Needs a check' : usd(f.safeToSpendCents)}</T>
         {f.safeToSpendCents === null ? (
           <T v="bodySm" style={{ color: c.errorContainer }}>
-            {missing.length ? `Can’t say yet: ${missing.join(', ')}.` : 'Some plans need an amount or date before anything counts as affordable.'}
+            {f.status === 'stale' ? 'Refresh from the bank before using this amount.'
+              : missing.length ? `Still to check: ${missing.join(', ')}.` : 'Some plans need an amount or date.'}
           </T>
         ) : null}
         <Row style={{ gap: 8, marginTop: 8, alignItems: 'stretch' }}>
           <Metric label="Checking now" amt={f.startingBalanceCents} />
-          <Metric label="Lowest likely balance" amt={f.minimumBalanceLowCents} />
+          <Metric label={ranged ? 'Low estimate' : 'Projected low cash'} amt={f.minimumBalanceLowCents} />
         </Row>
+        {f.reserveCents != null ? <T v="bodySm" style={{ color: c.surfaceHighest }}>Saved cash reserve · {usd(f.reserveCents)}</T> : null}
       </View>
 
       {daily.length > 1 ? (
         <Card style={{ gap: space.sm }}>
-          <SectionTitle title="Balance range" sub="Low, middle and high estimate for each day" />
+          <SectionTitle title={ranged ? 'Balance range' : 'Projected cash'}
+            sub={ranged ? 'Low, middle and high estimate for each day' : 'After bank commitments and reserved plans'} />
           <BandChart daily={daily} />
-          <Tag text={f.bands ? 'Experimental range from your own past weeks. It may include synthetic demo history.' : `Method: ${f.method.replace(/_/g, ' ')}`} />
+          {ranged ? <Tag text="Estimates use prior weeks and can include labeled synthetic history." /> : null}
         </Card>
       ) : null}
 
@@ -117,11 +132,25 @@ function ForecastCard({ f }: { f: Forecast }) {
           </ScrollView>
           {picked ? (
             <T v="bodySm" style={{ color: c.onSurfaceVariant, paddingHorizontal: 4 }}>
-              {picked.date}: likely {usd(picked.middleCents)} (between {usd(picked.lowCents)} and {usd(picked.highCents)})
+              {shortDate(picked.date)} · {usd(picked.middleCents)}
+              {ranged ? ` (between ${usd(picked.lowCents)} and ${usd(picked.highCents)})` : ' projected cash'}
             </T>
-          ) : <Tag text="Red dot: balance likely falls that day. Green: likely rises. Tap a day for its range." />}
+          ) : <Tag text="Tap a day to inspect the projected balance." />}
         </View>
       ) : null}
+      <Card style={{ gap: space.md }}>
+        <SectionTitle title="Bills and planned payments" sub={`${usd(scheduled)} scheduled over the next 30 days`} />
+        {commitments.length === 0 ? <T v="bodySm">No known scheduled outflows in this window.</T> : null}
+        {commitments.map((item, index) => (
+          <Row key={`${item.source}-${item.date}-${index}`} style={{ justifyContent: 'space-between', gap: space.sm }}>
+            <View style={{ flex: 1 }}>
+              <T v="labelLg">{item.payee}</T>
+              <T v="bodySm">{COMMITMENT_SOURCE[item.source] ?? item.source} · {item.estimated ? 'Reserved · Date to confirm' : shortDate(item.date)}</T>
+            </View>
+            <T v="labelLg" style={tnum}>{usd(item.amount)}</T>
+          </Row>
+        ))}
+      </Card>
     </>
   );
 }

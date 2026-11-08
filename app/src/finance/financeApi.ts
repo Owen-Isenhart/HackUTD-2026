@@ -102,5 +102,9 @@ export async function requestRecommendation(token: string, event: LocationEvent,
   return { kind: 'skip', reason: String(answer?.reason ?? 'unknown') };
 }
 
-export async function identifySandbox(input:{firstName:string;lastName:string;last4:string}){const r=await call('/api/v1/onboarding/identify','',{method:'POST',body:input});await saveSession(r.session.token);return r;}
+export async function identifySandbox(input: { fullName: string; last4: string }) {
+  const result = await call('/api/v1/onboarding/identify', '', { method: 'POST', body: input });
+  await saveSession(result.session.token);
+  return result;
+}
 export const api=(path:string,method='GET',body?:unknown)=>call(path,undefined,{method,body});

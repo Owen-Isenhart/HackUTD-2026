@@ -1,10 +1,8 @@
 const { readLedger } = require("./ledger");
 const { latest } = require("./pipeline-stages");
 const {hash}=require('./pipeline-utils');
-const {
-  profileFromLedger,
-  comparisonForecast,
-} = require("./profile-from-ledger");
+const { profileFromLedger } = require("./profile-from-ledger");
+const { financeForecast } = require("./finance-forecast");
 async function loadOwnerData(db, ownerId, now = new Date(), plans = {}) {
   const owner = (
     await db.query("SELECT * FROM hackutd_finance.owner WHERE id=$1", [ownerId])
@@ -58,7 +56,8 @@ async function loadOwnerData(db, ownerId, now = new Date(), plans = {}) {
   const adopted =
     evaluation?.accepted === true && evaluation?.method === 'weekly_block_bootstrap_v1'
     && bands?.input_hash===hash([ledger,bank.inputHash,plans,Math.floor(Date.parse(bands.as_of)/1800000)]);
-  const old = comparisonForecast(context, now);
+  const profile = profileFromLedger(context);
+  const old = financeForecast(profile, now, 30, { includeEstimates: false });
   const forecast =
     adopted && bands
       ? {
@@ -76,17 +75,29 @@ async function loadOwnerData(db, ownerId, now = new Date(), plans = {}) {
           minimumBalanceLowCents: old.minimumProjectedBalanceCents,
           safeToSpendCents: old.safeSpendCents,
           reserveCents: old.reserveCents,
+          daily: old.projection.flatMap(({ date, balanceAfterKnownPlansCents: cents }) => cents === null
+            ? [] : [{ date, lowCents: cents, middleCents: cents, highCents: cents }]),
           adoption: "bootstrap_requires_backtest",
         };
   if (plans.pendingUnknownAmounts || plans.summary?.unverifiedPendingCount)
     forecast.safeToSpendCents = null;
   else if(adopted&&forecast.safeToSpendCents!==null)forecast.safeToSpendCents=Math.max(0,forecast.minimumBalanceLowCents-old.reserveCents);
+  const dates = new Set(old.projection.map(({ date }) => date));
+  forecast.commitments = profile.upcomingCommitments.filter(({ date }) => dates.has(date))
+    .sort((a, b) => a.date.localeCompare(b.date) || a.source.localeCompare(b.source));
+  forecast.missingSources = [...new Set([
+    ...(forecast.missingSources || []), ...profile.unresolvedCommitments,
+    ...(old.startingBalanceCents === null ? ["checking_balance"] : []),
+    ...(old.pendingUnknownAmounts ? ["unbounded_obligation"] : []),
+    ...((bank.coverage || []).some((entry) => entry.truncated && !entry.recovered) ? ["truncated_ledger"] : []),
+  ])];
+  if (forecast.missingSources.length) forecast.safeToSpendCents = null;
   forecast.savingsBalanceCents=((bank.balances||[]).filter(a=>a.type==="Savings").every(a=>Number.isSafeInteger(a.available_cents))?(bank.balances||[]).filter(a=>a.type==="Savings").reduce((sum,a)=>sum+a.available_cents,0):null);
   return {
     ...context,
     forecast,
     bands: bands && { ...bands.summary, daily: bands.daily },
-    profile: profileFromLedger(context),
+    profile,
     evaluation,
   };
 }

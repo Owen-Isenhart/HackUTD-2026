@@ -41,7 +41,6 @@ function normalizeTransactions(
       "deposit",
       "interest_credit",
       "refund",
-      "chargeback",
     ].includes(r.kind)
       ? "inflow"
       : "outflow";
@@ -74,13 +73,22 @@ function normalizeTransactions(
     };
   });
   const byId = new Map(rows.map((r) => [r.id, r]));
-  for (const r of rows)
-    if (
-      ["refund", "chargeback"].includes(r.kind) &&
-      r.status === "completed" &&
-      byId.has(r.parent_id)
-    )
-      byId.get(r.parent_id).reversed_cents += r.amount_cents;
+  const reverses = (row, parent) => parent && row.status === "completed"
+    && parent.status === "completed" && row.account_id === parent.account_id
+    && Date.parse(row.occurred_at) >= Date.parse(parent.occurred_at);
+  for (const row of rows.filter(({ kind }) => kind === "chargeback")) {
+    const parent = byId.get(row.parent_id);
+    if (parent?.kind === "refund" && reverses(row, parent)) {
+      parent.reversed_cents = Math.min(parent.amount_cents, parent.reversed_cents + row.amount_cents);
+    }
+  }
+  for (const row of rows.filter(({ kind }) => kind === "refund")) {
+    const parent = byId.get(row.parent_id);
+    if (parent?.kind === "purchase" && reverses(row, parent)) {
+      parent.reversed_cents = Math.min(parent.amount_cents,
+        parent.reversed_cents + row.amount_cents - row.reversed_cents);
+    }
+  }
   return screenTransactions(rows, merchants, now, timeZone).map(
     ({ payee_id, ...r }) => r,
   );
@@ -141,6 +149,8 @@ async function importFromNessie(pool, ownerId, nessie, now = new Date()) {
     coverage = [];
   for (const a of accounts) {
     const detail = await nessie.account(a.account_id);
+    if (detail?.id !== a.account_id || detail.customer_id !== owner.nessie_customer_id)
+      throw fail("nessie_account_owner_mismatch", 503);
     const rows = await nessie.accountTransactions(a.account_id);
     balances.push({
       id: a.account_id,
@@ -154,8 +164,8 @@ async function importFromNessie(pool, ownerId, nessie, now = new Date()) {
       truncated: rows.length === 5000,
       fetchedAt: now.toISOString(),
     });
-    bills.push(...(await nessie.bills(a.account_id)));
-    loans.push(...(await nessie.loans(a.account_id)));
+    bills.push(...(await nessie.bills(a.account_id)).filter((bill) => bill.account_id === a.account_id));
+    loans.push(...(await nessie.loans(a.account_id)).filter((loan) => loan.account_id === a.account_id));
   }
   if (coverage.some((c) => c.truncated)) {
     let cursor;

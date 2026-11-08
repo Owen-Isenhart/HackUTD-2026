@@ -39,7 +39,7 @@ test("forecast deterministic integer bands, checking start and bounded weekly bl
   );
   assert.notEqual(a.inputHash, b.inputHash);
 });
-test("bill and undated loan lower every path exactly; unknown obligations fail closed", () => {
+test("bills lower every path; undated loan reserves and unknown obligations block affordability", () => {
   const base = forecastBands({ ...input, ledger: [] }, { paths: 10 });
   const bill = forecastBands(
     {
@@ -65,7 +65,8 @@ test("bill and undated loan lower every path exactly; unknown obligations fail c
     { paths: 10 },
   );
   assert.equal(base.daily[0].lowCents - loan.daily[0].lowCents, 22500);
-  assert.notEqual(loan.safeToSpendCents, null);
+  assert.equal(loan.safeToSpendCents, null);
+  assert.deepEqual(loan.missingSources, ["loan_schedule_unknown"]);
   assert.equal(
     forecastBands({ ...input, pendingUnknownAmounts: 1 }).safeToSpendCents,
     null,

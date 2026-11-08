@@ -30,18 +30,21 @@ function scheduleCashflow(
   const today = localParts(asOf, timeZone).date;
   const schedule = new Map(days.map((d) => [d, { out: 0, in: 0 }])),
     commitments = [];
-  const out = (date, amount, payee = null) => {
-    if (schedule.has(date)) {
+  const unresolved = new Set();
+  const out = (date, amount, payee, source, estimated = false) => {
+    if (schedule.has(date) && Number.isSafeInteger(amount) && amount > 0) {
       schedule.get(date).out += amount;
-      commitments.push({ date, amount, payee });
+      commitments.push({ date, amount, payee, source, estimated });
     }
   };
   const billOccurrences = [];
   for (const b of bank.bills || []) {
     if (["cancelled", "completed"].includes(b.status)) continue;
     const amount = Math.round(Number(b.payment_amount) * 100);
-    if (!Number.isSafeInteger(amount) || amount < 0)
-      throw new Error("invalid_bill_amount");
+    if (!Number.isSafeInteger(amount) || amount < 0 || b.payment_amount == null) {
+      unresolved.add("bill_amount_unknown");
+      continue;
+    }
     const day = Number(b.recurring_date);
     if (day) {
       for (const d of days) {
@@ -61,10 +64,13 @@ function scheduleCashflow(
       const explicit = String(
         b.upcoming_payment_date || b.payment_date || "",
       ).slice(0, 10);
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(explicit))
-        throw new Error("bill_schedule_unknown");
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(explicit) || !Number.isFinite(Date.parse(explicit))) {
+        unresolved.add("bill_date_unknown");
+        continue;
+      }
       billOccurrences.push({
-        date: explicit,
+        date: explicit < today ? today : explicit,
+        paymentDate: explicit,
         amount,
         payee: b.payee,
         billId: b.id,
@@ -79,8 +85,8 @@ function scheduleCashflow(
     billOccurrences,
     posted,
     (b, p) =>
-      b.date === localParts(p.occurred_at, timeZone).date &&
-      b.amount === p.amount_cents &&
+      (b.paymentDate ?? b.date) === localParts(p.occurred_at, timeZone).date &&
+      b.amount === net(p) &&
       ((p.bill_id && b.billId === p.bill_id) ||
         (!p.bill_id &&
           b.payee &&
@@ -89,7 +95,7 @@ function scheduleCashflow(
             .includes(b.payee.toLowerCase()))),
   );
   for (const b of billOccurrences)
-    if (!paid.has(b)) out(b.date, b.amount, b.payee);
+    if (!paid.has(b)) out(b.date, b.amount, b.payee || "Scheduled bill", "bill");
   for (const loan of bank.loans || []) {
     if (
       [
@@ -110,34 +116,13 @@ function scheduleCashflow(
           Number(loan.monthly_payment ?? loan.payment_amount ?? 0) * 100,
         ),
     );
-    if (!amount) continue;
-    const payments = ledger
-      .filter(
-        (r) =>
-          r.direction === "outflow" &&
-          r.status === "completed" &&
-          r.amount_cents === amount &&
-          r.provenance !== "synthetic_persona" &&
-          Date.parse(r.occurred_at) < Date.parse(asOf),
-      )
-      .map((r) => localParts(r.occurred_at, timeZone));
-    const recent = payments.filter((p) => p.date >= addDays(today, -100));
-    const dom = recent.map((p) => Number(p.date.slice(-2)));
-    const inferred =
-      new Set(recent.map((p) => p.month)).size >= 3 &&
-      Math.max(...dom) - Math.min(...dom) <= 4
-        ? quantile(dom, 0.5)
-        : null;
+    if (amount === 0 && loan.monthly_payment_cents === 0) continue;
+    // The v2 loan resource supplies a monthly amount without a due date.
+    unresolved.add("loan_schedule_unknown");
+    if (!Number.isSafeInteger(amount) || amount <= 0) continue;
     for (const month of new Set(days.map((d) => d.slice(0, 7)))) {
-      if (payments.some((p) => p.month === month)) continue;
-      const candidates = days.filter((d) => d.startsWith(month));
-      out(
-        inferred
-          ? candidates.find((d) => Number(d.slice(-2)) === inferred) ||
-              candidates[0]
-          : candidates[0],
-        amount,
-      );
+      const day = days.find((d) => d.startsWith(month));
+      out(day, amount, loan.description || "Loan payment reserve", "loan", true);
     }
   }
   const payroll = ledger
@@ -208,7 +193,10 @@ function scheduleCashflow(
       normalized(o.evidence || o.description).includes(normalized(c.payee)),
   );
   for (const o of candidates)
-    if (!linked.has(o)) out(o.dueDate, Number(o.upperCents ?? o.amountCents));
+    if (!linked.has(o)) {
+      if (!o.dueDate) unresolved.add("plan_date_unknown");
+      out(o.dueDate || today, Number(o.upperCents ?? o.amountCents), "Plan from messages", "plan", !o.dueDate);
+    }
   for (const r of ledger)
     if (
       r.status === "pending" &&
@@ -218,8 +206,8 @@ function scheduleCashflow(
       ) &&
       r.provenance !== "synthetic_persona"
     )
-      out(today, net(r));
-  return { schedule, incomeUnscheduled };
+      out(today, net(r), "Pending bank debit", "pending");
+  return { schedule, commitments, unresolved: [...unresolved], incomeUnscheduled };
 }
 function forecastBands(inputs, { horizonDays = 30, paths = 1000 } = {}) {
   if (
@@ -262,7 +250,7 @@ function forecastBands(inputs, { horizonDays = 30, paths = 1000 } = {}) {
   const dates = Array.from({ length: horizonDays }, (_, i) =>
     addDays(localParts(asOf, timeZone).date, i),
   );
-  const { schedule, incomeUnscheduled } = scheduleCashflow(
+  const { schedule, incomeUnscheduled, unresolved } = scheduleCashflow(
     { ...inputs, ledger, bank, asOf, timeZone, obligations },
     dates,
   );
@@ -293,6 +281,7 @@ function forecastBands(inputs, { horizonDays = 30, paths = 1000 } = {}) {
   const minimumBalanceLowCents =
     startingBalanceCents === null ? null : quantile(minima, 0.1);
   const missingSources = [
+    ...unresolved,
     ...(startingBalanceCents === null ? ["checking_balance"] : []),
     ...(pendingUnknownAmounts ||
     obligations.some((o) => o.amountCents == null && o.upperCents == null)

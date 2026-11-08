@@ -14,6 +14,8 @@ Implemented on 2026-11-08 in the existing checkout. The user asked to run the pl
 
 ## Configuration
 
+Set these variables in the Node finance service environment on Brev. Set `EXPO_PUBLIC_FINANCE_API_URL` to the finance service's HTTPS origin before bundling the Expo app.
+
 - NESSIE_V2_API_KEY; optional NESSIE_V2_BASE_URL (default https://v2-prod-api.nessieisreal.com). Old API keys are not silently reused.
 - TIGER_DATA_URL and TIGER_DATA_PASSWORD, FINANCE_TIME_ZONE (default America/Chicago).
 - DEALS_API_URL and DEALS_AUTH_SECRET, with matching issuer/audience if customized. Each gateway token names the request's owner UUID.
@@ -23,11 +25,13 @@ Implemented on 2026-11-08 in the existing checkout. The user asked to run the pl
 
 ## Interfaces
 
-Unauthenticated POST /api/v1/onboarding/identify takes firstName, lastName, last4. It normalizes names exactly, applies address/name limits, never persists full account numbers and issues a 30-day opaque session. All subsequent new routes resolve that session to one owner.
+Unauthenticated POST /api/v1/onboarding/identify takes `fullName` and `last4`. Existing callers can supply `firstName` and `lastName` in place of `fullName`. The endpoint normalizes names, applies address/name limits, verifies the account belongs to the matched Nessie v2 customer and issues a 30-day opaque session. All subsequent routes resolve that session to one owner.
 
 Owner routes: GET/PUT /api/v1/onboarding; GET/PUT /api/v1/onboarding/answers; POST /api/v1/onboarding/stops/check; POST /api/v1/onboarding/complete; POST /api/v1/finance/sync; GET /api/v1/pipeline/runs/{runId}; GET /api/v1/finance/forecast; GET /api/v1/routines; GET/PUT/DELETE /api/v1/budgets; GET/PUT /api/v1/stores. Budget and store edits use current versions and return 409 on conflicts. DELETE /api/v1/session revokes the stored token. Existing profile/transaction/recommendation paths now serve the session-backed pipeline when a database is configured. The deals gateway blocks mobile access to purchase/candidate integration routes.
 
 Jobs run bank pull → persona → forecast → routines → budget → selection → enrollment. Claims use PostgreSQL SKIP LOCKED, owner locking and lease-token checks. Retry backoff ends in a visible dead state and marks dependent stages failed. Repeated data does not rewrite ledger rows or budget versions. Enrollment sync sends only changed purchase observations in batches to the existing deals purchase endpoint, preserving sandbox provenance, and replays registration requests safely. Its signup decision hash depends on selection/consent; purchases can still be reconciled when signups are unchanged.
+
+`GET /api/v1/finance/insight?panel=spending|upcoming` returns an owner-scoped action from posted Nessie purchases, Tiger Data budgets and the cash forecast. Nemotron can choose among action IDs. The server writes the card from the verified profile and supplies a profile action when the model is unavailable. The Upcoming chart uses forecast bands after adoption and a deterministic cash projection before adoption. Dated commitments and estimates for undated obligations appear separately, and stale or incomplete cashflow suppresses the amount available after commitments.
 
 ## Product defaults and deliberate details
 

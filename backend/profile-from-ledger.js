@@ -26,7 +26,7 @@ function profileFromLedger({
       ? checking.reduce((s, a) => s + a.available_cents, 0)
       : null;
   const dates = Array.from({ length: 90 }, (_, i) => addDays(today.date, i));
-  const { schedule } = scheduleCashflow(
+  const { schedule, commitments, unresolved } = scheduleCashflow(
     { ledger, bank, asOf, timeZone, obligations: plans.obligations || [] },
     dates,
   );
@@ -47,9 +47,10 @@ function profileFromLedger({
   return {
     schemaVersion: 2,
     asOf,
+    asOfLocalDate: today.date,
     timeZone,
     currency: "USD",
-    source: "nessie_sandbox",
+    source: "nessie_v2_sandbox",
     ownerId: owner.id,
     accountType: "checking",
     balanceCents: balance,
@@ -98,7 +99,7 @@ function profileFromLedger({
         loans: (bank.loans || []).length,
         deposits: 0,
       },
-      unresolvedSchedules: 0,
+      unresolvedSchedules: unresolved.length,
       incomeHistory: ledger
         .filter(
           (r) =>
@@ -123,6 +124,8 @@ function profileFromLedger({
         })),
     },
     coverage: bank.coverage,
+    upcomingCommitments: commitments,
+    unresolvedCommitments: unresolved,
     notice: "Synthetic demo purchases do not change your sandbox balance.",
   };
 }

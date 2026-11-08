@@ -8,6 +8,7 @@ const { spentInPeriod } = require("./budget-derive");
 const { workRoutines, minute, extractStops } = require("./stated-routines");
 const { requestInsight } = require("./nemotron");
 const { recommendPipeline } = require("./pipeline-recommendation");
+const { dashboardInsight } = require("./pipeline-dashboard-insights");
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function createPipelineHttp({
   pool,
@@ -475,7 +476,7 @@ function createPipelineHttp({
         if (stale) await queueRun(pool, ownerId);
         send(res, 200, {
           ...data.forecast,
-          bands: data.bands,
+          safeToSpendCents: stale ? null : data.forecast.safeToSpendCents,
           status: stale ? "stale" : "ready",
         });
         return true;
@@ -483,6 +484,12 @@ function createPipelineHttp({
       if (path === "/api/finance-profile" && req.method === "GET") {
         if (!data.profile) throw fail("pipeline_not_ready", 409);
         send(res, 200, data.profile);
+        return true;
+      }
+      if (path === "/api/v1/finance/insight" && req.method === "GET") {
+        const panel = new URL(req.url, "http://localhost").searchParams.get("panel");
+        if (!["spending", "upcoming"].includes(panel)) throw fail("invalid_insight_panel");
+        send(res, 200, { insight: await dashboardInsight(data, panel, { env, fetchImpl }) });
         return true;
       }
       if (path === "/api/finance-transactions" && req.method === "GET") {

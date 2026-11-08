@@ -18,7 +18,7 @@ test("exact sandbox identification normalizes Unicode, resumes one owner and kee
       input: { firstName: " Ａｌｅｘ ", lastName: "TAYLOR", last4: "6619" },
     };
     const a = await onboard(args),
-      b = await onboard(args);
+      b = await onboard({ ...args, input: { fullName: " Alex  Taylor ", last4: "6619" } });
     assert.equal(a.status, 201);
     assert.equal(b.status, 200);
     assert.equal(a.ownerId, b.ownerId);
@@ -46,6 +46,8 @@ test("wrong name and digits have same failure and ambiguous records never select
     { id: "cust_a", first_name: "Alex", last_name: "Taylor" },
     { id: "cust_b", first_name: "Alex", last_name: "Taylor" },
   ];
+  const accounts = await n.customerAccounts();
+  n.customerAccounts = async (id) => accounts.map((account) => ({ ...account, customer_id: id }));
   await assert.rejects(
     identifyCustomer(n, {
       firstName: "Alex",
@@ -60,7 +62,7 @@ test("sixth identification attempt is limited by address or normalized name", ()
   for (let i = 0; i < 5; i++)
     rate("a", { firstName: "Alex", lastName: "Taylor" }, 1000);
   assert.throws(
-    () => rate("b", { firstName: "alex", lastName: "taylor" }, 1000),
+    () => rate("b", { fullName: "alex taylor" }, 1000),
     { status: 429 },
   );
 });

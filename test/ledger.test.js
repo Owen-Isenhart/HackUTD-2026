@@ -5,6 +5,7 @@ const {
   owner,
   checking,
   card,
+  nessieFixture,
 } = require("./helpers/pipeline-fixtures");
 const { normalizeTransactions, upsertLedger } = require("../backend/ledger");
 const { matchBrand } = require("../backend/brands");
@@ -69,6 +70,30 @@ test("brands use merchant names, correct v2 categories and card testing screens"
       (r) => r.category === "fuel" && r.screen_flags.includes("card_testing"),
     ),
   );
+});
+
+test("a v2 chargeback reverses its refund instead of discounting the original purchase", () => {
+  const ledger = normalizeTransactions([
+    raw("purchase", "purchase", 1000),
+    raw("refund", "refund", 700, { parent_transaction_id: "purchase", payer_id: null, payee_id: checking }),
+    raw("chargeback", "chargeback", 200, { parent_transaction_id: "refund" }),
+    raw("foreign_refund", "refund", 700, { parent_transaction_id: "purchase", payer_id: null, payee_id: card }),
+  ], [checking, card], []);
+  assert.equal(ledger.find(({ id }) => id === "purchase").reversed_cents, 500);
+  assert.equal(ledger.find(({ id }) => id === "chargeback").direction, "outflow");
+});
+
+test("v2 import refuses a bank account reassigned to another customer", async () => {
+  const db = await database();
+  try {
+    const accountOwner = await owner(db);
+    const nessie = nessieFixture();
+    nessie.account = async (id) => ({ id, customer_id: "cust_other", available_cents: 1 });
+    const { importFromNessie } = require("../backend/ledger");
+    await assert.rejects(importFromNessie(db, accountOwner.id, nessie), { code: "nessie_account_owner_mismatch" });
+  } finally {
+    await db.end();
+  }
 });
 
 test("a saturated account list falls back to all tenant pages without importing another owner", async () => {
