@@ -10,6 +10,8 @@ import { useUserLocation } from '../location/useUserLocation';
 import { DEMO_AREA, coordsToMapFraction, distanceInMeters, mapFractionToCoords } from '../location/geo';
 import { useNearbyStores } from '../location/useNearbyStores';
 import { NearbyStore } from '../location/nearbyStores';
+import { useFinanceRecommendation } from '../finance/useFinanceRecommendation';
+import { FINANCE_API_URL, describeSkip } from '../finance/financeApi';
 
 // Search radius choices, in metres. The spec leaves the "GPS bubble" size open.
 const RADIUS_OPTIONS = [250, 500, 1000, 2000];
@@ -52,6 +54,8 @@ export default function DealsScreen() {
   // Every store within radiusM of the user. `nearby.result` is the data to hand to the
   // recommendation algorithm once it exists.
   const nearby = useNearbyStores(loc.event, radiusM);
+  // The same location events go to the finance backend, which picks a routine offer using the optimizer.
+  const finance = useFinanceRecommendation(loc.event);
   const [mapW, setMapW] = useState(0);
   const here = loc.event ? coordsToMapFraction(loc.event) : null;
 
@@ -216,6 +220,8 @@ export default function DealsScreen() {
 
       <LocationStatusLine loc={loc} onMap={!!here} />
 
+      <RecommendationSection finance={finance} hasLocation={!!loc.event} />
+
       <NearbyStoresSection nearby={nearby} radiusM={radiusM} onRadius={setRadiusM} hasLocation={!!loc.event} />
 
       <View style={{ gap: space.xs }}>
@@ -323,6 +329,92 @@ function LocationStatusLine({ loc, onMap }: { loc: ReturnType<typeof useUserLoca
         {settings ? <Button label="Open location settings" small onPress={() => Linking.openSettings()} /> : null}
       </View>
     </Row>
+  );
+}
+
+const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+
+// The finance backend's answer for the current position: a recommended offer, or the reason
+// there is none. The demo token is typed here, never built into the app.
+function RecommendationSection({ finance, hasLocation }: { finance: ReturnType<typeof useFinanceRecommendation>; hasLocation: boolean }) {
+  const [draft, setDraft] = useState('');
+  const { status } = finance;
+  const note = (text: string, warn = false) => <T v="bodySm" style={{ color: warn ? c.error : c.onSurfaceVariant }}>{text}</T>;
+  let body: React.ReactNode;
+  if (!FINANCE_API_URL) {
+    body = note('Set EXPO_PUBLIC_FINANCE_API_URL to the finance backend to get recommendations for this location.');
+  } else if (status.kind === 'signed-out') {
+    body = (
+      <Row style={{ gap: space.sm }}>
+        <TextInput
+          value={draft}
+          onChangeText={setDraft}
+          placeholder="Finance demo token"
+          placeholderTextColor={c.outline}
+          secureTextEntry
+          autoCapitalize="none"
+          autoCorrect={false}
+          style={[s.search, { paddingLeft: space.md, paddingRight: space.md }]}
+        />
+        <Button label="Load profile" small onPress={() => finance.signIn(draft)} />
+      </Row>
+    );
+  } else if (status.kind === 'loading-profile') {
+    body = note('Loading your Nessie finance profile…');
+  } else if (status.kind === 'error') {
+    body = (
+      <View style={{ gap: space.xs }}>
+        {note(status.message, true)}
+        <Row style={{ gap: space.sm }}>
+          <Button label="Try again" small onPress={finance.refreshProfile} />
+          <Button label="Change token" small onPress={finance.signOut} />
+        </Row>
+      </View>
+    );
+  } else if (!hasLocation) {
+    body = note('Profile loaded. Turn on live GPS or the demo position to check for a routine offer here.');
+  } else if (!status.answer) {
+    body = note('Checking this location against your routines…');
+  } else if (status.answer.kind === 'skip') {
+    const reload = status.answer.reason === 'refresh_required' || status.answer.reason === 'profile_required';
+    body = (
+      <View style={{ gap: space.xs }}>
+        {note(describeSkip(status.answer.reason))}
+        {reload ? <Button label="Refresh profile" small onPress={finance.refreshProfile} /> : null}
+      </View>
+    );
+  } else {
+    const r = status.answer.recommendation;
+    body = (
+      <View style={s.storeRow}>
+        <View style={{ flexShrink: 1, gap: 2 }}>
+          <T v="labelMd" style={{ color: c.primary, fontFamily: 'Manrope_600SemiBold' }}>{r.offer.merchant}</T>
+          <T v="bodySm" style={{ color: c.onSurfaceVariant }}>{r.explanation.text}</T>
+          <T v="labelSm" style={{ color: c.secondary }}>
+            Pay {dollars(r.payableCents)} · {dollars(r.cashbackCents)} back · {dollars(r.effectiveCostCents)} effective
+          </T>
+          <T v="labelSm" style={{ color: c.outline }}>
+            {r.source === 'demo'
+              ? 'Demo visit: the backend uses its fixed Chipotle, Friday-noon demo, not the dragged marker. Cashback rates are fictional.'
+              : 'From your live position. Cashback rates in the demo catalog are fictional.'}
+          </T>
+        </View>
+      </View>
+    );
+  }
+  return (
+    <View style={{ gap: space.sm }}>
+      <Row style={{ justifyContent: 'space-between' }}>
+        <T v="headlineSm" style={{ color: c.primary }}>Best choice here</T>
+        {status.kind === 'ready' && status.checking ? <Pill label="checking" bg={c.secondaryContainer} color={c.onSecondaryContainer} /> : null}
+      </Row>
+      {body}
+      {status.kind === 'ready' ? (
+        <Pressable onPress={finance.signOut}>
+          <T v="labelSm" style={{ color: c.outline }}>Sign out of the finance demo</T>
+        </Pressable>
+      ) : null}
+    </View>
   );
 }
 
