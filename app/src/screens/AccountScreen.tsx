@@ -1,190 +1,213 @@
 import React, { useState } from 'react';
-import { Alert, Platform, Pressable, View } from 'react-native';
-import { router } from 'expo-router';
+import { Pressable, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Screen } from '../components/Screen';
-import { Button, Card, Icon, IconCircle, IconName, Pill, Row, T } from '../components/ui';
-import { DataState, Tag } from '../components/DataState';
+import { Card, Icon, IconCircle, IconName, Pill, Row, T, Toggle } from '../components/ui';
 import { c, radius, shadow, space, tnum } from '../theme';
-import { api, FinanceApiError } from '../finance/financeApi';
+import { PressScale } from '../motion';
+import { useAppSummary } from '../finance/useAppSummary';
+import { SummaryLoading } from '../components/SummaryLoading';
 import { saveSession } from '../finance/session';
-import { useApi, waitForRun } from '../finance/useApi';
-import { sourceWords, usd } from '../finance/labels';
+import { router } from 'expo-router';
 
-type Profile = { asOf: string; balanceCents: number | null; accountType: string; source: string };
-type Routine = { id: string; brand_key: string | null; purpose: string; kind: string; provenance: string[]; evidence: string };
-type DealsStatus = {
-  profile: { consent_at: string | null; revoked_at: string | null };
-  identity: { address: string; disabled_at: string | null } | null;
-  sources: { product: string; status: string; reason: string | null; last_success_at: string | null }[];
-  jobs: { id: string; kind: string; state: string; last_error: string | null }[];
-};
-type AlertSettings = { channel: string; version: number; channels: string[] };
-
-const CHANNEL_WORDS: Record<string, string> = { off: 'Off', call: 'Phone call', imessage: 'iMessage' };
-
-function confirm(title: string, message: string, ok: string, run: () => void) {
-  if (Platform.OS === 'web') { if (globalThis.confirm?.(`${title}\n\n${message}`)) run(); return; }
-  Alert.alert(title, message, [{ text: 'Cancel', style: 'cancel' }, { text: ok, style: 'destructive', onPress: run }]);
-}
-
-function Group({ icon, title, children }: { icon: IconName; title: string; children: React.ReactNode }) {
+function Group({ icon, title, right, children }: { icon: IconName; title: string; right?: React.ReactNode; children: React.ReactNode }) {
   return (
     <View style={{ gap: 8 }}>
-      <Row style={{ gap: 6, paddingHorizontal: 2 }}>
-        <Icon name={icon} size={18} />
-        <T v="labelLg" style={{ color: c.primary }}>{title}</T>
+      <Row style={{ justifyContent: 'space-between', paddingHorizontal: 2 }}>
+        <Row style={{ gap: 6 }}>
+          <Icon name={icon} size={18} />
+          <T v="labelLg" style={{ color: c.primary }}>{title}</T>
+        </Row>
+        {right}
       </Row>
-      <View style={{ backgroundColor: c.surfaceLowest, borderRadius: radius.lg, padding: space.md, gap: space.md, ...shadow.sm }}>{children}</View>
+      {children}
     </View>
   );
 }
 
-function Link({ icon, title, sub, onPress }: { icon: IconName; title: string; sub: string; onPress: () => void }) {
+function Item({ icon, title, sub, right, bg = c.surfaceContainer, color = c.onSurfaceVariant, badge }: {
+  icon: IconName; title: string; sub: string; right: React.ReactNode; bg?: string; color?: string; badge?: string;
+}) {
   return (
-    <Pressable onPress={onPress}>
-      <Row style={{ justifyContent: 'space-between' }}>
-        <Row style={{ gap: 12, flexShrink: 1 }}>
-          <IconCircle name={icon} bg={c.surfaceContainer} />
-          <View style={{ flexShrink: 1 }}>
+    <Row style={{ justifyContent: 'space-between', padding: space.md }}>
+      <Row style={{ gap: 16, flexShrink: 1, paddingRight: 8 }}>
+        <IconCircle name={icon} bg={bg} color={color} />
+        <View style={{ flexShrink: 1 }}>
+          <Row style={{ gap: 8 }}>
             <T v="labelMd" style={{ color: c.onSurface }}>{title}</T>
-            <T v="bodySm" style={{ color: c.onSurfaceVariant }}>{sub}</T>
-          </View>
-        </Row>
-        <Icon name="chevron-right" size={20} color={c.outlineVariant} />
+            {badge ? <Pill label={badge} bg={c.surfaceHigh} color={c.onSurfaceVariant} /> : null}
+          </Row>
+          <T v="bodySm" numberOfLines={1} style={{ color: c.onSurfaceVariant }}>{sub}</T>
+        </View>
       </Row>
-    </Pressable>
+      {right}
+    </Row>
   );
 }
 
-export default function AccountScreen() {
-  const profile = useApi<Profile>('/api/finance-profile');
-  const routines = useApi<{ routines: Routine[] }>('/api/v1/routines');
-  const deals = useApi<DealsStatus>('/v1/deals/status');
-  const alerts = useApi<AlertSettings>('/api/v1/settings');
-  const [busy, setBusy] = useState('');
-  const [note, setNote] = useState('');
+const Divider = () => <View style={{ height: 1, backgroundColor: 'rgba(236,232,224,0.6)', marginHorizontal: space.md }} />;
 
-  const act = async (label: string, fn: () => Promise<unknown>, done?: string) => {
-    setBusy(label);
-    setNote('');
-    try { await fn(); if (done) setNote(done); } catch (e) {
-      setNote(e instanceof FinanceApiError && e.status === 409 ? 'That setting changed elsewhere. Showing the latest.' : 'That didn’t work. Try again.');
-    }
-    setBusy('');
+export default function AccountScreen() {
+  const [face, setFace] = useState(true);
+  const [alerts, setAlerts] = useState(true);
+  const [locked, setLocked] = useState(false);
+  const { data, error, reload } = useAppSummary();
+  if (!data) return <SummaryLoading title="Account" error={error} onRetry={reload} />;
+  const profile = data.account;
+  const signOut = async () => {
+    await saveSession(null);
+    router.replace('/');
   };
-  const refresh = () => act('sync', async () => {
-    const run = await api('/api/v1/finance/sync', 'POST', {});
-    await waitForRun(run.runId);
-    await Promise.all([profile.reload(), routines.reload()]);
-  }, 'Your data is up to date.');
-  const setChannel = (a: AlertSettings, channel: string) => act('alerts', async () => {
-    try { await api('/api/v1/settings', 'PUT', { channel, version: a.version, confirmed: true }); } finally { await alerts.reload(); }
-  }, channel === 'off' ? 'Automatic alerts are off.' : `Alerts will come by ${CHANNEL_WORDS[channel] ?? channel}.`);
-  const signOut = () => act('signout', async () => {
-    try { await api('/api/v1/session', 'DELETE'); } finally { await saveSession(null); router.replace('/'); }
-  });
 
   return (
     <Screen title="Account">
       <Card style={{ padding: space.md, gap: space.md }}>
-        <DataState state={profile.state} onRetry={profile.reload}>
-          {(p) => (
-            <Row style={{ justifyContent: 'space-between', backgroundColor: c.surfaceLow, borderRadius: radius.md, padding: space.md }}>
-              <View>
-                <Row style={{ gap: 6 }}>
-                  <Icon name="bank-outline" size={16} />
-                  <T v="labelSm" style={{ color: c.onSurfaceVariant }}>{p.accountType ? `${p.accountType[0].toUpperCase()}${p.accountType.slice(1)} account` : 'Account'}</T>
-                </Row>
-                <T v="headlineMd" style={[{ color: c.primary, marginTop: 2 }, tnum]}>{usd(p.balanceCents)}</T>
-                <Tag text={`Updated ${new Date(p.asOf).toLocaleString()}`} />
+        <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <Row style={{ gap: space.md }}>
+            <View>
+              <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: c.primaryContainer, alignItems: 'center', justifyContent: 'center' }}>
+                <T v="headlineSm" style={{ color: c.primaryFixed }}>{profile.initials}</T>
               </View>
-              <Pill label={sourceWords(p.source)} bg={c.tertiaryContainer} color={c.tertiaryFixedDim} />
+              <View style={{ position: 'absolute', right: 0, bottom: 0, width: 16, height: 16, borderRadius: 8, backgroundColor: c.tertiaryFixedDim, alignItems: 'center', justifyContent: 'center' }}>
+                <Icon name="check-decagram" size={10} color={c.onTertiaryFixed} />
+              </View>
+            </View>
+            <View>
+              <Row style={{ gap: 6 }}>
+                <T v="headlineSm" style={{ color: c.primary }}>{profile.name}</T>
+                <Pill label="SANDBOX" bg="rgba(172,237,252,0.4)" color={c.onSecondaryFixedVariant} />
+              </Row>
+              <Row style={{ gap: 4, marginTop: 2 }}>
+                <Icon name="water-outline" size={14} />
+                <T v="bodySm" style={{ color: c.onSurfaceVariant }}>{profile.tier}</T>
+              </Row>
+            </View>
+          </Row>
+          <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: c.surfaceContainer, alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name="tune-variant" size={18} color={c.onSurfaceVariant} />
+          </View>
+        </Row>
+        <Row style={{ justifyContent: 'space-between', backgroundColor: c.surfaceLow, borderRadius: radius.md, padding: space.md }}>
+          <View>
+            <Row style={{ gap: 6 }}>
+              <Icon name="bank-outline" size={16} />
+              <T v="labelSm" style={{ color: c.onSurfaceVariant }}>{profile.checking}</T>
             </Row>
-          )}
-        </DataState>
-        <Button label={busy === 'sync' ? 'Refreshing…' : 'Refresh from the bank'} small onPress={busy ? undefined : refresh} />
-        <Tag text="This is a Nessie sandbox account found by name and card digits. It is not bank sign-in." />
+            <T v="headlineMd" style={[{ color: c.primary, marginTop: 2 }, tnum]}>{profile.balance}</T>
+          </View>
+          <View style={{ alignItems: 'flex-end', gap: 4 }}>
+            <Row style={{ gap: 2, backgroundColor: c.surfaceLowest, paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.full }}>
+              <Icon name="check-circle-outline" size={13} />
+              <T v="labelSm" style={{ color: c.secondary }}>Available</T>
+            </Row>
+            <T v="labelSm" style={{ color: c.onSurfaceVariant }}>Nessie v2</T>
+          </View>
+        </Row>
       </Card>
 
-      <Group icon="wallet-outline" title="Your money">
-        <Link icon="chart-donut" title="Budgets" sub="Enforced limits per category" onPress={() => router.push('/budgets')} />
-        <Link icon="storefront-outline" title="Stores and signups" sub="Selected stores and their rewards programs" onPress={() => router.push('/stores')} />
-      </Group>
-
-      <Group icon="head-lightbulb-outline" title="Your routines">
-        <DataState state={routines.state} onRetry={routines.reload}>
-          {(r) => r.routines.length ? r.routines.map((x) => (
-            <View key={x.id} style={{ gap: 2 }}>
-              <T v="labelMd" style={{ color: c.primary }}>{(x.brand_key ?? x.purpose).replace(/_/g, ' ')}</T>
-              <T v="bodySm" style={{ color: c.onSurfaceVariant }}>{x.evidence}</T>
-              <Tag text={x.kind === 'stated' ? 'Stated by you' : x.provenance.includes('synthetic_persona') ? 'Synthetic demo history' : 'Sandbox bank data'} />
+      <Group icon="credit-card-outline" title={profile.cardName}>
+        <View style={{ aspectRatio: 1.586, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: c.primaryContainer, padding: space.lg, justifyContent: 'space-between', ...shadow.card }}>
+          <LinearGradient colors={['transparent', 'rgba(26,46,53,0.8)', c.primary]} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} style={{ position: 'absolute', inset: 0 }} />
+          <Row style={{ justifyContent: 'space-between' }}>
+            <Row style={{ gap: 12 }}>
+              <LinearGradient colors={['#edd59e', '#c7a760', '#b08b3e']} style={{ width: 36, height: 28, borderRadius: 4 }} />
+              <Icon name="contactless-payment" size={22} color={c.surfaceHighest} />
+            </Row>
+            <View style={{ alignItems: 'flex-end' }}>
+              <T v="labelSm" style={{ color: c.secondaryFixed, textTransform: 'uppercase', letterSpacing: 2 }}>Capital One</T>
+              <T v="labelSm" style={{ color: c.onPrimaryContainer, fontSize: 9, textTransform: 'uppercase' }}>SavorOne Rewards</T>
             </View>
-          )) : <T v="bodySm" style={{ color: c.onSurfaceVariant }}>No routines found yet.</T>}
-        </DataState>
+          </Row>
+          <Row style={{ gap: 12 }}>
+            {['••••', '••••', '••••'].map((x, i) => <T key={i} v="mono" style={{ color: '#fff', letterSpacing: 2 }}>{x}</T>)}
+            <T v="mono" style={{ color: '#fff', letterSpacing: 2 }}>{profile.cardLast4}</T>
+          </Row>
+          <Row style={{ justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            <View>
+              <T v="labelSm" style={{ color: c.onPrimaryContainer, fontSize: 10, textTransform: 'uppercase' }}>Cardholder</T>
+              <T v="labelMd" style={{ color: '#fff' }}>{profile.cardholder}</T>
+            </View>
+            <View style={{ alignItems: 'flex-end' }}>
+              <T v="labelSm" style={{ color: c.onPrimaryContainer, fontSize: 10, textTransform: 'uppercase' }}>Rewards</T>
+              <T v="labelMd" style={{ color: '#fff' }}>3% dining • grocery</T>
+            </View>
+          </Row>
+        </View>
+        <Row style={{ gap: 8 }}>
+          {[
+            { k: 'lock', icon: (locked ? 'lock' : 'lock-open-variant-outline') as IconName, label: locked ? 'Card Locked' : 'Lock Card', col: locked ? c.error : c.secondary, press: () => setLocked(!locked) },
+            { k: 'view', icon: 'eye-outline' as IconName, label: 'View Details', col: c.secondary },
+            { k: 'lim', icon: 'tune-variant' as IconName, label: 'Card Limits', col: c.secondary },
+          ].map((a) => (
+            <PressScale key={a.k} onPress={a.press} outerStyle={{ flex: 1 }} style={{ alignItems: 'center', gap: 4, paddingVertical: 10, backgroundColor: c.surfaceLowest, borderRadius: radius.md, ...shadow.sm }}>
+              <Icon name={a.icon} size={20} color={a.col} />
+              <T v="labelSm">{a.label}</T>
+            </PressScale>
+          ))}
+        </Row>
       </Group>
 
-      <Group icon="email-outline" title="Store rewards email">
-        <DataState state={deals.state} onRetry={deals.reload}>
-          {(d) => {
-            const on = !!d.profile.consent_at && !d.profile.revoked_at;
-            const failed = d.jobs.filter((j) => j.state === 'dead');
-            return (
-              <View style={{ gap: space.sm }}>
-                <T v="bodySm" style={{ color: c.onSurfaceVariant }}>
-                  {on && d.identity ? `Private address: ${d.identity.address}` : 'Off. Turn it on during onboarding to receive store offers.'}
-                </T>
-                {d.sources.map((s) => (
-                  <T key={s.product} v="bodySm" style={{ color: s.status === 'ready' ? c.onSurfaceVariant : c.error }}>
-                    {s.product.replace(/_/g, ' ')}: {s.status.replace(/_/g, ' ')}{s.reason ? ` (${s.reason.replace(/_/g, ' ')})` : ''}
-                  </T>
-                ))}
-                {failed.map((j) => (
-                  <Row key={j.id} style={{ justifyContent: 'space-between' }}>
-                    <T v="bodySm" style={{ color: c.error, flexShrink: 1 }}>Failed: {j.kind.replace(/_/g, ' ')}</T>
-                    <Button label="Retry" small onPress={() => act('job', async () => { await api(`/v1/deals/jobs/${j.id}/retry`, 'POST', {}); await deals.reload(); })} />
-                  </Row>
-                ))}
-                {on ? (
-                  <Button label="Turn off store email" small textColor={c.error} style={{ backgroundColor: 'rgba(255,218,214,0.4)' }}
-                    onPress={() => confirm('Turn off store email?', 'This stops new store emails and removes offer content kept here. Loyalty accounts and earned rewards stay yours. Unsubscribing at each store still needs to be done there.', 'Turn off',
-                      () => act('deals', async () => { await api('/v1/deals/consent', 'DELETE'); await deals.reload(); }, 'Store email is off.'))} />
-                ) : null}
-              </View>
-            );
-          }}
-        </DataState>
+      <Group icon="shield-lock-outline" title="Security & Access">
+        <View style={{ backgroundColor: c.surfaceLowest, borderRadius: radius.lg, overflow: 'hidden', ...shadow.sm }}>
+          <Item icon="face-recognition" title="Biometric Face ID" sub="Fast authentication for transfers & vault unlock" bg="rgba(169,234,249,0.4)" color={c.secondary} right={<Toggle value={face} onChange={setFace} />} />
+          <Divider />
+          <Item icon="bell-ring-outline" title="Deal & Cashback Alerts" sub="Real-time merchant perks & dividend notices" right={<Toggle value={alerts} onChange={setAlerts} />} />
+          <Divider />
+          <Item icon="airplane-takeoff" title="Global Travel Mode" badge="Inactive" sub="Zero FX markup in 140+ world currencies" right={<Icon name="chevron-right" size={20} color={c.outlineVariant} />} />
+        </View>
       </Group>
 
-      {alerts.state.kind !== 'unavailable' ? (
-        <Group icon="bell-ring-outline" title="Nearby alerts (team account)">
-          <DataState state={alerts.state} onRetry={alerts.reload}>
-            {(a) => (
-              <View style={{ gap: space.sm }}>
-                <T v="bodySm" style={{ color: c.onSurfaceVariant }}>
-                  Now: {CHANNEL_WORDS[a.channel] ?? a.channel}. Alerts go to the opted-in demo phone configured on the server.
-                </T>
-                <Row style={{ gap: 6, flexWrap: 'wrap' }}>
-                  {a.channels.map((ch) => (
-                    <Button key={ch} label={CHANNEL_WORDS[ch] ?? ch} small
-                      textColor={ch === a.channel ? c.onPrimary : c.primary}
-                      style={ch === a.channel ? undefined : { backgroundColor: c.surfaceContainer }}
-                      onPress={busy || ch === a.channel ? undefined : () => setChannel(a, ch)} />
-                  ))}
-                </Row>
-                {a.channels.length < 2 ? <Tag text="The server has no call or iMessage channel enabled." /> : null}
+      <Group icon="swap-horizontal" title="Your Nessie Accounts">
+        {profile.linked.map((l, i) => (
+          <Row key={l.name} style={{ justifyContent: 'space-between', backgroundColor: c.surfaceLowest, borderRadius: radius.lg, padding: space.md, ...shadow.sm }}>
+            <Row style={{ gap: 12, flexShrink: 1 }}>
+              <IconCircle name={l.icon} bg={i ? '#ebf1f2' : '#f2ece9'} color={i ? c.secondary : c.primary} />
+              <View style={{ flexShrink: 1 }}>
+                <T v="labelMd" numberOfLines={1}>{l.name}</T>
+                <T v="bodySm" style={{ color: c.onSurfaceVariant }}>{l.sub}</T>
               </View>
-            )}
-          </DataState>
-        </Group>
-      ) : null}
+            </Row>
+            <View style={{ alignItems: 'flex-end', gap: 2 }}>
+              <T v="mono" style={[{ color: c.primary }, tnum]}>{l.amt}</T>
+              {i === 0
+                ? <Pill label={l.badge} bg={c.tertiaryContainer} color={c.tertiaryFixedDim} />
+                : <T v="labelSm" style={{ color: c.secondary }}>{l.badge}</T>}
+            </View>
+          </Row>
+        ))}
+      </Group>
 
-      {note ? <T v="bodySm" style={{ color: c.secondary, textAlign: 'center' }}>{note}</T> : null}
+      <Row style={{ justifyContent: 'space-between', backgroundColor: c.surfaceLow, borderRadius: radius.lg, padding: space.md }}>
+        <Row style={{ gap: 12, flexShrink: 1 }}>
+          <IconCircle name="file-document-outline" bg={c.surfaceLowest} />
+          <View style={{ flexShrink: 1 }}>
+            <T v="labelMd" style={{ color: c.primary }}>Statements & Tax Reports</T>
+            <T v="bodySm" style={{ color: c.onSurfaceVariant }}>Form 1099-INT & Q3 Ledgers ready</T>
+          </View>
+        </Row>
+        <Row style={{ gap: 4, backgroundColor: c.surfaceLowest, paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.md }}>
+          <Icon name="download" size={16} />
+          <T v="labelSm" style={{ color: c.secondary }}>Get PDF</T>
+        </Row>
+      </Row>
 
-      <Pressable onPress={busy ? undefined : signOut}
-        style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8, paddingVertical: 12, borderRadius: radius.lg, backgroundColor: 'rgba(255,218,214,0.4)', marginTop: space.md }}>
-        <Icon name="logout" size={18} color={c.error} />
-        <T v="labelMd" style={{ color: c.error }}>Sign out</T>
-      </Pressable>
+      <Group icon="face-agent" title="Private Client Services">
+        <View style={{ backgroundColor: c.surfaceLowest, borderRadius: radius.lg, overflow: 'hidden', ...shadow.sm }}>
+          <Item icon="room-service-outline" title="Dedicated Concierge" sub="Marcus Vance • Available 24/7" bg="rgba(172,237,252,0.3)" color={c.secondary} right={<Icon name="message-outline" size={20} color={c.outlineVariant} />} />
+          <Divider />
+          <Item icon="shield-check-outline" title="Privacy & Banking Disclosures" sub="FDIC Insurance & Data Governance" right={<Icon name="chevron-right" size={20} color={c.outlineVariant} />} />
+        </View>
+      </Group>
+
+      <View style={{ gap: 8, alignItems: 'center', marginTop: space.md }}>
+        <Pressable onPress={() => { void signOut(); }} style={{ alignSelf: 'stretch', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8, paddingVertical: 12, borderRadius: radius.lg, backgroundColor: 'rgba(255,218,214,0.4)' }}>
+          <Icon name="logout" size={18} color={c.error} />
+          <T v="labelMd" style={{ color: c.error }}>Sign Out</T>
+        </Pressable>
+        <T v="labelSm" style={{ color: c.onSurfaceVariant, opacity: 0.7, textAlign: 'center' }}>
+          Nessie v2 sandbox data • Not a real bank account
+        </T>
+      </View>
     </Screen>
   );
 }

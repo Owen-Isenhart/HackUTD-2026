@@ -9,6 +9,7 @@ const { workRoutines, minute, extractStops } = require("./stated-routines");
 const { requestInsight } = require("./nemotron");
 const { recommendPipeline } = require("./pipeline-recommendation");
 const { dashboardInsight } = require("./pipeline-dashboard-insights");
+const { appSummary } = require("./app-summary");
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function createPipelineHttp({
   pool,
@@ -59,6 +60,7 @@ function createPipelineHttp({
       path.startsWith("/api/v1/onboarding") ||
       path.startsWith("/api/v1/pipeline/") ||
       path.startsWith("/api/v1/finance/") ||
+      path === "/api/v1/app/summary" ||
       path.startsWith("/api/v1/budgets") ||
       path.startsWith("/api/v1/stores") ||
       path === "/api/v1/routines" ||
@@ -484,6 +486,11 @@ function createPipelineHttp({
       if (path === "/api/finance-profile" && req.method === "GET") {
         if (!data.profile) throw fail("pipeline_not_ready", 409);
         send(res, 200, data.profile);
+        return true;
+      }
+      if (path === "/api/v1/app/summary" && req.method === "GET") {
+        if (!data.bank) throw fail("pipeline_not_ready", 409);
+        send(res, 200, await appSummary(pool, data, { env, fetchImpl, nessie }));
         return true;
       }
       if (path === "/api/v1/finance/insight" && req.method === "GET") {

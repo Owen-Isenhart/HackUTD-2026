@@ -96,33 +96,30 @@ test("v2 import refuses a bank account reassigned to another customer", async ()
   }
 });
 
-test("a saturated account list falls back to all tenant pages without importing another owner", async () => {
+test("the import asks for only the most recent rows and never reads tenant-wide pages", async () => {
   const { nessieFixture } = require("./helpers/pipeline-fixtures");
   const { importFromNessie, readLedger } = require("../backend/ledger");
   const db = await database();
   try {
     const a = await owner(db);
     const n = nessieFixture();
-    n.accountTransactions = async (id) =>
-      id === checking ? Array(5000).fill(raw("txn_one", "purchase", 500)) : [];
+    const limits = [];
+    n.accountTransactions = async (id, options) => {
+      limits.push(options?.limit);
+      return id === checking ? [raw("txn_one", "purchase", 500)] : [];
+    };
     let page = 0;
-    n.tenantTransactions = async () =>
-      ++page === 1
-        ? {
-            items: [
-              raw("txn_one", "purchase", 500),
-              raw("txn_foreign", "purchase", 900, { payer_id: "other" }),
-            ],
-            next_cursor: "next",
-          }
-        : { items: [raw("txn_two", "purchase", 600)], next_cursor: null };
+    n.tenantTransactions = async () => {
+      page++;
+      return { items: [raw("txn_foreign", "purchase", 900, { payer_id: "other" })], next_cursor: null };
+    };
     const result = await importFromNessie(db, a.id, n, new Date("2026-11-08"));
-    assert.equal(page, 2);
-    assert.equal(result.coverage[0].truncated, true);
-    assert.equal(result.coverage[0].recovered, true);
+    assert.equal(page, 0);
+    assert.ok(limits.length && limits.every((l) => l === 1000));
+    assert.equal(result.coverage[0].truncated, false);
     assert.deepEqual(
       (await readLedger(db, a.id)).map((r) => r.id),
-      ["txn_one", "txn_two"],
+      ["txn_one"],
     );
   } finally {
     await db.end();

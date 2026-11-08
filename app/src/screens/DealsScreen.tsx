@@ -1,20 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Animated, Linking, PanResponder, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Svg, { Defs, Ellipse, G, LinearGradient, Path, Polygon, Rect, Stop } from 'react-native-svg';
 import { Screen } from '../components/Screen';
 import { Button, Icon, IconCircle, Pill, Row, T } from '../components/ui';
 import { c, radius, shadow, space } from '../theme';
 import { PressScale, useTimed } from '../motion';
-import { useApi } from '../finance/useApi';
-import { DataState } from '../components/DataState';
-import { SAMPLE_OFFER_CLASSIFICATION, callFinished, callWords, isCurrentOffer, labelsLine, sourceWords, type DealsOffer } from '../finance/labels';
-import { api } from '../finance/financeApi';
+import { useAppSummary, type Deal, type Insight } from '../finance/useAppSummary';
+import { SummaryLoading } from '../components/SummaryLoading';
 import { useUserLocation } from '../location/useUserLocation';
 import { DEMO_AREA, coordsToMapFraction, distanceInMeters, mapFractionToCoords } from '../location/geo';
 import { useNearbyStores } from '../location/useNearbyStores';
 import { NearbyStore } from '../location/nearbyStores';
-import { useFinanceRecommendation } from '../finance/useFinanceRecommendation';
-import { FINANCE_API_URL, describeSkip, type FinanceRecommendation } from '../finance/financeApi';
 
 // Search radius choices, in metres. The spec leaves the "GPS bubble" size open.
 const RADIUS_OPTIONS = [250, 500, 1000, 2000];
@@ -29,15 +25,19 @@ const MAP_WIDTH_M = distanceInMeters(
   { latitude: (DEMO_AREA.north + DEMO_AREA.south) / 2, longitude: DEMO_AREA.east },
 );
 
-// A nearby store that matches one of your offers or selected stores, pinned at its real position.
-function Pin({ x, y, label, on, onPress }: { x: number; y: number; label: string; on: boolean; onPress: () => void }) {
+function Pin({ d, on, onPress }: { d: Deal; on: boolean; onPress: () => void }) {
   const scale = useTimed(on ? 1.05 : 1, 200);
   return (
-    <Pressable onPress={onPress} style={{ position: 'absolute', left: x, top: y, zIndex: on ? 30 : 20 }}>
-      <Animated.View style={{ alignItems: 'center', transform: [{ translateX: -50 }, { translateY: -30 }, { scale }] }}>
-        <View style={[s.pin, { backgroundColor: on ? c.primary : c.surfaceLowest, maxWidth: 140 }]}>
-          <Icon name="tag-outline" size={13} color={on ? c.secondaryFixed : c.secondary} />
-          <T v="labelSm" numberOfLines={1} style={{ color: on ? c.onPrimary : c.primary, fontFamily: 'Manrope_600SemiBold' }}>{label}</T>
+    <Pressable
+      onPress={onPress}
+      style={{ position: 'absolute', left: `${(d.pin.x / 400) * 100}%`, top: (d.pin.y / 480) * MAP_H, zIndex: on ? 30 : 20 }}
+    >
+      <Animated.View style={{ alignItems: 'center', transform: [{ translateX: -60 }, { translateY: -30 }, { scale }] }}>
+        <View style={[s.pin, { backgroundColor: on ? c.primary : c.surfaceLowest }]}>
+          <Icon name={d.icon} size={13} color={on ? c.secondaryFixed : c.secondary} />
+          <T v="labelSm" style={{ color: on ? c.onPrimary : c.primary, fontFamily: 'Manrope_600SemiBold' }}>
+            {d.reward} • {d.merchant.split(' ')[0]}
+          </T>
         </View>
         <View style={[s.tail, { backgroundColor: on ? c.primary : c.surfaceLowest }]} />
       </Animated.View>
@@ -45,26 +45,15 @@ function Pin({ x, y, label, on, onPress }: { x: number; y: number; label: string
   );
 }
 
-// Names compared without case, spaces or punctuation: "Taco Bell", "taco_bell" and "TacoBell" match.
-const norm = (s: string | null | undefined) => (s ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
-const matches = (store: NearbyStore, key: string) => {
-  const k = norm(key);
-  return k.length >= 3 && [store.brand, store.name].some((n) => norm(n).startsWith(k) || k.startsWith(norm(n) || '#'));
-};
-
 export default function DealsScreen() {
-  const [sel, setSel] = useState<string | null>(null);
-  const [query, setQuery] = useState('');
-  const offers = useApi<DealsOffer[]>('/v1/deals/offers');
-  const messages = useApi<{ id: string; classification: string }[]>('/v1/deals/messages');
-  const selections = useApi<{ stores: { brand_key: string; selected: boolean }[] }>('/api/v1/stores');
+  const summary = useAppSummary();
+  const [picked, setSel] = useState<number | null>(null);
+  const [cat, setCat] = useState('All');
   const loc = useUserLocation();
   const [radiusM, setRadiusM] = useState(500);
   // Every store within radiusM of the user. `nearby.result` is the data to hand to the
   // recommendation algorithm once it exists.
   const nearby = useNearbyStores(loc.event, radiusM);
-  // The same location events go to the finance backend, which picks a routine offer using the optimizer.
-  const finance = useFinanceRecommendation(loc.event, nearby.result?.stores ?? []);
   const [mapW, setMapW] = useState(0);
   const here = loc.event ? coordsToMapFraction(loc.event) : null;
 
@@ -96,25 +85,19 @@ export default function DealsScreen() {
   const [width, setWidth] = useState(360);
   const cardW = Math.min(width * 0.9, 320);
   const scroller = useRef<React.ComponentRef<typeof ScrollView>>(null);
-  const sampleMessages = new Set((messages.data ?? []).filter((m) => [SAMPLE_OFFER_CLASSIFICATION,'synthetic_fixture'].includes(m.classification)).map((m) => m.id));
-  const q = norm(query);
-  const shown = (offers.data ?? []).filter((o) => isCurrentOffer(o) && (!q || norm(o.merchant_name).includes(q) || norm(o.terms.title).includes(q)));
-  // Pins: nearby stores whose name matches an offer's merchant or one of your selected stores.
-  const keys = [
-    ...shown.map((o) => ({ key: o.merchant_name.replace(/\b(rewards|offers?)\b/gi, '').trim(), label: o.terms.title ?? o.merchant_name, offerId: o.id })),
-    ...(selections.data?.stores ?? []).filter((x) => x.selected).map((x) => ({ key: x.brand_key, label: `${x.brand_key.replace(/_/g, ' ')} · selected`, offerId: null as string | null })),
-  ];
-  const pins = mapW > 0 ? nearby.stores.flatMap((st) => {
-    const hit = keys.find((k) => matches(st, k.key));
-    const p = hit && coordsToMapFraction(st);
-    return hit && p ? [{ id: st.id, x: p.fx * mapW, y: p.fy * MAP_H, label: hit.label, offerId: hit.offerId }] : [];
-  }).slice(0, 12) : [];
+  const deals = summary.data?.deals ?? [];
+  const dealCategories = summary.data?.dealCategories ?? ['All'];
+  const sel = picked ?? summary.data?.featuredDealId ?? deals[0]?.id ?? 0;
+  const shown = deals.filter((d) => cat === 'All' || d.cat === cat);
 
-  const select = (id: string | null) => {
+  const select = (id: number) => {
     setSel(id);
-    const i = shown.findIndex((o) => o.id === id);
+    const i = shown.findIndex((d) => d.id === id);
     if (i >= 0) scroller.current?.scrollTo({ x: i * (cardW + space.md), animated: true });
   };
+
+  if (!summary.data) return <SummaryLoading title="Nearby Deals" error={summary.error} onRetry={summary.reload} />;
+  const featured = deals.find((d) => d.id === summary.data?.featuredDealId) ?? null;
 
   return (
     <Screen title="Nearby Deals">
@@ -124,14 +107,26 @@ export default function DealsScreen() {
             <Icon name="magnify" size={20} />
           </View>
           <TextInput
-            placeholder="Search your offers by store or deal..."
+            placeholder="Search local rewards, cafes, merchants..."
             placeholderTextColor={c.outline}
-            value={query}
-            onChangeText={setQuery}
-            autoCorrect={false}
             style={s.search}
           />
+          <View style={{ position: 'absolute', right: 12 }}>
+            <Icon name="microphone-outline" size={18} color={c.outline} />
+          </View>
         </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 4 }}>
+          {dealCategories.map((name) => {
+            const on = cat === name;
+            const n = name === 'All' ? deals.length : deals.filter((d) => d.cat === name).length;
+            return (
+              <Pressable key={name} onPress={() => setCat(name)} style={[s.chip, on && { backgroundColor: c.secondary }]}>
+                <T v="labelMd" style={{ color: on ? c.onSecondary : c.onSurfaceVariant }}>{name}</T>
+                <T v="labelSm" style={{ color: on ? c.onSecondary : c.onSurfaceVariant, opacity: 0.7 }}>{n}</T>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
       </View>
 
       <View style={s.map} onLayout={(e) => setMapW(e.nativeEvent.layout.width)}>
@@ -164,6 +159,10 @@ export default function DealsScreen() {
           </G>
         </Svg>
 
+        {shown.map((d) => (
+          <Pin key={d.id} d={d} on={sel === d.id} onPress={() => select(d.id)} />
+        ))}
+
         {mapW > 0
           ? nearby.stores.map((st) => {
               const p = coordsToMapFraction(st);
@@ -171,10 +170,6 @@ export default function DealsScreen() {
               return <View key={st.id} pointerEvents="none" style={[s.store, { left: p.fx * mapW - 4, top: p.fy * MAP_H - 4 }]} />;
             })
           : null}
-
-        {pins.map((p) => (
-          <Pin key={p.id} x={p.x} y={p.y} label={p.label} on={!!p.offerId && sel === p.offerId} onPress={() => select(p.offerId)} />
-        ))}
 
         {here && mapW > 0 ? (
           <>
@@ -213,6 +208,11 @@ export default function DealsScreen() {
           >
             <Icon name="cursor-move" size={19} color={loc.source === 'demo' ? c.tertiaryFixed : c.primary} />
           </Pressable>
+          {(['format-list-bulleted', 'tune-variant'] as const).map((n) => (
+            <Pressable key={n} style={s.tool}>
+              <Icon name={n} size={19} color={c.primary} />
+            </Pressable>
+          ))}
         </View>
         <Row style={s.badge}>
           <Icon name={loc.source === 'live' ? 'crosshairs-gps' : loc.source === 'demo' ? 'cursor-move' : 'map-marker-off-outline'} size={14} />
@@ -224,49 +224,68 @@ export default function DealsScreen() {
 
       <LocationStatusLine loc={loc} onMap={!!here} />
 
-      <RecommendationSection finance={finance} hasLocation={!!loc.event} />
+      <RecommendationSection rec={summary.data.recommendation} featured={featured} />
 
       <NearbyStoresSection nearby={nearby} radiusM={radiusM} onRadius={setRadiusM} hasLocation={!!loc.event} />
 
       <View style={{ gap: space.xs }}>
         <Row style={{ justifyContent: 'space-between' }}>
-          <T v="headlineSm" style={{ color: c.primary }}>Your offers</T>
-          {shown.length ? <Pill label={String(shown.length)} bg={c.secondaryContainer} color={c.onSecondaryContainer} /> : null}
+          <Row style={{ gap: 6 }}>
+            <T v="headlineSm" style={{ color: c.primary }}>Featured Perks</T>
+            <Pill label="Your Habits" bg={c.secondaryContainer} color={c.onSecondaryContainer} />
+          </Row>
+          <Row>
+            <T v="labelMd" style={{ color: c.secondary }}>View all {deals.length}</T>
+            <Icon name="chevron-right" size={16} />
+          </Row>
         </Row>
-        <DataState state={offers.state} onRetry={offers.reload}>
-          {() => shown.length ? (
-            <ScrollView ref={scroller} horizontal showsHorizontalScrollIndicator={false} snapToInterval={cardW + space.md}
-              decelerationRate="fast" contentContainerStyle={{ gap: space.md, paddingVertical: 4 }}>
-              {shown.map((o) => {
-                const sample = o.provenance==='synthetic_fixture'||sampleMessages.has(o.message_id);
-                return (
-                  <PressScale key={o.id} onPress={() => select(sel === o.id ? null : o.id)} scaleTo={0.985} outerStyle={{ width: cardW }} style={[s.dealCard, sel === o.id && shadow.card]}>
-                    <Row style={{ gap: 10, marginBottom: space.sm }}>
-                      <IconCircle name="tag-outline" bg={c.surfaceContainer} />
-                      <View style={{ flexShrink: 1 }}>
-                        <T v="bodyLg" numberOfLines={1} style={{ fontFamily: 'Manrope_600SemiBold', color: c.primary }}>{o.merchant_name}</T>
-                        <T v="bodySm" numberOfLines={1} style={{ color: c.onSurfaceVariant }}>
-                          {o.expires_at ? `Ends ${new Date(o.expires_at).toLocaleDateString()}` : 'No end date given'}
-                        </T>
-                      </View>
-                    </Row>
-                    <View style={s.offer}>
-                      <T v="labelMd" numberOfLines={2} style={{ color: c.primary, fontFamily: 'Manrope_600SemiBold' }}>{o.terms.title ?? 'Offer terms need review'}</T>
-                      {o.terms.minSpendMinor ? <T v="labelSm" style={{ color: c.onSurfaceVariant }}>Minimum spend {dollars(o.terms.minSpendMinor)}</T> : null}
-                      {o.terms.channels?.length ? <T v="labelSm" style={{ color: c.onSurfaceVariant }}>{o.terms.channels.map((x) => x.replace(/_/g, ' ')).join(', ')}</T> : null}
-                    </View>
-                    <T v="labelSm" style={{ color: sample ? c.error : c.outline }}>{sample ? sourceWords('sample_offer') : 'From a store email you received'}</T>
-                  </PressScale>
-                );
-              })}
-            </ScrollView>
-          ) : (
-            <T v="bodySm" style={{ color: c.onSurfaceVariant }}>
-              {query ? 'No offers match that search.' : 'No current offers yet. They arrive from store emails once your rewards address is on (Account).'}
-            </T>
-          )}
-        </DataState>
+        <ScrollView
+          ref={scroller}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={cardW + space.md}
+          decelerationRate="fast"
+          contentContainerStyle={{ gap: space.md, paddingVertical: 4 }}
+        >
+          {shown.map((d) => (
+            <PressScale key={d.id} onPress={() => select(d.id)} scaleTo={0.985} outerStyle={{ width: cardW }} style={[s.dealCard, sel === d.id && shadow.card]}>
+              <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: space.sm }}>
+                <Row style={{ gap: 10, flexShrink: 1 }}>
+                  <IconCircle name={d.icon} bg={c.surfaceContainer} />
+                  <View style={{ flexShrink: 1 }}>
+                    <T v="bodyLg" numberOfLines={1} style={{ fontFamily: 'Manrope_600SemiBold', color: c.primary }}>{d.merchant}</T>
+                    <T v="bodySm" numberOfLines={1} style={{ color: c.onSurfaceVariant }}>{d.dist} • {d.area}</T>
+                  </View>
+                </Row>
+                <View style={s.reward}>
+                  <T v="labelSm" style={{ color: c.onSecondary, fontFamily: 'Manrope_600SemiBold' }}>{d.reward}</T>
+                </View>
+              </Row>
+              <Row style={s.offer}>
+                <View style={{ flexShrink: 1, paddingRight: 8 }}>
+                  <T v="labelMd" numberOfLines={1} style={{ color: c.primary, fontFamily: 'Manrope_600SemiBold' }}>{d.title}</T>
+                  <T v="labelSm" style={{ color: c.onSurfaceVariant }}>{d.sub}</T>
+                </View>
+              </Row>
+              <Row style={{ justifyContent: 'space-between' }}>
+                <Row style={{ gap: 6, flexShrink: 1 }}>
+                  <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: c.tertiaryFixedDim }} />
+                  <T v="labelSm" numberOfLines={1} style={{ color: c.onSurfaceVariant }}>{d.note}</T>
+                </Row>
+                <Button label={d.cta} small />
+              </Row>
+            </PressScale>
+          ))}
+        </ScrollView>
       </View>
+
+      <Row style={[s.promise]}>
+        <IconCircle name="shield-check-outline" size={32} bg="rgba(32,103,116,0.15)" />
+        <View style={{ flexShrink: 1 }}>
+          <T v="labelMd" style={{ color: c.primary, fontFamily: 'Manrope_600SemiBold' }}>SavorOne Cashback</T>
+          <T v="bodySm" style={{ color: c.onSurfaceVariant }}>3% back on dining, coffee and groceries, 1% on everything else. Modeled on Capital One&apos;s public Savor terms.</T>
+        </View>
+      </Row>
     </Screen>
   );
 }
@@ -317,124 +336,27 @@ function LocationStatusLine({ loc, onMap }: { loc: ReturnType<typeof useUserLoca
   );
 }
 
-const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
 // The finance backend's answer for the current position: a recommended offer, or the reason
 // there is none. The demo token is typed here, never built into the app.
-function RecommendationSection({ finance, hasLocation }: { finance: ReturnType<typeof useFinanceRecommendation>; hasLocation: boolean }) {
-  const { status } = finance;
-  const note = (text: string, warn = false) => <T v="bodySm" style={{ color: warn ? c.error : c.onSurfaceVariant }}>{text}</T>;
-  let body: React.ReactNode;
-  if (!FINANCE_API_URL) {
-    body = note('Set EXPO_PUBLIC_FINANCE_API_URL to the finance backend to get recommendations for this location.');
-  } else if (status.kind === 'signed-out') {
-    body = note('Find your sandbox account to load your profile.');
-  } else if (status.kind === 'loading-profile') {
-    body = note('Loading your Nessie finance profile…');
-  } else if (status.kind === 'error') {
-    body = (
-      <View style={{ gap: space.xs }}>
-        {note(status.message, true)}
-        <Row style={{ gap: space.sm }}>
-          <Button label="Try again" small onPress={finance.refreshProfile} />
-          <Button label="Sign out" small onPress={finance.signOut} />
-        </Row>
-      </View>
-    );
-  } else if (!hasLocation) {
-    body = note('Profile loaded. Turn on live GPS or the demo position to check for a routine offer here.');
-  } else if (!status.answer) {
-    body = note('Checking this location against your routines…');
-  } else if (status.answer.kind === 'skip') {
-    const reload = status.answer.reason === 'refresh_required' || status.answer.reason === 'profile_required';
-    body = (
-      <View style={{ gap: space.xs }}>
-        {note(describeSkip(status.answer.reason))}
-        {reload ? <Button label="Refresh profile" small onPress={finance.refreshProfile} /> : null}
-      </View>
-    );
-  } else {
-    body = <RecommendationCard key={`${status.answer.recommendation.offer.id}:${status.answer.recommendation.expiresAt}`} r={status.answer.recommendation} />;
-  }
+function RecommendationSection({ rec, featured }: { rec: Insight | null; featured: Deal | null }) {
   return (
     <View style={{ gap: space.sm }}>
       <Row style={{ justifyContent: 'space-between' }}>
         <T v="headlineSm" style={{ color: c.primary }}>Best choice here</T>
-        {status.kind === 'ready' && status.checking ? <Pill label="checking" bg={c.secondaryContainer} color={c.onSecondaryContainer} /> : null}
+        {rec ? <Pill label={rec.source === 'nemotron' ? 'Nemotron' : 'Profile'} bg={c.secondaryContainer} color={c.onSecondaryContainer} /> : null}
       </Row>
-      {body}
-      {status.kind === 'ready' ? (
-        <Pressable onPress={finance.signOut}>
-          <T v="labelSm" style={{ color: c.outline }}>Sign out</T>
-        </Pressable>
-      ) : null}
-    </View>
-  );
-}
-
-// One recommendation: what to buy, what to pay with, what applies, what it leaves in the budget,
-// and labels for anything not real. Hides itself when it expires; can request a call (team account).
-function RecommendationCard({ r }: { r: FinanceRecommendation }) {
-  const [now, setNow] = useState(() => Date.now());
-  const [call, setCall] = useState<{ state: string } | null>(null);
-  const [asking, setAsking] = useState(false);
-  useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(t);
-  }, []);
-  // Poll the call's status until it reaches a final state.
-  useEffect(() => {
-    if (!call || callFinished(call.state) || !r.callId) return;
-    const t = setTimeout(async () => {
-      try { const next = await api(`/api/v1/calls/${r.callId}`); setCall({ state: next.status }); } catch { setCall({ state: 'uncertain' }); }
-    }, 3000);
-    return () => clearTimeout(t);
-  }, [call, r.callId]);
-  const left = Math.max(0, Math.round((r.expiresAt - now) / 1000));
-  if (left === 0 && !call) return <T v="bodySm" style={{ color: c.onSurfaceVariant }}>This recommendation expired. Move or wait a moment to check this place again.</T>;
-  const labels = labelsLine(r.labels);
-  const requestCall = async () => {
-    setAsking(true);
-    try {
-      const res = await api(`/api/v1/calls/${r.callId}`, 'POST', { confirmed: true });
-      setCall({ state: res.status });
-    } catch {
-      setCall({ state: 'failed' });
-    }
-    setAsking(false);
-  };
-  return (
-    <View style={[s.storeRow, { flexDirection: 'column', alignItems: 'stretch', gap: 4 }]}>
-      <T v="labelMd" style={{ color: c.primary, fontFamily: 'Manrope_600SemiBold' }}>{r.offer.merchant}</T>
-      <T v="bodySm" style={{ color: c.onSurfaceVariant }}>{r.explanation.text}</T>
-      <T v="labelSm" style={{ color: c.secondary }}>
-        Pay {dollars(r.payableCents)} · {dollars(r.cashbackCents)} back · {dollars(r.effectiveCostCents)} effective
-      </T>
-      {r.payWith ? <T v="labelSm" style={{ color: c.primary }}>Pay with: {r.payWith.label}</T> : null}
-      {r.applied?.map((a) => (
-        <T key={a.kind + a.label} v="labelSm" style={{ color: c.primary }}>
-          + {a.label}{a.provenance === 'synthetic_fixture' || a.provenance === 'sample_offer' ? ' (sample offer)' : ''}
-        </T>
-      ))}
-      {r.loyalty ? (
-        <T v="labelSm" style={{ color: c.primary }}>
-          +{r.loyalty.points} {r.loyalty.program} points{r.loyalty.valued ? '' : ', not counted as cash'}{r.loyalty.simulatedMembership ? ' · simulated signup (demo)' : ''}
-        </T>
-      ) : null}
-      {r.budgetAfter && Object.keys(r.budgetAfter).length ? (
-        <T v="labelSm" style={{ color: c.onSurfaceVariant }}>
-          Budget left after this: {Object.entries(r.budgetAfter).map(([k, v]) => `${k} ${dollars(v)}`).join(' · ')}
-        </T>
-      ) : null}
-      {labels ? <T v="labelSm" style={{ color: c.error }}>{labels}</T> : null}
-      <T v="labelSm" style={{ color: c.outline }}>
-        {r.source === 'demo' ? 'Demo position (only your position is simulated). ' : 'From your live position. '}
-        Valid for {left} s.
-      </T>
-      {r.callId ? (
-        call ? <T v="bodySm" style={{ color: c.secondary }}>{callWords(call.state)}</T>
-          : <Button label={asking ? 'Requesting…' : 'Call me about this'} small onPress={asking ? undefined : requestCall} />
-      ) : null}
+      <View style={s.storeRow}>
+        <View style={{ flexShrink: 1, gap: 2 }}>
+          <T v="labelMd" style={{ color: c.primary, fontFamily: 'Manrope_600SemiBold' }}>{rec?.title ?? 'You are all caught up'}</T>
+          <T v="bodySm" style={{ color: c.onSurfaceVariant }}>{rec?.text ?? 'Nothing needs attention right now.'}</T>
+          {featured ? (
+            <T v="labelSm" style={{ color: c.secondary }}>
+              Top perk for you: {featured.reward} at {featured.merchant} ({featured.dist})
+            </T>
+          ) : null}
+        </View>
+      </View>
     </View>
   );
 }

@@ -93,6 +93,7 @@ function normalizeTransactions(
     ({ payee_id, ...r }) => r,
   );
 }
+const RECENT_ROWS = 1000;
 const fields = [
   "provenance",
   "account_id",
@@ -164,7 +165,9 @@ async function importFromNessie(pool, ownerId, nessie, now = new Date()) {
     const detail = await nessie.account(a.account_id);
     if (detail?.id !== a.account_id || detail.customer_id !== owner.nessie_customer_id)
       throw fail("nessie_account_owner_mismatch", 503);
-    const rows = await nessie.accountTransactions(a.account_id);
+    // Nessie v2 returns newest first; the most recent rows (about a year here)
+    // cover the six complete months budgets need and the 90-day app views.
+    const rows = await nessie.accountTransactions(a.account_id, { limit: RECENT_ROWS });
     balances.push({
       id: a.account_id,
       type: a.account_type,
@@ -174,7 +177,8 @@ async function importFromNessie(pool, ownerId, nessie, now = new Date()) {
     coverage.push({
       accountId: a.account_id,
       rows: rows.length,
-      truncated: rows.length === 5000,
+      truncated: false,
+      recentOnly: rows.length === RECENT_ROWS,
       fetchedAt: now.toISOString(),
     });
     bills.push(...(await nessie.bills(a.account_id)).filter((bill) => bill.account_id === a.account_id));
