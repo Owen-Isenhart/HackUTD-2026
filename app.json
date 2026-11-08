@@ -9,7 +9,7 @@
     "ios": {
       "bundleIdentifier": "com.hackutd2026.handsoffbanking",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Show nearby offers when you choose to check your location."
+        "NSLocationWhenInUseUsageDescription": "Show nearby offers and check for matches while you keep routine alerts on in the app."
       }
     }
   }

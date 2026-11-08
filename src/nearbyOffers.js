@@ -6,14 +6,17 @@ const studentUnion = { latitude: 32.98666, longitude: -96.74888 };
 const offers = [
   {
     id: 'chipotle-campbell', merchant: 'Chipotle', address: '283 W Campbell Rd, Richardson',
+    nessieMerchantId: 'bca89d21-e020-444d-b8a8-57abf780294c',
     coordinates: { latitude: 32.97504, longitude: -96.72106 }, cashbackPercent: 5,
   },
   {
     id: 'starbucks-utd', merchant: 'Starbucks', address: 'UT Dallas Student Union',
+    nessieMerchantId: '4e207154-b759-472f-9cdf-127a333906ea',
     coordinates: studentUnion, cashbackPercent: 4,
   },
   {
     id: 'chickfila-utd', merchant: 'Chick-fil-A', address: 'UT Dallas Student Union',
+    nessieMerchantId: 'bc8d00a9-301b-40d6-ae31-3469149a639b',
     coordinates: studentUnion, cashbackPercent: 3,
   },
 ];
@@ -38,9 +41,9 @@ function formatDollars(cents) {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-function offerSummary({ cashbackPercent }) {
-  const savingsCents = Math.round(SAMPLE_PURCHASE_CENTS * cashbackPercent / 100);
-  return `${cashbackPercent}% demo cashback would earn ${formatDollars(savingsCents)} on a ${formatDollars(SAMPLE_PURCHASE_CENTS)} purchase.`;
+function offerSummary({ cashbackPercent }, purchaseCents = SAMPLE_PURCHASE_CENTS) {
+  const savingsCents = Math.round(purchaseCents * cashbackPercent / 100);
+  return `${cashbackPercent}% demo cashback would earn ${formatDollars(savingsCents)} on a ${formatDollars(purchaseCents)} purchase.`;
 }
 
 module.exports = { DEMO_LOCATION, SEARCH_RADIUS_METERS, findNearbyOffers, offerSummary };

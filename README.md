@@ -56,6 +56,14 @@ The profile refreshes from Nessie each time. Bill and deposit counts indicate th
 2. Point an HTTPS reverse proxy or HTTPS development tunnel at `http://127.0.0.1:8787`. Set `EXPO_PUBLIC_FINANCE_API_URL` to that HTTPS origin and restart Expo. The Expo Metro tunnel serves the app bundle separately.
 3. Open the app, scroll to **Sandbox finance profile**, and enter the token on the phone. Tap **Refresh finance profile**. The token grants access to the one configured sandbox account for this demo.
 
+### Test history-based routine alerts
+
+1. After loading the seeded finance profile, tap **Simulate Friday Chipotle visit** under **Routine alerts**. Allow notifications. The simulated location and time use the same matching code as live GPS. With the seeded Nessie history, the app shows four observed Friday midday visits and **$0.70 in demo cashback** on the typical **$14** purchase. Look for the local banner.
+2. For live GPS, tap **Start live routine alerts**, grant **While Using the App**, and keep Expo Go in the foreground. An offer qualifies when a recent fix puts you within 300 m including its reported accuracy, and the exact merchant branch matches a weekday and time of day observed on at least two dates. GPS stays on the phone. The profile must be refreshed after 30 minutes.
+3. Repeated GPS fixes at the same branch can schedule one live alert per app session. Tap **Stop routine alerts** to remove the location subscription. The simulated visit is explicitly labeled and can be run again.
+
+The app uses the local demo cashback catalog. Nemotron's highlight can break a choice between eligible offers, and the observed Nessie patterns remain usable when Nemotron is unavailable. Background location and server-delivered push require separate native setup. [Expo background location](https://docs.expo.dev/versions/v58.0.0/sdk/location/#background-location-methods) · [Expo push setup](https://docs.expo.dev/push-notifications/push-notifications-setup/)
+
 ## Verification
 
-Run `npm.cmd test` for the demo offers, finance calculations, and model contract. Run `npx.cmd expo export --platform ios` to check the iOS JavaScript bundle. Use the iPhone steps above to verify location permission, the notification banner, and audio.
+Run `npm.cmd test` for the demo offers, finance calculations, model contract, routine matching, and alert deduplication. Run `npx.cmd expo export --platform ios` to check the iOS JavaScript bundle. Use the iPhone steps above to verify location permission, the notification banner, and audio.

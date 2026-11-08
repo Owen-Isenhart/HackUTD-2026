@@ -1,5 +1,6 @@
 const { readNessie } = require('./nessie');
 const { interpretRoutines } = require('./nemotron');
+const { daypart } = require('../src/routineTime');
 
 const DAY_MS = 86_400_000;
 const HISTORY_DAYS = 90;
@@ -35,16 +36,6 @@ function purchaseDateTime(value, formatter, now) {
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})$/i.test(value)) return null;
   const instant = Date.parse(value);
   return Number.isFinite(instant) && instant <= now.getTime() ? localDateTime(formatter, instant) : null;
-}
-
-function daypart(hour) {
-  if (hour === null) return null;
-  if (hour < 5) return 'overnight';
-  if (hour < 11) return 'morning';
-  if (hour < 14) return 'midday';
-  if (hour < 17) return 'afternoon';
-  if (hour < 22) return 'evening';
-  return 'night';
 }
 
 function medianCents(values) {

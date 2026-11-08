@@ -1,11 +1,12 @@
-import React, { useRef, useState } from 'react';
-import { Linking, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { AppState, Linking, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import * as Location from 'expo-location';
 import * as Speech from 'expo-speech';
 import { DEMO_LOCATION, SEARCH_RADIUS_METERS, findNearbyOffers, offerSummary } from './src/nearbyOffers';
-import { scheduleOfferNotification } from './src/offerNotifications';
+import { requestOfferNotificationPermission, scheduleOfferNotification, scheduleRoutineNotification } from './src/offerNotifications';
+import { DEMO_ROUTINE_TIME, evaluateRoutineVisit, sendRoutineAlertOnce } from './src/routineOffers';
 
 const financeOrigin = process.env.EXPO_PUBLIC_FINANCE_API_URL?.replace(/\/+$/, '');
 const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
@@ -28,11 +29,12 @@ function Button({ label, onPress, secondary = false, disabled = false }) {
   );
 }
 
-function FinanceProfile() {
+function FinanceProfile({ profile, onProfileChange }) {
   const [token, setToken] = useState('');
   const [state, setState] = useState({});
 
   async function refresh() {
+    onProfileChange(null);
     setState({ busy: true });
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 45_000);
@@ -46,7 +48,8 @@ function FinanceProfile() {
         return;
       }
       if (!response.ok) throw new Error();
-      setState({ profile: await response.json() });
+      onProfileChange(await response.json());
+      setState({});
     } catch {
       setState({ error: 'Couldn’t load the finance profile. Check that the demo backend is reachable.' });
     } finally {
@@ -55,7 +58,6 @@ function FinanceProfile() {
   }
 
   if (!financeOrigin?.startsWith('https://')) return null;
-  const { profile } = state;
   const insight = profile?.routineInsight;
   const highlighted = profile?.routines[insight?.routineIndex];
   return (
@@ -68,8 +70,12 @@ function FinanceProfile() {
         autoCapitalize="none"
         autoCorrect={false}
         secureTextEntry
+        editable={!state.busy}
         value={token}
-        onChangeText={setToken}
+        onChangeText={(value) => {
+          setToken(value);
+          onProfileChange(null);
+        }}
         style={styles.input}
       />
       <Button label={state.busy ? 'Refreshing…' : 'Refresh finance profile'} onPress={refresh} disabled={state.busy || !token.trim()} />
@@ -102,10 +108,120 @@ function FinanceProfile() {
 
 function NearbyOffers() {
   const latestSearch = useRef(0);
+  const alertedOffers = useRef(new Set());
   const [search, setSearch] = useState({ message: 'Choose a location to see demo offers.' });
+  const [profile, setProfile] = useState(null);
+  const [alertMode, setAlertMode] = useState(null);
+  const [alertStatus, setAlertStatus] = useState(null);
   const [sending, setSending] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [transcript, setTranscript] = useState('');
+
+  useEffect(() => {
+    if (!alertMode || !profile) return;
+    const searchId = latestSearch.current;
+    const demo = alertMode === 'demo';
+    const alerted = demo ? new Set() : alertedOffers.current;
+    let active = true;
+    let subscription;
+    let currentOfferId;
+    const isCurrent = () => active && searchId === latestSearch.current;
+    const canDeliver = () => isCurrent() && (AppState.currentState === 'active'
+      || (demo && AppState.currentState === 'inactive'));
+
+    function stopWithMessage(text, settings = false) {
+      if (!isCurrent()) return;
+      latestSearch.current += 1;
+      setAlertStatus({ text, settings });
+      setAlertMode(null);
+    }
+
+    async function evaluateFix(fix) {
+      if (!canDeliver()) return;
+      const visit = evaluateRoutineVisit(profile, fix, demo ? { routineAt: DEMO_ROUTINE_TIME } : undefined);
+      currentOfferId = visit?.recommendation?.offer.id;
+      if (!visit) {
+        setSearch({ message: 'Waiting for a recent, accurate GPS fix…' });
+        return;
+      }
+      const { offers, recommendation, profileExpired } = visit;
+      setSearch({
+        message: demo ? 'Simulated Friday at noon · Richardson, TX' : `Live location · ±${Math.round(fix.coords.accuracy)} m reported accuracy`,
+        offers,
+        recommendation,
+      });
+      if (profileExpired) {
+        stopWithMessage('Refresh the finance profile before checking for routine offers again.');
+        return;
+      }
+      if (!recommendation) {
+        if (demo) stopWithMessage('No matching Friday midday Chipotle routine in the loaded profile.');
+        else setAlertStatus({ text: 'Watching for a nearby offer that matches your routine.' });
+        return;
+      }
+      const { offer } = recommendation;
+      if (alerted.has(offer.id)) return;
+      const isStillNearby = () => canDeliver() && currentOfferId === offer.id;
+      try {
+        const sent = await sendRoutineAlertOnce(alerted, offer.id, () => scheduleRoutineNotification(offer, isStillNearby));
+        if (!isCurrent()) return;
+        if (sent) setAlertStatus({ text: `Local alert scheduled for ${offer.merchant}.` });
+        else if (isStillNearby()) stopWithMessage('Allow notifications in Settings to get routine alerts.', true);
+      } catch {
+        if (isStillNearby()) setAlertStatus({ text: 'Couldn’t schedule the routine alert. Try again.' });
+      }
+    }
+
+    async function start() {
+      if (!demo) {
+        const permission = await Location.requestForegroundPermissionsAsync();
+        if (!isCurrent()) return;
+        if (!permission.granted) {
+          stopWithMessage('Allow location while using the app to get routine alerts.', !permission.canAskAgain);
+          return;
+        }
+      }
+      const notificationsAllowed = await requestOfferNotificationPermission();
+      if (!isCurrent()) return;
+      if (!notificationsAllowed) {
+        stopWithMessage('Allow notifications in Settings to get routine alerts.', true);
+        return;
+      }
+      if (demo) {
+        await evaluateFix({ coords: { ...DEMO_LOCATION, accuracy: 10 }, timestamp: Date.now() });
+        if (isCurrent()) setAlertMode(null);
+        return;
+      }
+      const watcher = await Location.watchPositionAsync(
+        { accuracy: Location.Accuracy.High, distanceInterval: 15 },
+        (fix) => evaluateFix(fix).catch(() => stopWithMessage('Couldn’t check this location against your routines.')),
+        () => stopWithMessage('Location updates stopped. Check Location Services and try again.', true),
+      );
+      if (isCurrent()) subscription = watcher;
+      else watcher.remove();
+    }
+
+    start().catch(() => stopWithMessage('Couldn’t start routine alerts. Check your permissions and try again.'));
+    return () => {
+      active = false;
+      subscription?.remove();
+    };
+  }, [alertMode, profile]);
+
+  function updateProfile(nextProfile) {
+    latestSearch.current += 1;
+    setAlertMode(null);
+    setAlertStatus(null);
+    setSearch((previous) => ({ ...previous, busy: false, recommendation: null }));
+    setProfile(nextProfile);
+  }
+
+  function changeAlertMode(mode) {
+    latestSearch.current += 1;
+    setAlertMode(mode);
+    setAlertStatus({ text: mode ? 'Checking permissions and preparing routine alerts…' : 'Routine alerts stopped.' });
+    setSearch({ message: mode === 'live' ? 'Waiting for a recent GPS fix…' : 'Choose a location to see demo offers.' });
+  }
 
   async function useMyLocation() {
     const searchId = ++latestSearch.current;
@@ -187,10 +303,36 @@ function NearbyOffers() {
         <Text style={styles.detail}>See example cashback offers within {SEARCH_RADIUS_METERS} meters. The rates are fictional.</Text>
 
         <View style={styles.card}>
-          <Button label={search.busy ? 'Finding your location…' : 'Use my location'} onPress={useMyLocation} disabled={search.busy} />
-          <Button label="Try demo location" onPress={tryDemoLocation} secondary />
+          <Button label={search.busy ? 'Finding your location…' : 'Use my location'} onPress={useMyLocation} disabled={search.busy || Boolean(alertMode)} />
+          <Button label="Try demo location" onPress={tryDemoLocation} disabled={Boolean(alertMode)} secondary />
           <Text accessibilityLiveRegion="polite" style={styles.detail}>{search.message}</Text>
           {search.settings && <Button label="Open location settings" onPress={openSettings} secondary />}
+        </View>
+
+        <View style={styles.card}>
+          <Text accessibilityRole="header" style={styles.heading}>Routine alerts</Text>
+          <Text style={styles.detail}>
+            {profile ? 'Matches offers to your usual day and time while the app is open.' : financeOrigin?.startsWith('https://')
+              ? 'Load the sandbox finance profile below to match offers to your purchase history.'
+              : 'Set up the HTTPS finance backend to match offers to your purchase history.'}
+          </Text>
+          <Button
+            label={alertMode === 'live' ? 'Stop routine alerts' : 'Start live routine alerts'}
+            onPress={() => changeAlertMode(alertMode === 'live' ? null : 'live')}
+            disabled={!profile || search.busy || alertMode === 'demo'}
+          />
+          <Button label="Simulate Friday Chipotle visit" onPress={() => changeAlertMode('demo')} disabled={!profile || search.busy || Boolean(alertMode)} secondary />
+          {alertStatus && <Text accessibilityLiveRegion="polite" style={styles.detail}>{alertStatus.text}</Text>}
+          {alertStatus?.settings && <Button label="Open settings" onPress={openSettings} secondary />}
+          {search.recommendation && (
+            <>
+              <Text style={styles.offer}>{offerSummary(search.recommendation.offer, search.recommendation.routine.typicalPurchaseCents)}</Text>
+              <Text style={styles.detail}>
+                {search.recommendation.offer.merchant} · {search.recommendation.routine.weekday} {search.recommendation.routine.daypart} · {search.recommendation.routine.observedDays} days observed
+                {search.recommendation.highlighted ? ' · Nemotron highlight' : ''}
+              </Text>
+            </>
+          )}
         </View>
 
         {search.offers?.length === 0 && (
@@ -223,7 +365,7 @@ function NearbyOffers() {
           </View>
         )}
 
-        <FinanceProfile />
+        <FinanceProfile profile={profile} onProfileChange={updateProfile} />
       </ScrollView>
     </SafeAreaView>
   );
