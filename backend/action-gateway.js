@@ -13,7 +13,7 @@
 // Decisions are ALLOW, DENY (with a reason code) or REQUIRE_APPROVAL. In this
 // prototype REQUIRE_APPROVAL means pending only: nothing is stored or run.
 // Every decision goes to an in-memory audit list that never holds parameters,
-// message text, prompts, phone numbers or keys. See docs/security-mvp-plan.md.
+// message text, prompts, phone numbers or keys.
 const { randomUUID } = require('node:crypto');
 const { KINDS, BASES, CATEGORIES, CONFIDENCE, dayNumberOf } = require('./text-obligations');
 

@@ -1,4 +1,4 @@
-// Security evidence for the policy gateway (docs/security-mvp-plan.md). Test names carry
+// Security evidence for the policy gateway. Test names carry
 // the IDs from the full security plan. Each case checks what actually happened (network
 // requests made, rows and obligations written, audit contents), not what a model said.
 const assert = require('node:assert/strict');
@@ -310,7 +310,7 @@ test('SEC-01: the phone app reads no secret-named public settings (EXPO_PUBLIC_ 
     } else files.push(full);
   }
   const names = new Set(files.flatMap((file) => readFileSync(file, 'utf8').match(/EXPO_PUBLIC_[A-Z0-9_]+/g) ?? []));
-  // Known exception, recorded in docs/security-mvp-plan.md section 9: the voice assistant's optional
+  // Known exception: the voice assistant's optional
   // development shortcut. It is empty by default; if set, the voice service key is built into the app.
   const knownExceptions = new Set(['EXPO_PUBLIC_VOICE_API_KEY']);
   assert.deepEqual([...names].filter((name) => /KEY|SECRET|TOKEN|PASS/.test(name) && !knownExceptions.has(name)), []);

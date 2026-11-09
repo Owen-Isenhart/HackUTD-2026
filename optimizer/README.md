@@ -2,8 +2,6 @@
 
 Decides what the user should buy nearby, how to pay, and which offers to use, without breaking a budget. If nothing suitable fits, it says to skip.
 
-It covers spec tasks `OPT-02` to `OPT-09`, from [../spec-checklist.md](../spec-checklist.md).
-
 ## Who does what
 
 The rule from spec section 7.1: anything that can be calculated exactly is done by code. Nemotron does only the parts that need judgment about language.

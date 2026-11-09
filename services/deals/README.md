@@ -2,11 +2,6 @@
 
 Nessiessential is a mobile personal-finance project. The deals workstream now includes a TypeScript/Fastify API, PostgreSQL worker and Expo screens for promotional email, offer evidence, eligibility and merchant rewards lifecycle.
 
-- [Project context](context.md) and [delivery checklist](spec-checklist.md)
-- [Deals plan](plan/deals.md)
-- [Setup, API contracts and operations](docs/deals-runbook.md)
-- [Validation evidence and remaining live-integration gates](docs/deals-validation.md)
-
 ```sh
 npm ci
 npm run check
@@ -18,4 +13,4 @@ npm ci
 npm start                 # Expo deals shell
 ```
 
-TigerData migrations and restricted runtime roles have been applied to the existing service. Credentials stay in ignored owner-only local files. An actual user-sent email passed signed Photon delivery, durable storage and deduplicated processing. Backend checks pass 61 tests; mobile typecheck and iOS/Android exports pass. Real merchant registration/promotional delivery and Capital One acquisition are **not yet accepted**; see the validation report. No commit or push has been made.
+TigerData migrations and restricted runtime roles have been applied to the existing service. Credentials stay in ignored owner-only local files. An actual user-sent email passed signed Photon delivery, durable storage and deduplicated processing. Backend checks pass 61 tests; mobile typecheck and iOS/Android exports pass. Real merchant registration/promotional delivery and Capital One acquisition are **not yet accepted**. No commit or push has been made.

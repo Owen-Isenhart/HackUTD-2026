@@ -74,11 +74,11 @@ The API uses the demo cashback catalog. It checks the full payable amount agains
 
 ### Test a Photon recommendation call
 
-Configure the finance and Calls processes as described in the [backend runbook](docs/backend-runbook.md). With Tiger Data migrated and an allowlisted, consenting demo recipient configured, use **Simulate Friday Chipotle visit** and tap **Call the opted-in demo phone** before the recommendation expires. Simulation requires `CALL_ALLOW_DEMO_LOCATION=1` on the finance backend.
+With the finance and Calls processes running, Tiger Data migrated, and an allowlisted, consenting demo recipient configured, use **Simulate Friday Chipotle visit** and tap **Call the opted-in demo phone** before the recommendation expires. Simulation requires `CALL_ALLOW_DEMO_LOCATION=1` on the finance backend.
 
 The backend binds the call to a saved recommendation and sends the exact caller transcript to `POST /api/recommendations/evaluate`. Brev Nemotron interprets the request. Code applies the price limit and reranks the eligible nearby choices. A new scan leaves the active call's context intact. Material finance changes and call expiry invalidate it. Results use the demo catalog and label its estimated cashback.
 
-For automatic delivery, opt in to calls or iMessage under **Routine alerts** and start live checks. A Personal Team build also exposes **Enable alerts while locked**, which requests Always location access and registers nearby geofences. Expo Go exercises foreground delivery. [Native setup and smoke tests](docs/backend-runbook.md)
+For automatic delivery, opt in to calls or iMessage under **Routine alerts** and start live checks. A Personal Team build also exposes **Enable alerts while locked**, which requests Always location access and registers nearby geofences. Expo Go exercises foreground delivery.
 
 ### Read money plans from texts with Photon
 
